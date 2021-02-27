@@ -1,0 +1,235 @@
+@charset "UTF-8";
+/* ==========================================================================
+   #MAIN
+   ========================================================================== */
+/* ==========================================================================
+   #FIELDS
+   ========================================================================== */
+/**
+ * This makes input boxes look nicer instead of the default boring design
+ * For styling, use a style variant
+ * input HTML should include placeholder, required and tabindex attributes
+ */
+/*
+ * https://codepen.io/zellwk/pen/NeRaPw
+* input box empty, uses ::placeholder-shown
+ */
+label,
+input {
+  /* display: block; */
+  margin: 0 auto;
+}
+
+label {
+  font-size: 24px;
+  /* font-weight: 600; */
+}
+
+input {
+  /* width: 100%; */
+  font-size: 20px;
+  width: 60px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.fld-label {
+  padding: 0 0 0 5px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.modal .modal__remember input, .modal .modal__remember--new input {
+  font-size: 16px;
+}
+
+.fld-chk {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  text-align: center;
+  margin-left: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #fff;
+  color: #d3d6db;
+  outline: none;
+  cursor: pointer;
+  /* box-shadow: 4px 6px 5px -3px #e5e5e5; */
+  -webkit-transition: all ease-in-out 0.4s, box-shadow ease-in-out 0.15s;
+  transition: all ease-in-out 0.4s, box-shadow ease-in-out 0.15s;
+}
+
+.fld-chk:hover {
+  color: #aeb1b5;
+  color: #ffffff;
+  border: 1px solid #606;
+  box-shadow: 4px 6px 5px -3px #e5e5e5;
+  /* -webkit-transition: all ease-in-out .35s, box-shadow ease-in-out .15s;
+  transition: all ease-in-out .35s, box-shadow ease-in-out .15s; */
+}
+
+.fld-chk:checked:hover {
+  box-shadow: 4px 6px 5px -3px #e5e5e5;
+}
+
+.fld-chk::after {
+  content: "✔";
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  color: #ffffff;
+  line-height: 1;
+  font-size: 16px;
+  padding-top: 2px;
+  box-sizing: content-box;
+}
+
+.fld-chk:checked {
+  background-color: #3cb371;
+  /* box-shadow: none; */
+  color: transparent;
+  border: none;
+}
+
+.fld-chk:checked::after {
+  opacity: 1;
+}
+
+.fld-chk:active {
+  transform: scale(0);
+}
+
+.fld-chk:disabled:after {
+  transform: scale(1);
+  border-color: #aaa;
+}
+
+.fld-chk:checked:disabled:after {
+  transform: scale(1);
+}
+
+.fld-chk-lbl {
+  /* flex: 1; */
+  display: inline-block;
+  height: 100px;
+  /* block width - tickbox width */
+  font-size: 18px;
+  line-height: 1.25;
+  overflow: hidden;
+  word-wrap: break-word;
+  text-align: left;
+}
+
+/* ==========================================================================
+   #INPUT
+   ========================================================================== */
+/**
+ * This makes input boxes look nicer instead of the default boring design
+ * For styling, use a style variant
+ * input HTML should include placeholder, required and tabindex attributes
+ */
+/*
+ * https://codepen.io/zellwk/pen/NeRaPw
+* input box empty, uses ::placeholder-shown
+ */
+label,
+input {
+  /* display: block; */
+  margin: 0 auto;
+}
+
+label {
+  font-size: 20px;
+  /* font-weight: 600; */
+}
+
+input {
+  /* width: 100%; */
+  font-size: 20px;
+  width: 60px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* Style variants
+   ========================================================================== */
+.e-input--primary {
+  height: 2rem;
+  padding: 0.15em 0.5em;
+  font-size: 20px;
+  font-family: "Source Sans Pro", sans-serif;
+  border: 2px solid #606;
+  border-radius: 6px;
+}
+.e-input--primary:hover, .e-input--primary:focus, .e-input--primary:active {
+  background-color: #f4f4f4;
+  transition: background-color 0.2s linear, color 0.2s linear;
+}
+.e-input--primary:focus, .e-input--primary:active {
+  color: white;
+  outline: none;
+  background-color: #aa0;
+  transition: background-color 0.2s linear, color 0.2s linear;
+  box-shadow: 0 0 0 0.125rem white, 0 0 0 0.325rem #606;
+}
+.e-input--primary:placeholder-shown {
+  background-color: #c0c5ff;
+}
+
+.e-input--secondary {
+  height: 2rem;
+  padding: 0.25em 0.5em;
+  font-size: 22px;
+  font-family: "Source Sans Pro", sans-serif;
+  border: 2px solid #606;
+  border-radius: 12px;
+}
+.e-input--secondary:hover, .e-input--secondary:focus, .e-input--secondary:active {
+  background-color: #f4f4f4;
+  transition: background-color 0.2s linear, color 0.2s linear;
+}
+.e-input--secondary:focus, .e-input--secondary:active {
+  color: white;
+  outline: none;
+  background-color: #aa0;
+  transition: background-color 0.2s linear, color 0.2s linear;
+  box-shadow: 0 0 0 0.125rem white, 0 0 0 0.325rem #606;
+}
+.e-input--secondary:placeholder-shown {
+  background-color: #606;
+}
+
+/* Size variants
+   ========================================================================== */
+.c-input--small {
+  padding: 2px 6px;
+}
+
+.c-input--large {
+  padding: 8px 20px;
+}
+
+/**
+ * Positive buttons skin. Extends `.btn`.
+ */
+.e-input--positive {
+  background-color: green;
+  color: white;
+}
+
+/**
+ * Negative buttons skin. Extends `.btn`.
+ */
+.e-input--negative {
+  background-color: red;
+  color: white;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,175 @@
+/* ==========================================================================
+   #INPUT-RANGE
+   ========================================================================== */
+
+/**
+ * Make this like buttons with settings at the top maybe
+ * Range is more tricky, browsers have different settings (2020)
+ * See http://127.0.0.1:5500/Websites-I-Did/My-website/1/Tools/color-chooser.htm
+ */
+
+
+ input[type='range'] {
+    width: 15rem;
+    height: 2rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    font-size: 12px;
+
+    // to get rid of outline
+    border: 1px solid white;
+    outline: 2px solid white;
+    outline-offset: -1px;
+
+    &:focus, &:active {
+  // outline: 3px dotted $color-btn-outline;
+  // color: color-btn-focus;
+  outline: none;
+  // box-shadow: 0 0 0 .175rem white, 0 0 0 .35rem $color-btn-outline;
+  box-shadow: 0 0 0 .125rem $color-btn-outline, 0 0 0 .325rem white;
+}
+}
+
+/* input[type='range'],
+input[type='range']::-webkit-slider-runnable-track,
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+} */
+
+input[type='range']:focus {
+    outline: none;
+    /* box-shadow: 0 0 .25em #ff6400; */
+}
+
+
+
+input[type='range']::-moz-range-thumb {
+    margin-top: -0.5em;
+    border: none;
+    // padding: 0.14em;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    box-shadow: 0 1px .125em #585858, inset 0 1px 1px #f8f8f8;
+    /*background: radial-gradient(#db7e0d 35%, #cb8037 71%) content-box, linear-gradient(#d4d4d4, #bfbfbf) border-box; */
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid rgb(200,200,200);
+}
+
+.color-panel__item:nth-of-type(1) input[type="range"]::-moz-range-thumb {
+  background: radial-gradient(#ff0000 35%, white 45%) content-box;
+}
+
+.color-panel__item:nth-of-type(2) input[type="range"]::-moz-range-thumb {
+  background: radial-gradient($color-green 35%, white 45%) content-box;
+}
+
+.color-panel__item:nth-of-type(3) input[type="range"]::-moz-range-thumb {
+   background: radial-gradient(#0000ff 35%, white 45%) content-box;
+}
+
+
+input[type='range']::-moz-range-track {
+    /* position: relative; */
+    /* box-sizing: border-box; */
+    border: solid 1px #bbb;
+    border-radius: 25px;
+    /* width: 37.25em; */
+    height: 0.75em;
+    // background: linear-gradient(90deg, #000 0.125em, transparent 0.125em) repeat-x 0.5625em 50% #def9b1;
+}
+
+
+.color-panel__item:nth-of-type(2) input[type='range']::-moz-range-track {
+    background-color: $color-green;
+}
+.color-panel__item:nth-of-type(3) input[type='range']::-moz-range-track {
+    background-color: rgb(0,0,255);
+}
+
+
+.color-panel__item:nth-of-type(1) input[type='range']::-moz-range-track {
+    background-color: rgb(255,0,0);
+	background: radial-gradient(#ff0000 35%, #ff7777 71%) content-box, linear-gradient(#d4d4d4, #bfbfbf) border-box;
+}
+
+input[type=range]::-moz-focus-outer {
+    border: 0;
+    }
+
+
+
+
+/* Webkit */
+  input[type="range"]::-webkit-slider-thumb {
+    margin-top: -0.5em;
+    border: none;
+    // padding: 0.14em;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    border: 1px solid rgb(200,200,200);
+    box-shadow: 0 1px .125em #585858, inset 0 1px 1px #f8f8f8;
+    background-size: 100%;
+    cursor: ew-resize;
+        -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+
+.color-panel__item:nth-of-type(1) input[type="range"]::-webkit-slider-thumb {
+  background: radial-gradient(#ff0000 35%, white 45%) content-box;
+}
+
+.color-panel__item:nth-of-type(2) input[type="range"]::-webkit-slider-thumb {
+  background: radial-gradient($color-green 35%, white 45%) content-box;
+}
+
+.color-panel__item:nth-of-type(3) input[type="range"]::-webkit-slider-thumb {
+  background: radial-gradient(#0000ff 35%, white 45%) content-box;
+}
+
+
+input[type='range']::-webkit-slider-runnable-track {
+    position: relative;
+    box-sizing: border-box;
+    // background: linear-gradient(90deg, #000 0.125em, transparent 0.125em) repeat-x 0.5625em 50% #def9b1;
+    padding: 0.75em;
+    width: 32em;
+    height: 2.5em;
+    border-radius: 1.25em;
+    border-radius: 25px;
+    border: 1px solid $color-brand;
+    // box-shadow: inset 0 1px 0.125em #a3a3a3, inset 0 -1px 0.125em #f1f1f1, inset 0 0 0 0.75em #c1c1c1;
+}
+
+
+
+.color-panel__item:nth-of-type(1) input[type='range']::-webkit-slider-runnable-track {
+    // background-color: rgb(255,0,0);
+  background: radial-gradient(#ff0000 35%, #ff7777 71%) content-box, linear-gradient(#ffffff, #ffffff) border-box;
+}
+
+.color-panel__item:nth-of-type(2) input[type='range']::-webkit-slider-runnable-track {
+    // background-color: rgb(0,255,0);
+    background: radial-gradient($color-green 35%, $color-green 71%) content-box, linear-gradient(#ffffff, #ffffff) border-box;
+}
+
+.color-panel__item:nth-of-type(3) input[type='range']::-webkit-slider-runnable-track {
+    // background-color: rgb(0,0,255);
+    background: radial-gradient(#0000ff 35%, #7777ff 71%) content-box, linear-gradient(#ffffff, #ffffff) border-box;
+}
+
+

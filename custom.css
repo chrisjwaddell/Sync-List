@@ -1,0 +1,71 @@
+body {
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  min-width: 800px;
+}
+
+.wrapper {
+  border: 1px solid #860;
+  width: 850px;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: #8d4;
+}
+
+.field {
+  margin: 10px;
+}
+
+.dib {
+  display: inline-block;
+}
+
+h1 {
+  text-align: center;
+  color: #ffff;
+  text-decoration: underline;
+  background-color: #a44;
+  margin: 0px 0px 5px;
+}
+
+label {
+  display: inline-block;
+  width: 250px;
+  font-weight: 600;
+}
+input {
+  width: 350px;
+}
+
+.path {
+  display: inline-block;
+}
+#backupto {
+  width: 450px;
+}
+#includedate, #sendemail {
+  height: 20px;
+  width: 20px;
+}
+
+.red {
+  color: #f00;
+}
+
+.field p {
+  display: inline-block;
+}
+
+.test {
+  /* background-color: red; */
+  height: 800px;
+}
+

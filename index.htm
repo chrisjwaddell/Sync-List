@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<link rel="stylesheet" media="all" href="./style.css" />
+<link rel="stylesheet" media="all" href="./custom.css" />
+<title>Backup GUI</title>
+<style>
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="wrapper">
+      <h1>Backup</h1>
+    <div class="test">
+      <button class="btn1">Button</button>
+      <button class="btn2">Button 2</button>
+
+      <div class="field">
+      <label for="backupname">Backup Name: <span class="red">*</span></label>
+      <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
+    </div>
+
+    <div class="field">
+      <label for="backupto">Backup To: <span class="red">*</span></label>
+      <input type="text" id="backupto" class="path e-input--primary" placeholder="Backup To">
+    </div>
+
+    <div class="field">
+      <label for="includedate">Include date in backup directory:</label>
+      <input type="checkbox" name="includedate" id="includedate" class="">
+    </div>
+
+    <div class="field">
+      <label for="msgbefore">Message Before:</label>
+      <input type="text" id="msgbefore" class="e-input--primary" placeholder="Message Before">
+    </div>
+
+    <div class="field">
+      <label for="msgafter">Message After:</label>
+      <input type="text" id="msgafter" class="e-input--primary" placeholder="Message After">
+    </div>
+
+    <div class="field">
+      <label for="sendemail">Send email after backup?:</label>
+      <input type="checkbox" name="includedate" id="sendemail" class="">
+    </div>
+
+    <div class="field">
+      <label for="email">Email address:</label>
+      <input type="text" id="email" class="e-input--primary" placeholder="Email address">
+    </div>
+
+    <div class="field">
+      <label for="email">Last edited:</label>
+      <p>ddd</p>
+    </div>
+
+    </div>
+   </div> <!-- wrapper -->
+</div>
+</body>
+
+<script>
+const elBtn1 = document.querySelector(".btn1")
+const elBtn2 = document.querySelector(".btn2")
+
+// elBtn.addEventListener("click", () => {
+//   alert("Clicked")
+// })
+
+var jsondata = ''
+
+elBtn1.addEventListener("click", () => {
+  fetch("http://localhost:21311")
+  .then(res => res.json())
+  .then(json => jsondata = json)
+  // .then(txt => console.log(jsondata))
+.catch((err) => {
+  alert("An error occurred. Try again")
+})
+
+})
+
+
+elBtn2.addEventListener("click", () => {
+  console.log(jsondata)
+})
+
+var listnumber = 0
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
+});
+window.addEventListener('load', (event) => {
+    console.log('loaded');
+
+    fetch("http://localhost:21311")
+      .then(res => res.json())
+      .then(function(json) {
+        jsondata = json
+        dataLoad(listnumber)
+      })
+  // .then(txt => console.log(jsondata))
+    .catch((err) => {
+      alert("An error occurred. Try again")
+})
+});
+
+const elName = document.querySelector('#backupname');
+const elBackupTo = document.querySelector('#backupto');
+const elDate = document.querySelector('#includedate');
+const elMsgBefore = document.querySelector('#msgbefore');
+const elMsgAfter = document.querySelector('#msgafter');
+const elSendEmail = document.querySelector('#sendemail');
+const elEmail = document.querySelector('#email');
+const elLastEdited = document.querySelector('.field p');
+
+elName.addEventListener("change", function() {
+  dataSet(listnumber, "Backup Name", this.value)
+})
+
+elBackupTo.addEventListener("change", function() {
+  dataSet(listnumber, "Backup Root Directory", this.value)
+})
+
+elDate.addEventListener("change", function() {
+  dataSet(listnumber, "Include Date", this.checked)
+})
+
+elMsgBefore.addEventListener("change", function() {
+  dataSet(listnumber, "Message Before", this.value)
+})
+
+elMsgAfter.addEventListener("change", function() {
+  dataSet(listnumber, "Message After", this.value)
+})
+
+elSendEmail.addEventListener("change", function() {
+  dataSet(listnumber, "Send Email After", this.checked)
+})
+
+elEmail.addEventListener("change", function() {
+  dataSet(listnumber, "Email Address", this.value)
+})
+
+
+function dataSet(listnumber, property, value) {
+  jsondata["Backup List"][listnumber][property] = value
+}
+
+function dataLoad(listnumber) {
+  elName.value = jsondata["Backup List"][listnumber]["Backup Name"]
+  elBackupTo.value = jsondata["Backup List"][listnumber]["Backup Root Directory"]
+  elDate.checked = jsondata["Backup List"][listnumber]["Include Date"]
+  elMsgBefore.value = jsondata["Backup List"][listnumber]["Message Before"]
+  elMsgAfter.value = jsondata["Backup List"][listnumber]["Message After"]
+  elSendEmail.checked = jsondata["Backup List"][listnumber]["Send Email After"]
+  elEmail.value = jsondata["Backup List"][listnumber]["Email Address"]
+  elLastEdited.innerText = jsondata["Backup List"][listnumber]["Last edited"]
+
+}
+
+</script>
+</html>
