@@ -3,10 +3,17 @@ const app = express()
 
 const fs = require('fs');
 
-const cors = require('cors')
+const cors = require('cors');
+const { exit } = require('process');
 
 const hostname = 'localhost'
 const port = 21311
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+)
 
 app.use(cors())
 
@@ -28,9 +35,19 @@ app.get('/', function(req, res) {
 
 })
 
+app.put('/', function(req, res) {
+ console.log("put")
+//  console.log(req)
+//  console.log(JSON.stringify(await (req.header)))
+//  console.log(req.headers)
+ console.log(req.body)
+ res.send("got it")
+})
+
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
+  exit(1)
   next(error);
 });
 

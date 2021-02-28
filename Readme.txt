@@ -32,6 +32,13 @@ You can use the ____ GUI which stores the backup script settings and generates P
 * Compress with gzip or bzip2 to save space
 
 
+Really handy for doing frequent backups of files that don't take up much storage that change often
+Save all txt files into a zip file
+E:\My-projects\*.css zip
+E:\My-projects\*.js zip
+E:\My-projects\*.ht* zip
+E:\My-work\*.txt zip 
+
 
 Screenshot of GUI with root folder
 screenshot of all directories
@@ -87,3 +94,6 @@ Windows machine?
 * Powershell
 * Cloud backup service of your choice such as Google Drive, OneDrive, Dropbox
 * chocolatey???
+
+
+

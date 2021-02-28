@@ -1,6 +1,24 @@
 
 
 
+LATER
+exclude directories
+
+
+Turn logging off
+turn logging off except for errors
+
+
+Send email after backup
+Send-MailMessage -From 'yesitschris@hotmail.com' -To 'yesitschris@hotmail.com' -Subject 'Test mail'
+Must enter $PSEmailServer settings
+We need smtp email server and a from email address that is allowed from this smtp server
+
+
+Last changed 
+- 1/2/3/4 weeks ago
+- 1/2/3/4 months ago
+
 
 
 

@@ -21,7 +21,7 @@ body {
 }
 
 .field {
-  margin: 10px;
+  margin: 15px;
 }
 
 .dib {
@@ -44,6 +44,40 @@ label {
 input {
   width: 350px;
 }
+.field[data-description] {
+  position: relative;
+}
+
+.field[data-description]:hover::after {
+  transform: scale(1);
+  /* bottom: 80%; */
+}
+.field[data-description]::after {
+  content: attr(data-description);
+  display: block;
+  position: absolute;
+  width: 75%;
+  background-color: #4477ff;
+  border: 1px solid #ffff;
+  padding: 0.5em .75em;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.12),
+              0 2px 2px rgba(0,0,0,0.12),
+              0 6px 6px rgba(0,0,0,0.12),
+              0 12px 12px rgba(0,0,0,0.12);
+  font-size: 1em;
+  bottom: 100%;
+  left: 10%;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap:break-word;
+  overflow: hidden;
+  /* white-space: nowrap; */
+  transform: scale(0);
+  transition: transform ease-out 250ms, bottom ease-out 50ms;
+}
+
 
 .path {
   display: inline-block;

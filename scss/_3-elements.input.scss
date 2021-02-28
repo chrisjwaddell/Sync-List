@@ -48,7 +48,7 @@ label {
 
 input {
   /* width: 100%; */
-  font-size: 20px;
+  font-size: 18px;
   width: 60px;
   border-style: solid;
   border-width: 1px;
@@ -67,8 +67,8 @@ input {
 // put class 'e-num' in and add javscript file in to add up/down arrow features
 .e-input--primary {
   height: 2rem;
-  padding: .15em .5em;
-	font-size: 20px;
+  padding: .1em .4em;
+	font-size: 18px;
   font-family: 'Source Sans Pro', sans-serif;
   border: 2px solid $color-input-border-primary;
   border-radius: 6px;

@@ -18,37 +18,37 @@
       <button class="btn1">Button</button>
       <button class="btn2">Button 2</button>
 
-      <div class="field">
+      <div class="field" data-description="A name to describe this backup list eg Weekly, Monthly, Website, Finances">
       <label for="backupname">Backup Name: <span class="red">*</span></label>
       <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="The root backup directory that takes all the backup files that are in the list below">
       <label for="backupto">Backup To: <span class="red">*</span></label>
       <input type="text" id="backupto" class="path e-input--primary" placeholder="Backup To">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="Tick this to put the date in the root backup directory (the field above). eg if today is 4th of July 2021. This way, you can have periodic backups. The root backup directory will become &lt root backup directory&gt\20210704">
       <label for="includedate">Include date in backup directory:</label>
       <input type="checkbox" name="includedate" id="includedate" class="">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="A popup message before backup commences if you want to remind yourself of anything before the backup starts. Leave this blank for automatic backups.">
       <label for="msgbefore">Message Before:</label>
       <input type="text" id="msgbefore" class="e-input--primary" placeholder="Message Before">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="A popup message after the backup is complete to verify that backup has finished, you could have a simple message 'Backup Completed!'. Leave this blank for automatic backups.">
       <label for="msgafter">Message After:</label>
       <input type="text" id="msgafter" class="e-input--primary" placeholder="Message After">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="Email you when backup is done to remind you it has done. To reassure you the backup is done. It's a good idea to have this on if you run the backup from a scheduler. It tells you any files that don't exist in the backup list." style="display: none">
       <label for="sendemail">Send email after backup?:</label>
       <input type="checkbox" name="includedate" id="sendemail" class="">
     </div>
 
-    <div class="field">
+    <div class="field" data-description="Provide your email address if you want emails sent to you" style="display: none">
       <label for="email">Email address:</label>
       <input type="text" id="email" class="e-input--primary" placeholder="Email address">
     </div>
@@ -63,105 +63,8 @@
 </div>
 </body>
 
+<script src="./backup.js"></script>
 <script>
-const elBtn1 = document.querySelector(".btn1")
-const elBtn2 = document.querySelector(".btn2")
-
-// elBtn.addEventListener("click", () => {
-//   alert("Clicked")
-// })
-
-var jsondata = ''
-
-elBtn1.addEventListener("click", () => {
-  fetch("http://localhost:21311")
-  .then(res => res.json())
-  .then(json => jsondata = json)
-  // .then(txt => console.log(jsondata))
-.catch((err) => {
-  alert("An error occurred. Try again")
-})
-
-})
-
-
-elBtn2.addEventListener("click", () => {
-  console.log(jsondata)
-})
-
-var listnumber = 0
-
-window.addEventListener('DOMContentLoaded', (event) => {
-    console.log('DOM fully loaded and parsed');
-});
-window.addEventListener('load', (event) => {
-    console.log('loaded');
-
-    fetch("http://localhost:21311")
-      .then(res => res.json())
-      .then(function(json) {
-        jsondata = json
-        dataLoad(listnumber)
-      })
-  // .then(txt => console.log(jsondata))
-    .catch((err) => {
-      alert("An error occurred. Try again")
-})
-});
-
-const elName = document.querySelector('#backupname');
-const elBackupTo = document.querySelector('#backupto');
-const elDate = document.querySelector('#includedate');
-const elMsgBefore = document.querySelector('#msgbefore');
-const elMsgAfter = document.querySelector('#msgafter');
-const elSendEmail = document.querySelector('#sendemail');
-const elEmail = document.querySelector('#email');
-const elLastEdited = document.querySelector('.field p');
-
-elName.addEventListener("change", function() {
-  dataSet(listnumber, "Backup Name", this.value)
-})
-
-elBackupTo.addEventListener("change", function() {
-  dataSet(listnumber, "Backup Root Directory", this.value)
-})
-
-elDate.addEventListener("change", function() {
-  dataSet(listnumber, "Include Date", this.checked)
-})
-
-elMsgBefore.addEventListener("change", function() {
-  dataSet(listnumber, "Message Before", this.value)
-})
-
-elMsgAfter.addEventListener("change", function() {
-  dataSet(listnumber, "Message After", this.value)
-})
-
-elSendEmail.addEventListener("change", function() {
-  dataSet(listnumber, "Send Email After", this.checked)
-})
-
-elEmail.addEventListener("change", function() {
-  dataSet(listnumber, "Email Address", this.value)
-})
-
-
-function dataSet(listnumber, property, value) {
-  jsondata["Backup List"][listnumber][property] = value
-}
-
-function dataLoad(listnumber) {
-  elName.value = jsondata["Backup List"][listnumber]["Backup Name"]
-  elBackupTo.value = jsondata["Backup List"][listnumber]["Backup Root Directory"]
-  elDate.checked = jsondata["Backup List"][listnumber]["Include Date"]
-  elMsgBefore.value = jsondata["Backup List"][listnumber]["Message Before"]
-  elMsgAfter.value = jsondata["Backup List"][listnumber]["Message After"]
-  elSendEmail.checked = jsondata["Backup List"][listnumber]["Send Email After"]
-  elEmail.value = jsondata["Backup List"][listnumber]["Email Address"]
-  elLastEdited.innerText = jsondata["Backup List"][listnumber]["Last edited"]
-
-}
 
 </script>
 </html>
