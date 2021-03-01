@@ -5,6 +5,7 @@
 # Notes files
 0*.txt
 *.$
+-old*
 
 
 ### Sass ###
