@@ -17,7 +17,7 @@ body {
   width: 850px;
   margin: 0 auto;
   padding: 10px;
-  background-color: #8d4;
+  background-color: #cdf;
 }
 
 .field {
@@ -102,4 +102,15 @@ input {
   /* background-color: red; */
   height: 800px;
 }
+
+
+.txt-soon {
+  color: #15aa00;
+}
+
+.txt-today {
+  color: #7b00b1;
+  font-weight: 600;
+}
+
 
