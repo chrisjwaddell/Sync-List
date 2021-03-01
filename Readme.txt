@@ -7,6 +7,9 @@ Backup up the frequently changed files on your computer to the cloud
 Incremental backup
 
 
+Backup for Windows
+
+
 
 ____ automatically backing up a list of files and directories you've selected to a folder that is synced to the cloud
 Using Your Own Cloud Storage
@@ -85,6 +88,10 @@ When you want to backup you run the Powershell script.
 
 You can have as many Powershell scripts as you want eg to back up your website, weekly backup, monthly backup
 
+
+
+Explain how to run the .ps1 files
+maybe some links
 
 
 

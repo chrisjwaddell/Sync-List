@@ -158,6 +158,13 @@ https://www.powershellgallery.com/packages/Zip/0.3.2
 https://www.powershellgallery.com/packages?q=zip
 
 
+Compress-Archive -Path E:\programming\*.txt -Update -DestinationPath C:\temp\Invoices
+- creates C:\Archives\Invoices.zip
+
+
+Get-ChildItem -Path E:\programming\*.txt -Recurse | Compress-Archive -DestinationPath C:\temp\programming-txt.zip
+
+
 powershell "Compress-Archive input.txt output.zip"
 to zip a file
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.archive/compress-archive?view=powershell-7.1
@@ -257,6 +264,11 @@ Maybe an auto backup to Dropbox or Google cloud
 
 https://www.youtube.com/watch?v=pGSzMfKBV9Q
 How to Upload a File to Google Cloud Storage in Node.js
+
+
+
+Testing
+try it on my laptop
 
 
 
