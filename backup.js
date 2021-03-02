@@ -23,7 +23,7 @@ elBtn2.addEventListener("click", () => {
   console.log(jsondata)
 })
 
-var listnumber = 0
+var profileID = 0
 
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOM fully loaded and parsed');
@@ -37,10 +37,11 @@ window.addEventListener('load', (event) => {
       .then(res => res.json())
       .then(function(json) {
         jsondata = json
-        dataLoad(listnumber)
+        dataLoad(profileID)
       })
   // .then(txt => console.log(jsondata))
     .catch((err) => {
+      alert(err)
       alert("An error occurred. Try again")
 })
 });
@@ -55,7 +56,7 @@ const elEmail = document.querySelector('#email');
 const elLastEdited = document.querySelector('.field p');
 
 elName.addEventListener("change", function() {
-  dataSet(listnumber, "Backup Name", this.value)
+  dataSet(profileID, "Backup Name", this.value)
 })
 
 // elName.addEventListener("keydown", function(e) {
@@ -76,16 +77,16 @@ elName.addEventListener("keypress", function(e) {
 
 
 elBackupTo.addEventListener("change", function() {
-  dataSet(listnumber, "Backup Root Directory", this.value)
+  dataSet(profileID, "Backup Root Directory", this.value)
 })
 
 elDate.addEventListener("change", function() {
   // debugger
-  dataSet(listnumber, "Include Date", Boolean(this.checked))
+  dataSet(profileID, "Include Date", Boolean(this.checked))
 })
 
 elMsgBefore.addEventListener("change", function() {
-  dataSet(listnumber, "Message Before", this.value)
+  dataSet(profileID, "Message Before", this.value)
 })
 
 elMsgBefore.addEventListener("keypress  ", function(e) {
@@ -95,7 +96,7 @@ elMsgBefore.addEventListener("keypress  ", function(e) {
 })
 
 elMsgAfter.addEventListener("change", function() {
-  dataSet(listnumber, "Message After", this.value)
+  dataSet(profileID, "Message After", this.value)
 })
 
 elMsgAfter.addEventListener("keydown", function(e) {
@@ -137,22 +138,22 @@ elMsgAfter.addEventListener("keypress", function(e) {
 })
 
 elSendEmail.addEventListener("change", function() {
-  dataSet(listnumber, "Send Email After", Boolean(this.checked))
+  dataSet(profileID, "Send Email After", Boolean(this.checked))
 })
 
 elEmail.addEventListener("change", function() {
-  dataSet(listnumber, "Email Address", this.value)
+  dataSet(profileID, "Email Address", this.value)
 })
 
 
-function dataSet(listnumber, property, value) {
+function dataSet(profileID, property, value) {
   // debugger
-  jsondata["Backup List"][listnumber][property] = value
+  jsondata["Backup List"][profileID][property] = value
 
 
   let today = new Date()
   debugger
-  jsondata["Backup List"][listnumber]["Last edited"] = dateToDDMMYYYY(today)
+  jsondata["Backup List"][profileID]["Last edited"] = dateToDDMMYYYY(today)
 
   elLastEdited.innerText = "Today"
   elLastEdited.classList.add("txt-today")
@@ -179,17 +180,17 @@ fetch(url, options)
 });
 }
 
-function dataLoad(listnumber) {
+function dataLoad(profileID) {
   // debugger
-  elName.value = jsondata["Backup List"][listnumber]["Backup Name"]
-  elBackupTo.value = jsondata["Backup List"][listnumber]["Backup Root Directory"]
-  elDate.checked = jsondata["Backup List"][listnumber]["Include Date"]
-  elMsgBefore.value = jsondata["Backup List"][listnumber]["Message Before"]
-  elMsgAfter.value = jsondata["Backup List"][listnumber]["Message After"]
-  elSendEmail.checked = jsondata["Backup List"][listnumber]["Send Email After"]
-  elEmail.value = jsondata["Backup List"][listnumber]["Email Address"]
-  elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][listnumber]["Last edited"]))
-  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][listnumber]["Last edited"]))
+  elName.value = jsondata["Backup List"][profileID]["Backup Name"]
+  elBackupTo.value = jsondata["Backup List"][profileID]["Backup Root Directory"]
+  elDate.checked = jsondata["Backup List"][profileID]["Include Date"]
+  elMsgBefore.value = jsondata["Backup List"][profileID]["Message Before"]
+  elMsgAfter.value = jsondata["Backup List"][profileID]["Message After"]
+  elSendEmail.checked = jsondata["Backup List"][profileID]["Send Email After"]
+  elEmail.value = jsondata["Backup List"][profileID]["Email Address"]
+  elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][profileID]["Last edited"]))
+  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][profileID]["Last edited"]))
   var today = new Date()
   elLastEdited.classList.remove("txt-today")
   elLastEdited.classList.remove("txt-soon")

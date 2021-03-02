@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
 
-const fs = require('fs');
+const fsp = require('fs/promises');
+
+const services = require('./services');
 
 const cors = require('cors');
 // const { exit, send } = require('process');
@@ -24,8 +26,13 @@ app.get('/', function(req, res) {
 // A get request is submitted from the frontened GUI at the start to get the settings
 // We send back settings.json to it since the frontend can't read files on the computer, but Node can
   console.log("get")
+  debugger
+  services.scriptsFolder3()
+  console.log("here")
+  res.send("Done")
+  return
+  fsp.readFile('./settings.json', 'utf8', function (err,data) {
 
-  fs.readFile('./settings.json', 'utf8', function (err,data) {
     if (err) {
       // next(err) // Pass errors to Express.
       throw new Error("Something went wrong!");
@@ -50,7 +57,7 @@ settings = req.body
 // console.log(__dirname + '\\' + 'settings.json')
 let strjson = await JSON.stringify(settings, null, 4)
 
-  fs.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
+  fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
     if (err) {
       console.log("xxx")
       console.error(err)
@@ -82,6 +89,7 @@ app.use((error, req, res, next) => {
   });
 
 app.listen(port, () => {
+  console.log("=====================================================================")
   console.log("Backup app listening on port ", port)
 })
 
