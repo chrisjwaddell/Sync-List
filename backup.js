@@ -34,9 +34,20 @@ window.addEventListener('load', (event) => {
 
     // debugger
     fetch("http://localhost:21311")
-      .then(res => res.json())
+      .then(res => {
+        console.log("=====================================================================")
+        console.clear
+        console.log("res is:")
+        console.log(res)
+        res.json()
+      })
       .then(function(json) {
+        console.log(typeof json)
         jsondata = json
+        console.log("before jsondata")
+        console.log(typeof jsondata)
+        console.log(jsondata)
+
         dataLoad(profileID)
       })
   // .then(txt => console.log(jsondata))

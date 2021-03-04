@@ -22,14 +22,29 @@ app.use(express.json());
 
 app.use(cors())
 
-app.get('/', function(req, res) {
+app.get('/', async function(req, res) {
 // A get request is submitted from the frontened GUI at the start to get the settings
 // We send back settings.json to it since the frontend can't read files on the computer, but Node can
+
+  console.log("=====================================================================")
+
   console.log("get")
   debugger
-  services.scriptsFolder3()
+  // services.scriptsFolder3()
+
+  try {
+    let r = await services.getSettings()
+    console.log("in get after await")
+    console.log(r)
+    // console.log(typeof r)
+    // console.log(JSON.parse(r))
+    res.send(JSON.stringify(r))
+    } catch (err) {
+      console.error(err)
+    }
+  // console.log(g)
+  // services.scriptsDirAndSettingsFile()
   console.log("here")
-  res.send("Done")
   return
   fsp.readFile('./settings.json', 'utf8', function (err,data) {
 
@@ -46,6 +61,9 @@ app.get('/', function(req, res) {
 })
 
 app.put('/', async function(req, res) {
+
+  console.log("=====================================================================")
+
  console.log("put")
 //  console.log(req)
 //  console.log(JSON.stringify(await (req.header)))
@@ -55,7 +73,13 @@ settings = req.body
 // console.log(settings)
 // console.log(__dirname)
 // console.log(__dirname + '\\' + 'settings.json')
+
 let strjson = await JSON.stringify(settings, null, 4)
+services.putSettings(strjson)
+
+res.send("got it")
+
+return
 
   fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
     if (err) {
@@ -73,19 +97,19 @@ let strjson = await JSON.stringify(settings, null, 4)
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
-  exit(1)
   next(error);
 });
 
 // error handler middleware
 app.use((error, req, res, next) => {
   console.log(error)
-    res.status(error.status || 500).send({
-      error: {
-        status: error.status || 500,
-        message: error.message || 'Internal Server Error',
-      },
-    });
+  res.status(error.status || 500).send({
+    error: {
+      status: error.status || 500,
+      message: error.message || 'Internal Server Error',
+    },
+  });
+  process.exit(1)
   });
 
 app.listen(port, () => {
