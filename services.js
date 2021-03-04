@@ -3,6 +3,9 @@ const fsp = require('fs/promises');
 // const fsp = fs.promises;
 
 const templateSettings = '{"Backup List":[{ "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "03/03/2021", "Script created": "27/02/2021", "Active": true, "Files": [] } ] }'
+//take the date out
+
+var settingsFile = __dirname + '\\' + 'settings.json'
 
 async function getSettings() {
   // See if scripts Directory exists
@@ -23,49 +26,30 @@ async function getSettings() {
 
     // Settings file
     console.log("start of Settings")
-    let settingsFile = __dirname + '\\' + 'settings.json'
     try {
         console.log("Before try - settings.json read")
-        // return "abc"
-        // fsp.readFile(settingsFile,'utf8').then(result => {
-        //   console.log(result)
-        //   console.log("Settings file exists")
-        //   result
-        // })
 
-        // Return Promise to awaiting get request
-        // return fsp.readFile(settingsFile,'utf8'). then(result => 'rrrrrr')
-        return fsp.readFile(settingsFile,'utf8'). then(result => buildErrorChecker(result))
-        .catch(err => {
-          console.log("error in reading file in get")
-          fsp.writeFile(settingsFile,templateSettings)
-          return templateSettings
-        })
-        .then(re => re)
+        let strFileContent = await fsp.readFile(settingsFile,'utf8')
+        let fileContentPlusErrors = await buildErrorChecker(strFileContent)
+        return fileContentPlusErrors
 
-          // console.log(typeof result)
-          // console.log(result.length)
-          // console.log("result of buildErrorChecker")
-          // let b = buildErrorChecker(result)
-          // console.log(b)
-        // })
-
-          // This works
-          // let rr = await fsp.readFile(settingsFile,'utf8')
-          // // console.log(rr)
-          // return rr
-
-          console.log("command after read file")
 
     } catch (err){
         console.error(err)
-        console.log("Settings file DOESN'T exists")
-        await fsp.writeFile(settingsFile,templateSettings)
+        console.error("Settings file DOESN'T exists...... Making settings.json")
+
+        let jsontemplate = JSON.parse(templateSettings)
+        jsontemplate["Important Error Message"] = "The settings.json doesn't exist."
+
+        let strjson = await JSON.stringify(jsontemplate, null, 4)
+
+        await fsp.writeFile(settingsFile, strjson)
            .then(m => {
-             console.warn("Making settings.json")
             //  buildErrorChecker(templateSettings)
            })
           .catch(err => console.error("Error: Couldn't create settings.json"))
+
+          return jsontemplate
     }
 
 }
@@ -76,6 +60,8 @@ async function putSettings(jsonstring) {
   console.log(jsonstring)
 
   let json = await buildErrorChecker(jsonstring)
+  console.log("in putSettings:")
+  console.log(json)
   let strjson = await JSON.stringify(json, null, 4)
   console.log(strjson)
   // fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
@@ -88,7 +74,7 @@ async function putSettings(jsonstring) {
   // })
 
   try {
-    await fsp.writeFile(__dirname + '\\' + 'settings.json', strjson)
+    await fsp.writeFile(settingsFile, strjson)
   } catch (err) {
       console.log("xxx")
       console.error(err)
@@ -98,133 +84,12 @@ async function putSettings(jsonstring) {
 }
 
 
-function scriptsFolder() {
-  scriptsdir = __dirname + '\\' + 'Backup-scripts'
-  fsp.access(scriptsdir, (err) => {
-    if(err && err.code === 'ENOENT'){
-      fs.mkdir(scriptsdir, { recursive: false }, e => {
-        if (e) {
-            console.error(e);
-        } else {
-            console.log('Success');
-        }
-     })
-
-    } else {
-      console.log("gg")
-    }
-
-  })
-
-}
-
-
-async function scriptsFolder2() {
-  scriptsdir = __dirname + '\\' + 'Backup-scripts'
-  try {
-    await access(scriptsdir, constants.R_OK | constants.W_OK);
-    console.log('can access');
-  } catch {
-    console.error('cannot access');
-  }
-}
-
-function scriptsFolder3() {
-  scriptsdir = __dirname + '\\' + 'Backup-scripts'
-  fsp.access(scriptsdir)
-      .then(i => {
-          console.log(scriptsdir + " Folder exists")
-          settingsFile()
-      })
-      .catch(err => {
-          fsp.mkdir(scriptsdir)
-            .then(m => {
-              console.warn("Making Backup-scripts directory")
-              settingsFile()
-            })
-            .catch(err => console.error("Error: In making Backup-scripts directory"))
-      })
-}
-
-
-function settingsFile() {
-  var settings = __dirname + '\\' + 'settings.json'
-  console.log("in setttingsFile")
-
-const blanksettings = ""
-
-  fsp.access(settings)
-      .then(i => {
-          console.log("Settings file exists")
-          fsp.readFile('./settings.json', 'utf8')
-            .then(data => {
-              // console.log("data is " + data)
-              let json = JSON.stringify(data)
-              // let json = data
-              // console.log("json is " + json)
-              buildErrorChecker(data)
-            })
-            .catch((err) => {
-              console.log(err)
-              console.log("error reading file")
-            })
-      })
-      .catch(err => {
-          // console.error(err)
-          console.log("Settings file DOESN'T exists")
-          fsp.writeFile(settings,blanksettings)
-               .then(m => {
-                 console.warn("Making settings.json")
-                 buildErrorChecker(blanksettings)
-               })
-              .catch(err => console.error("Error: Couldn't create settings.json"))
-      })
-}
-
-
-async function scriptsDirAndSettingsFile() {
-  // See if scripts Directory exists
-  let scriptsDir = __dirname + '\\' + 'Backup-scripts'
-  try {
-    await fsp.access(scriptsDir)
-    console.log("Batch scripts dir exists")
-  } catch (error){
-    console.log("Batch scripts dir DOESNT exist")
-    await fsp.mkdir(scriptsDir)
-      .then(m => {
-          console.warn("Making Backup-scripts directory")
-          // settingsFile()
-      })
-      .catch(err => console.error("Error: In making Backup-scripts directory"))
-    }
-
-
-    // Settings file
-    console.log("start of Settings")
-    let blanksettings = ''
-    let settingsFile = __dirname + '\\' + 'settings.json'
-    try {
-        await fsp.access(settingsFile)
-        console.log("Settings file exists")
-    } catch (error){
-        console.log("Settings file DOESN'T exists")
-        await fsp.writeFile(settingsFile,blanksettings)
-           .then(m => {
-             console.warn("Making settings.json")
-            //  buildErrorChecker(blanksettings)
-           })
-          .catch(err => console.error("Error: Couldn't create settings.json"))
-    }
-
-}
-
-
 async function buildErrorChecker(jsonstring) {
   var errorlist = ""
   var json = ""
 
-  // console.log("in buildErrorChecker")
-  // console.log(jsonstring)
+  console.log("in buildErrorChecker")
+  console.log(jsonstring)
   // console.log(typeof jsonstring)
   // console.log(jsonstring.substring(0,50))
 
@@ -234,15 +99,26 @@ async function buildErrorChecker(jsonstring) {
 // debugger
 
   try {
-    // let jsonstringify = await JSON.stringify(jsonstring)
-    let jsonnospaces = jsonstring.replace(' ','')
-    // console.log("no spaces - " + jsonnospaces)
-    console.log(jsonstring.substring(0,1).toString(256))
     json = await JSON.parse(jsonstring)
   } catch(err) {
+    console.log("error in parsing settings file")
     console.log(err)
 
+    let today = new Date()
+    let strToday =   dateToYYYYMMDD(today, '')
+    let fileRenamed = __dirname + '\\' + 'settings-' + strToday + '.json'
+    console.dir({fileRenamed})
+
+    await fsp.rename(settingsFile, fileRenamed)
+
+    let jsontemplate = JSON.parse(templateSettings)
+    jsontemplate["Important Error Message"] = `The settings.json file isn't in JSON format and has been moved to ${fileRenamed}`
+    // let strjson = JSON.stringify(templateSettings, null, 4)
+    await fsp.writeFile(settingsFile,templateSettings)
+    return jsontemplate
   }
+
+  delete json["Important Error Message"]
 
   delete json["Error List"]
   json["Error List"] = []
@@ -305,6 +181,15 @@ return json
     }
   }
 
+function dateToYYYYMMDD(dt, seperator) {
+  let d = dt.getDate() < 10 ? "0" + dt.getDate() : dt.getDate()
+  let m = dt.getMonth() < 9 ? "0" + Number(dt.getMonth() + 1) : Number(dt.getMonth() + 1)
+  let y = dt.getFullYear()
+  return y + seperator + m + seperator + d
+}
+
+
+
   function numberOfNightsBetweenDates(startDate, endDate) {
     let start = new Date(startDate)
     let end = new Date(endDate)
@@ -326,7 +211,5 @@ return json
 
 module.exports = {
   getSettings,
-  putSettings,
-  scriptsDirAndSettingsFile,
-  scriptsFolder3
+  putSettings
 }

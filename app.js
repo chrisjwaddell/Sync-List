@@ -61,8 +61,10 @@ app.get('/', async function(req, res) {
 })
 
 app.put('/', async function(req, res) {
+// Put requests update json from the frontend and writes to the settings.json file
+// It gets the json data from the body of the request
 
-  console.log("=====================================================================")
+console.log("=====================================================================")
 
  console.log("put")
 //  console.log(req)
@@ -77,7 +79,9 @@ settings = req.body
 let strjson = await JSON.stringify(settings, null, 4)
 services.putSettings(strjson)
 
-res.send("got it")
+console.log(strjson)
+
+res.send(strjson)
 
 return
 

@@ -19,16 +19,18 @@
       <button class="btn2">Button 2</button>
 
       <div class="field" data-description="A name to describe this backup list eg Weekly, Monthly, Website, Finances">
-      <label for="backupname">Backup Name: <span class="red">*</span></label>
-      <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
+          <label for="backupname">Backup Name: <span class="red">*</span></label>
+          <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
+          <p class="warning backupname">A Script file doesn't exist that matches this Backup Name. You need to regenerate it.</p>
     </div>
 
     <div class="field" data-description="The root backup directory that takes all the backup files that are in the list below">
       <label for="backupto">Backup To: <span class="red">*</span></label>
       <input type="text" id="backupto" class="path e-input--primary" placeholder="Backup To">
+      <p class="warning backupto">This Backup Root Directory is not found.</p>
     </div>
 
-    <div class="field" data-description="Tick this to put the date in the root backup directory (the field above). eg if today is 4th of July 2021. This way, you can have periodic backups. The root backup directory will become &lt root backup directory&gt\20210704">
+    <div class="field" data-description="This dynamically adds the date at the end of the 'Backup To' directory. eg if today is 4th of July 2021. This way, you can have periodic backups. The root backup directory will become &lt root backup directory&gt\20210704. The date dynamically changes to the date you run the backup.">
       <label for="includedate">Include date in backup directory:</label>
       <input type="checkbox" name="includedate" id="includedate" class="">
     </div>
@@ -55,7 +57,7 @@
 
     <div class="field">
       <label for="email">Last edited:</label>
-      <p>ddd</p>
+      <p class="lastedited"></p>
     </div>
 
     </div>
