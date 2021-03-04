@@ -97,7 +97,7 @@ maybe some links
 
 System Requirements
 Windows machine?
-* You need NPM installed
+* NPM - (version 10.0 or greater???? fs.promise)
 * Powershell
 * Cloud backup service of your choice such as Google Drive, OneDrive, Dropbox
 * chocolatey???

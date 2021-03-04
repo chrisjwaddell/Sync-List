@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "start-dev": "nodemon app.js",
+    "start-dev": "nodemon -e js,css,htm app.js",
     "watch-css": "onchange 'scss/*.scss' -- npm run build-css",
     "build-css": "sass --watch scss:."
   },
