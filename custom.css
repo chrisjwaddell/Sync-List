@@ -44,6 +44,11 @@ label {
 input {
   width: 350px;
 }
+
+.field input[disabled] {
+  background-color: #bbbbbb;
+}
+
 .field[data-description] {
   position: relative;
 }
@@ -84,6 +89,7 @@ input {
 .warning {
   width: 450px;
   margin: 5px auto 0px 250px;
+  visibility: hidden;
   color: #ff0000;
   font-size: 14px;
   height: 30px;
@@ -95,14 +101,12 @@ input {
 #backupto {
   width: 450px;
 }
-#includedate, #sendemail {
+#includedate, #sendemail, #active {
   height: 20px;
   width: 20px;
 }
 
-.red {
-  color: #f00;
-}
+
 
 .field p {
   display: inline-block;
