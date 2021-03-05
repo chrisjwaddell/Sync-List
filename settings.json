@@ -1,22 +1,21 @@
 {
     "Backup List": [
         {
-            "Backup Name": "Mainabcdefghij",
+            "Backup Name": "Main",
             "Backup Root Directory": "",
             "Include Date": true,
             "Message Before": "",
             "Message After": "",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": "04/03/2021",
+            "Last edited": "05/03/2021",
             "Script created": "27/02/2021",
-            "Active": true,
+            "Active": false,
             "Files": []
         }
     ],
     "Error List": [
         {
-            "Backup Name": "Script file doesn't exist.",
             "Backup Root Directory": "Backup Root Directory not found.",
             "Last edited": "Changes have been made since the Backup Script was generated last."
         }

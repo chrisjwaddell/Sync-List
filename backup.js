@@ -19,6 +19,7 @@ const elSendEmail = document.querySelector('#sendemail');
 const elEmail = document.querySelector('#email');
 const elLastEdited = document.querySelector('.lastedited');
 const elActive = document.querySelector('#active');
+const elCreateScript = document.querySelector('.createscript')
 
 const warningvisible = (fieldname, visible) => { (visible) ? document.querySelector('p.' + fieldname).classList.add("isvisible") : document.querySelector('p.' + fieldname).classList.remove("isvisible") };
 const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail, elEmail, elLastEdited, elActive];
