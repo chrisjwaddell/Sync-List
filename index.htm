@@ -17,6 +17,11 @@
     <div class="test">
       <button class="btn1">Button</button>
       <button class="btn2">Button 2</button>
+      <button class="btn3">Button 3</button>
+      <button class="btn4">Button 4</button>
+      <button class="btn5">Button 5</button>
+      <button class="btn6">Button 6</button>
+      <button class="btn7">Button json received</button>
 
       <div class="field" data-description="A name to describe this backup list eg Weekly, Monthly, Website, Finances">
           <label for="backupname">Backup Name: <span class="red">*</span></label>
@@ -47,7 +52,7 @@
 
     <div class="field" data-description="Email you when backup is done to remind you it has done. To reassure you the backup is done. It's a good idea to have this on if you run the backup from a scheduler. It tells you any files that don't exist in the backup list." style="display: none">
       <label for="sendemail">Send email after backup?:</label>
-      <input type="checkbox" name="includedate" id="sendemail" class="">
+      <input type="checkbox" name="sendemail" id="sendemail" class="">
     </div>
 
     <div class="field" data-description="Provide your email address if you want emails sent to you" style="display: none">
@@ -58,6 +63,16 @@
     <div class="field">
       <label for="email">Last edited:</label>
       <p class="lastedited"></p>
+    </div>
+
+    <div class="field">
+      <label for="active">Active:</label>
+      <input type="checkbox" name="active" id="active" class="">
+      <p class="warning active">This Backup Profile is inactive.</p>
+    </div>
+
+    <div class="field u-text-center">
+      <button class="c-btn c-btn--secondary createscript u-text-center">Create Backup Script</button>
     </div>
 
     </div>

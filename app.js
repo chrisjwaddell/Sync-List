@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 
-const fsp = require('fs/promises');
+const fs = require('fs');
+// const fsp = require('fs/promises');
 
 const services = require('./services');
 
@@ -22,6 +23,56 @@ app.use(express.json());
 
 app.use(cors())
 
+
+app.get('/test', async function(req, res) {
+  console.log("test")
+  fs.readFile('./zicons.json', 'utf8', function (err,data) {
+
+    if (err) {
+      // next(err) // Pass errors to Express.
+      throw new Error("Something went wrong!");
+    } else {
+      // console.log(data);
+      // res.send('this is homepage')
+      res.json(data)
+    }
+  });
+
+})
+
+app.get('/test2', async function(req, res) {
+  console.log("test")
+  fs.readFile('./zicons1.json', 'utf8', function (err,data) {
+
+    if (err) {
+      // next(err) // Pass errors to Express.
+      throw new Error("Something went wrong!");
+    } else {
+      console.log(data.substring(0,100));
+      // res.send('this is homepage')
+      res.send(data)
+    }
+  });
+
+})
+
+app.get('/testjson', async function(req, res) {
+  console.log("test")
+  fs.readFile('./zicons1.json', 'utf8', function (err,data) {
+
+    if (err) {
+      // next(err) // Pass errors to Express.
+      throw new Error("Something went wrong!");
+    } else {
+      console.log(data.substring(0,100));
+      // res.send('this is homepage')
+      res.send(data)
+    }
+  });
+
+})
+
+
 app.get('/', async function(req, res) {
 // A get request is submitted from the frontened GUI at the start to get the settings
 // We send back settings.json to it since the frontend can't read files on the computer, but Node can
@@ -38,7 +89,8 @@ app.get('/', async function(req, res) {
     console.log(r)
     // console.log(typeof r)
     // console.log(JSON.parse(r))
-    res.send(JSON.stringify(r))
+    res.json(r)
+    // res.send(JSON.stringify(r))
     } catch (err) {
       console.error(err)
     }
@@ -76,12 +128,17 @@ settings = req.body
 // console.log(__dirname)
 // console.log(__dirname + '\\' + 'settings.json')
 
-let strjson = await JSON.stringify(settings, null, 4)
-services.putSettings(strjson)
+// let strjson = await JSON.stringify(settings, null, 4)
+// services.putSettings(strjson)
 
-console.log(strjson)
+let json = await services.putSettings(settings)
 
-res.send(strjson)
+console.log("settings")
+console.log(settings)
+console.log("json")
+console.log(json)
+
+res.json(json)
 
 return
 

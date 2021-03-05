@@ -7,6 +7,15 @@ const templateSettings = '{"Backup List":[{ "Backup Name": "Main", "Backup Root 
 
 var settingsFile = __dirname + '\\' + 'settings.json'
 
+function IsJsonString(str) {
+  try {
+      return JSON.parse(str);
+  } catch (e) {
+      return { "File": "File isn't in JSON format" };
+  }
+  return false;
+}
+
 async function getSettings() {
   // See if scripts Directory exists
   let scriptsDir = __dirname + '\\' + 'Backup-scripts'
@@ -30,7 +39,9 @@ async function getSettings() {
         console.log("Before try - settings.json read")
 
         let strFileContent = await fsp.readFile(settingsFile,'utf8')
-        let fileContentPlusErrors = await buildErrorChecker(strFileContent)
+        console.log(strFileContent)
+        let objJSON = IsJsonString(strFileContent)
+        let fileContentPlusErrors = await buildErrorChecker(objJSON)
         return fileContentPlusErrors
 
 
@@ -38,16 +49,12 @@ async function getSettings() {
         console.error(err)
         console.error("Settings file DOESN'T exists...... Making settings.json")
 
-        let jsontemplate = JSON.parse(templateSettings)
+        let jsontemplate = IsJsonString(templateSettings)
         jsontemplate["Important Error Message"] = "The settings.json doesn't exist."
 
-        let strjson = await JSON.stringify(jsontemplate, null, 4)
+        let strjson = JSON.stringify(jsontemplate, null, 4)
 
-        await fsp.writeFile(settingsFile, strjson)
-           .then(m => {
-            //  buildErrorChecker(templateSettings)
-           })
-          .catch(err => console.error("Error: Couldn't create settings.json"))
+        await fsp.writeFile(settingsFile, strjson).catch(err => console.error("Error: Couldn't create settings.json"))
 
           return jsontemplate
     }
@@ -55,14 +62,17 @@ async function getSettings() {
 }
 
 
-async function putSettings(jsonstring) {
+async function putSettings(jsonobj) {
   console.log("in putSettings")
-  console.log(jsonstring)
+  console.log(jsonobj)
 
-  let json = await buildErrorChecker(jsonstring)
-  console.log("in putSettings:")
-  console.log(json)
-  let strjson = await JSON.stringify(json, null, 4)
+  debugger
+
+  let json = await buildErrorChecker(jsonobj)
+
+  // console.log("in putSettings:")
+  // console.log(json)
+  let strjson = JSON.stringify(json, null, 4)
   console.log(strjson)
   // fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
   //   if (err) {
@@ -74,7 +84,8 @@ async function putSettings(jsonstring) {
   // })
 
   try {
-    await fsp.writeFile(settingsFile, strjson)
+    fsp.writeFile(settingsFile, strjson)
+    return json
   } catch (err) {
       console.log("xxx")
       console.error(err)
@@ -84,39 +95,40 @@ async function putSettings(jsonstring) {
 }
 
 
-async function buildErrorChecker(jsonstring) {
+async function buildErrorChecker(jsonobj) {
   var errorlist = ""
   var json = ""
 
   console.log("in buildErrorChecker")
-  console.log(jsonstring)
+  // console.log(jsonobj)
+  // console.log(typeof jsonobj)
   // console.log(typeof jsonstring)
   // console.log(jsonstring.substring(0,50))
 
 //   let js2 = '{"Backup List": "gg"}'
   // let js = '{"Backup List": [ { "Backup Name": "Main" } ]}'
 
-// debugger
+  // try {
+  //   json = JSON.parse(jsonstring)
+  // } catch(err) {
+  //   console.log("error in parsing settings file")
+  //   console.log(err)
 
-  try {
-    json = await JSON.parse(jsonstring)
-  } catch(err) {
-    console.log("error in parsing settings file")
-    console.log(err)
+  //   let today = new Date()
+  //   let strToday =   dateToYYYYMMDD(today, '')
+  //   let fileRenamed = __dirname + '\\' + 'settings-' + strToday + '.json'
+  //   // console.dir({fileRenamed})
 
-    let today = new Date()
-    let strToday =   dateToYYYYMMDD(today, '')
-    let fileRenamed = __dirname + '\\' + 'settings-' + strToday + '.json'
-    console.dir({fileRenamed})
+  //   await fsp.rename(settingsFile, fileRenamed)
 
-    await fsp.rename(settingsFile, fileRenamed)
+  //   let jsontemplate = JSON.parse(templateSettings)
+  //   jsontemplate["Important Error Message"] = `The settings.json file isn't in JSON format and has been moved to ${fileRenamed}`
+  //   // let strjson = JSON.stringify(templateSettings, null, 4)
+  //   await fsp.writeFile(settingsFile,templateSettings)
+  //   return jsontemplate
+  // }
 
-    let jsontemplate = JSON.parse(templateSettings)
-    jsontemplate["Important Error Message"] = `The settings.json file isn't in JSON format and has been moved to ${fileRenamed}`
-    // let strjson = JSON.stringify(templateSettings, null, 4)
-    await fsp.writeFile(settingsFile,templateSettings)
-    return jsontemplate
-  }
+  json = jsonobj
 
   delete json["Important Error Message"]
 
@@ -168,8 +180,6 @@ return json
 
   function dateDDMMYYYYToDate(string) {
     // debugger
-    console.log("dateDDMMYYYYToDate")
-    console.log( { string })
     if (string.length !== 10) {
       return null
     } else {
