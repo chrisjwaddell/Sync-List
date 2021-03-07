@@ -6,14 +6,15 @@
 <meta name="description" content="">
 <link rel="stylesheet" media="all" href="./style.css" />
 <link rel="stylesheet" media="all" href="./custom.css" />
-<title>Backup GUI</title>
+<title>Sync List</title>
 <style>
 </style>
 </head>
 <body>
   <div class="container">
     <div class="wrapper">
-      <h1>Backup</h1>
+      <h1>Sync List</h1>
+
     <div class="test">
       <button class="btn1">Button</button>
       <button class="btn2">Button 2</button>
@@ -27,55 +28,157 @@
           <label for="backupname">Backup Name: <span class="red">*</span></label>
           <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
           <p class="warning backupname">A Script file doesn't exist that matches this Backup Name. You need to regenerate it.</p>
-    </div>
+      </div>
 
-    <div class="field" data-description="The root backup directory that takes all the backup files that are in the list below">
+      <div class="field" data-description="The root backup directory that takes all the backup files that are in the list below">
       <label for="backupto">Backup To: <span class="red">*</span></label>
       <input type="text" id="backupto" class="path e-input--primary" placeholder="Backup To">
       <p class="warning backupto">This Backup Root Directory is not found.</p>
-    </div>
+      </div>
 
-    <div class="field" data-description="This dynamically adds the date at the end of the 'Backup To' directory. eg if today is 4th of July 2021. This way, you can have periodic backups. The root backup directory will become &lt root backup directory&gt\20210704. The date dynamically changes to the date you run the backup.">
+      <div class="field" data-description="This dynamically adds the date at the end of the 'Backup To' directory. eg if today is 4th of July 2021. This way, you can have periodic backups. The root backup directory will become &lt root backup directory&gt\20210704. The date dynamically changes to the date you run the backup.">
       <label for="includedate">Include date in backup directory:</label>
       <input type="checkbox" name="includedate" id="includedate" class="">
-    </div>
+      </div>
 
-    <div class="field" data-description="A popup message before backup commences if you want to remind yourself of anything before the backup starts. Leave this blank for automatic backups.">
+      <div class="field" data-description="A popup message before backup commences if you want to remind yourself of anything before the backup starts. Leave this blank for automatic backups.">
       <label for="msgbefore">Message Before:</label>
       <input type="text" id="msgbefore" class="e-input--primary" placeholder="Message Before">
-    </div>
+      </div>
 
-    <div class="field" data-description="A popup message after the backup is complete to verify that backup has finished, you could have a simple message 'Backup Completed!'. Leave this blank for automatic backups.">
+      <div class="field" data-description="A popup message after the backup is complete to verify that backup has finished, you could have a simple message 'Backup Completed!'. Leave this blank for automatic backups.">
       <label for="msgafter">Message After:</label>
       <input type="text" id="msgafter" class="e-input--primary" placeholder="Message After">
-    </div>
+      </div>
 
-    <div class="field" data-description="Email you when backup is done to remind you it has done. To reassure you the backup is done. It's a good idea to have this on if you run the backup from a scheduler. It tells you any files that don't exist in the backup list." style="display: none">
+      <div class="field" data-description="Email you when backup is done to remind you it has done. To reassure you the backup is done. It's a good idea to have this on if you run the backup from a scheduler. It tells you any files that don't exist in the backup list." style="display: none">
       <label for="sendemail">Send email after backup?:</label>
       <input type="checkbox" name="sendemail" id="sendemail" class="">
-    </div>
+      </div>
 
-    <div class="field" data-description="Provide your email address if you want emails sent to you" style="display: none">
+      <div class="field" data-description="Provide your email address if you want emails sent to you" style="display: none">
       <label for="email">Email address:</label>
       <input type="text" id="email" class="e-input--primary" placeholder="Email address">
-    </div>
+      </div>
 
-    <div class="field">
+      <div class="field">
       <label for="email">Last edited:</label>
       <p class="lastedited"></p>
-    </div>
+      </div>
 
-    <div class="field">
+      <div class="field">
       <label for="active">Active:</label>
       <input type="checkbox" name="active" id="active" class="">
-      <p class="warning active">This Backup Profile is inactive.</p>
-    </div>
+      <p class="warning active">This Backup List is inactive.</p>
+      </div>
 
-    <div class="field u-text-center">
+      <div class="field u-text-center">
       <button class="c-btn c-btn--secondary createscript u-text-center">Create Backup Script</button>
+      <p class="warning createscript u-text-center db">Click the button to regenerate the Backup Script</p>
+      </div>
+    </div>  <!-- test -->
+
+
+    <div class="filelist">
+        <!-- <div class="filelist__flex"> -->
+
+          <div class="filelist__line">
+              <div class="filelist__file">
+                <p>File or Directory</p>
+              </div>
+              <div class="filelist__subdir">
+                <p>Sub-Directories</p>
+              </div>
+              <div class="filelist__modified">
+                <p>Files Modified</p>
+              </div>
+              <div class="filelist__date">
+                <p>Include Date in filename</p>
+              </div>
+              <div class="filelist__zip">
+                <p>Zip It</p>
+              </div>
+              <div class="filelist__edit">
+                <p>Edit</p>
+              </div>
+              <div class="filelist__bin">
+                <p>Remove</p>
+              </div>
+          </div>
+
+          <hr>
+
+          <div class="filelist__line">
+            <div class="filelist__file">
+              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents, C:\My Documents\*.txt">
+            </div>
+            <div class="filelist__subdir">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__modified"></div>
+            <div class="filelist__date">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__zip">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__edit">
+              <button class="c-btn c-btn--secondary createscript">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"  width="30" height="30" viewBox="6 8 34 34"><path d="M9.6 40.4l2.5-9.9L27 15.6l7.4 7.4-14.9 14.9-9.9 2.5zm4.3-8.9l-1.5 6.1 6.1-1.5L31.6 23 27 18.4 13.9 31.5z"/><path d="M17.8 37.3c-.6-2.5-2.6-4.5-5.1-5.1l.5-1.9c3.2.8 5.7 3.3 6.5 6.5l-1.9.5z"/><path d="M29.298 19.287l1.414 1.414-13.01 13.02-1.414-1.41z"/><path d="M11 39l2.9-.7c-.3-1.1-1.1-1.9-2.2-2.2L11 39z"/><path d="M35 22.4L27.6 15l3-3 .5.1c3.6.5 6.4 3.3 6.9 6.9l.1.5-3.1 2.9zM30.4 15l4.6 4.6.9-.9c-.5-2.3-2.3-4.1-4.6-4.6l-.9.9z"/></svg>
+              </button>
+            </div>
+            <div class="filelist__bin">
+              <button class="c-btn c-btn--secondary createscript u-text-center">
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <path d="M4 10v20c0 1.1 0.9 2 2 2h18c1.1 0 2-0.9 2-2v-20h-22zM10 28h-2v-14h2v14zM14 28h-2v-14h2v14zM18 28h-2v-14h2v14zM22 28h-2v-14h2v14z"></path>
+                <path d="M26.5 4h-6.5v-2.5c0-0.825-0.675-1.5-1.5-1.5h-7c-0.825 0-1.5 0.675-1.5 1.5v2.5h-6.5c-0.825 0-1.5 0.675-1.5 1.5v2.5h26v-2.5c0-0.825-0.675-1.5-1.5-1.5zM18 4h-6v-1.975h6v1.975z"></path>
+                </svg></button>
+            </div>
+          </div>  <!-- line -->
+
+          <hr>
+
+          <div class="filelist__line">
+            <div class="filelist__file">
+              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents, C:\My Documents\*.txt">
+            </div>
+            <div class="filelist__subdir">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__modified"></div>
+            <div class="filelist__date">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__zip">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__edit">
+              <button class="c-btn c-btn--secondary createscript">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"  width="30" height="30" viewBox="6 8 34 34"><path d="M9.6 40.4l2.5-9.9L27 15.6l7.4 7.4-14.9 14.9-9.9 2.5zm4.3-8.9l-1.5 6.1 6.1-1.5L31.6 23 27 18.4 13.9 31.5z"/><path d="M17.8 37.3c-.6-2.5-2.6-4.5-5.1-5.1l.5-1.9c3.2.8 5.7 3.3 6.5 6.5l-1.9.5z"/><path d="M29.298 19.287l1.414 1.414-13.01 13.02-1.414-1.41z"/><path d="M11 39l2.9-.7c-.3-1.1-1.1-1.9-2.2-2.2L11 39z"/><path d="M35 22.4L27.6 15l3-3 .5.1c3.6.5 6.4 3.3 6.9 6.9l.1.5-3.1 2.9zM30.4 15l4.6 4.6.9-.9c-.5-2.3-2.3-4.1-4.6-4.6l-.9.9z"/></svg>
+              </button>
+            </div>
+            <div class="filelist__bin">
+              <button class="c-btn c-btn--secondary createscript u-text-center">
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <path d="M4 10v20c0 1.1 0.9 2 2 2h18c1.1 0 2-0.9 2-2v-20h-22zM10 28h-2v-14h2v14zM14 28h-2v-14h2v14zM18 28h-2v-14h2v14zM22 28h-2v-14h2v14z"></path>
+                <path d="M26.5 4h-6.5v-2.5c0-0.825-0.675-1.5-1.5-1.5h-7c-0.825 0-1.5 0.675-1.5 1.5v2.5h-6.5c-0.825 0-1.5 0.675-1.5 1.5v2.5h26v-2.5c0-0.825-0.675-1.5-1.5-1.5zM18 4h-6v-1.975h6v1.975z"></path>
+                </svg></button>
+            </div>
+          </div>  <!-- line -->
     </div>
 
-    </div>
+
+    <!-- <div class="filelist"> -->
+      <div class="filelist__add">
+        <button class="c-btn c-btn--secondary">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <line x1="16" y1="5" x2="16" y2="27" />
+                <line x1="5" y1="16" x2="27" y2="16" />
+            </svg>
+        </button>
+      </div>
+    <!-- </div> -->
+
    </div> <!-- wrapper -->
 </div>
 </body>

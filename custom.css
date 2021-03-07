@@ -14,9 +14,10 @@ body {
 
 .wrapper {
   border: 1px solid #860;
-  width: 850px;
+  width: 1400px;
   margin: 0 auto;
-  padding: 10px;
+  /* padding: 10px; */
+  padding: 10px 0;
   background-color: #cdf;
 }
 
@@ -101,11 +102,10 @@ input {
 #backupto {
   width: 450px;
 }
-#includedate, #sendemail, #active {
+#includedate, #sendemail, #active, .filelist input[type='checkbox'] {
   height: 20px;
   width: 20px;
 }
-
 
 
 .field p {
@@ -114,7 +114,8 @@ input {
 
 .test {
   /* background-color: red; */
-  height: 800px;
+  width: 800px;
+  margin: 0 auto;
 }
 
 
@@ -126,5 +127,114 @@ input {
   color: #7b00b1;
   font-weight: 600;
 }
+
+.filelist {
+  width: 1350px;
+  border: 3px solid #ffffff;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  background-color: #557ff1;
+}
+
+hr {
+  /* color: #606; */
+  border: 1px solid white;
+}
+
+
+.filelist__line p {
+  text-align: center;
+  /* text-decoration: underline; */
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.filelist__file input {
+  width: 90%;
+  margin-left: 10px;
+}
+.filelist input[type='checkbox'] {
+  width: 100%;
+  margin: 10px auto;
+}
+
+.filelist__file {
+  display: inline-block;
+  width: 700px;
+  height: 100%;
+}
+.filelist__subdir {
+  display: inline-block;
+  height: 100%;
+  width: 75px;
+}
+.filelist__modified {
+  display: inline-block;
+  width: 250px;
+  height: 100%;
+}
+.filelist__date {
+  display: inline-block;
+  height: 100%;
+  width: 75px;
+}
+.filelist__zip {
+  display: inline-block;
+  height: 100%;
+  width: 75px;
+}
+.filelist__edit {
+  display: inline-block;
+  width: 60px;
+  height: 100%;
+  text-align: center;
+}
+.filelist__bin {
+  display: inline-block;
+  width: 60px;
+  height: 100%;
+  text-align: center;
+}
+
+.filelist button {
+  padding: 2px;
+  background-color: #eeeeee;
+  border: 1px solid orange;
+}
+
+.filelist button svg {
+  width: 35px;
+  height: 35px;
+  fill: #606;
+  stroke: #606;
+}
+
+.filelist__add button svg {
+  width: 50px;
+  height: 50px;
+  fill: #606;
+  stroke: #606;
+}
+
+.filelist__add {
+  margin-top: 30px;
+  text-align: right;
+  margin-right: 60px;
+}
+
+.filelist__add svg {
+  stroke-width: 5px;
+}
+
+.filelist__add button {
+  /* width: 39px;
+  height: 39px; */
+  width: 55px;
+  height: 55px;
+  padding: 0;
+  /* text-align: right; */
+}
+
+
 
 
