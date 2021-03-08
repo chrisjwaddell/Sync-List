@@ -14,7 +14,7 @@
 }
 
 .db {
-  display: block;
+  display: block !important;
 }
 
 .dn {
