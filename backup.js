@@ -21,6 +21,9 @@ const elLastEdited = document.querySelector('.lastedited');
 const elActive = document.querySelector('#active');
 const elCreateScript = document.querySelector('.createscript')
 
+const elFileList = document.querySelector('.filelist')
+
+
 const warningvisible = (fieldname, visible) => { (visible) ? document.querySelector('p.' + fieldname).classList.add("isvisible") : document.querySelector('p.' + fieldname).classList.remove("isvisible") };
 const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail, elEmail, elLastEdited, elActive];
 
@@ -137,7 +140,7 @@ elBtn7.addEventListener("click", async () => {
 })
 
 
-var profileID = 0
+var backupListID = 0
 
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOM fully loaded and parsed');
@@ -162,13 +165,13 @@ window.addEventListener('load', async () => {
     try {
       let a = await fetch("http://localhost:21311")
       let txt = await a.text()
-      console.log(txt)
-      console.log(typeof txt)
-      debugger
+      // console.log(txt)
+      // console.log(typeof txt)
+      // debugger
       jsondata = await JSON.parse(txt)
 
       if (typeof jsondata === "string") {
-        console.log("jsondata still string")
+        // console.log("jsondata still string")
         jsondata = JSON.parse(jsondata)
       }
       console.log(jsondata)
@@ -178,13 +181,13 @@ window.addEventListener('load', async () => {
       console.log("Error in fetch")
     }
 
-    dataLoad(profileID)
+    dataLoad(backupListID)
 
 });
 
 
 elName.addEventListener("change", function() {
-  dataSet(profileID, "Backup Name", this.value)
+  dataSet(backupListID, "Backup Name", this.value)
 })
 
 // elName.addEventListener("keydown", function(e) {
@@ -205,16 +208,16 @@ elName.addEventListener("keypress", function(e) {
 
 
 elBackupTo.addEventListener("change", function() {
-  dataSet(profileID, "Backup Root Directory", this.value)
+  dataSet(backupListID, "Backup Root Directory", this.value)
 })
 
 elDate.addEventListener("change", function() {
   // debugger
-  dataSet(profileID, "Include Date", Boolean(this.checked))
+  dataSet(backupListID, "Include Date", Boolean(this.checked))
 })
 
 elMsgBefore.addEventListener("change", function() {
-  dataSet(profileID, "Message Before", this.value)
+  dataSet(backupListID, "Message Before", this.value)
 })
 
 elMsgBefore.addEventListener("keypress  ", function(e) {
@@ -224,7 +227,7 @@ elMsgBefore.addEventListener("keypress  ", function(e) {
 })
 
 elMsgAfter.addEventListener("change", function() {
-  dataSet(profileID, "Message After", this.value)
+  dataSet(backupListID, "Message After", this.value)
 })
 
 elMsgAfter.addEventListener("keydown", function(e) {
@@ -244,7 +247,7 @@ elActive.addEventListener("click", function(e) {
     if (r == true) {
       // txt = "You pressed OK!";
       active(false)
-      dataSet(profileID, "Active", this.checked)
+      dataSet(backupListID, "Active", this.checked)
 
     } else {
       active(true)
@@ -252,7 +255,7 @@ elActive.addEventListener("click", function(e) {
     }
   } else {
     active(true)
-    dataSet(profileID, "Active", this.checked)
+    dataSet(backupListID, "Active", this.checked)
   }
 })
 
@@ -289,22 +292,22 @@ elMsgAfter.addEventListener("keypress", function(e) {
 })
 
 elSendEmail.addEventListener("change", function() {
-  dataSet(profileID, "Send Email After", Boolean(this.checked))
+  dataSet(backupListID, "Send Email After", Boolean(this.checked))
 })
 
 elEmail.addEventListener("change", function() {
-  dataSet(profileID, "Email Address", this.value)
+  dataSet(backupListID, "Email Address", this.value)
 })
 
 
-async function dataSet(profileID, property, value) {
+async function dataSet(backupListID, property, value) {
   let json
   // debugger
-  jsondata["Backup List"][profileID][property] = value
+  jsondata["Backup List"][backupListID][property] = value
 
   let today = new Date()
-  debugger
-  jsondata["Backup List"][profileID]["Last edited"] = dateToDDMMYYYY(today, '/')
+  // debugger
+  jsondata["Backup List"][backupListID]["Last edited"] = dateToDDMMYYYY(today, '/')
 
   elLastEdited.innerText = "Today"
   elLastEdited.classList.add("txt-today")
@@ -332,7 +335,7 @@ const options = {
 // .then(resp => resp.text())
 
 let r = await fetch(url, options)
-debugger
+// debugger
 let txt = await r.text()
 
 try {
@@ -348,7 +351,6 @@ try {
 
 function active(active) {
   // debugger
-  debugger
   fields.forEach(fld => {
     if  (fld !== elActive) {
       // active ? fld.renoveAttribute("disabled") : fld.setAttribute("disabled", !active)
@@ -371,17 +373,18 @@ function active(active) {
 function warningsRemove() {
   warningvisible("backupname", false)
   warningvisible("backupto", false)
-  warningvisible("lastedited", false)
+  // warningvisible("lastedited", false)
+  warningvisible("createscript", false)
 }
 
 function warnings(json) {
   warningsRemove()
 
-  debugger
+  // debugger
   if (elActive.checked) {
-  console.log(json["Error List"][profileID])
-  for (let i = 0; i < Object.keys(json["Error List"][profileID]).length; i++) {
-    switch (Object.keys(json["Error List"][profileID])[i]) {
+  // console.log(json["Error List"][backupListID])
+  for (let i = 0; i < Object.keys(json["Error List"][backupListID]).length; i++) {
+    switch (Object.keys(json["Error List"][backupListID])[i]) {
       case "Backup Name":
         warningvisible("backupname", true)
         break
@@ -389,7 +392,9 @@ function warnings(json) {
         warningvisible("backupto", true)
         break
       case "Last edited":
-        warningvisible("lastedited", true)
+        // warningvisible("lastedited", true)
+        // debugger
+        warningvisible("createscript", true)
         break
       default:
         break
@@ -398,19 +403,22 @@ function warnings(json) {
   }
 }
 
-function dataLoad(profileID) {
+function dataLoad(backupListID) {
   // debugger
-  elName.value = jsondata["Backup List"][profileID]["Backup Name"]
-  elBackupTo.value = jsondata["Backup List"][profileID]["Backup Root Directory"]
-  elDate.checked = jsondata["Backup List"][profileID]["Include Date"]
-  elMsgBefore.value = jsondata["Backup List"][profileID]["Message Before"]
-  elMsgAfter.value = jsondata["Backup List"][profileID]["Message After"]
-  elSendEmail.checked = jsondata["Backup List"][profileID]["Send Email After"]
-  elEmail.value = jsondata["Backup List"][profileID]["Email Address"]
-  elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][profileID]["Last edited"]))
-  elActive.checked = jsondata["Backup List"][profileID]["Active"]
+  elName.value = jsondata["Backup List"][backupListID]["Backup Name"]
+  elBackupTo.value = jsondata["Backup List"][backupListID]["Backup Root Directory"]
+  elDate.checked = jsondata["Backup List"][backupListID]["Include Date"]
+  elMsgBefore.value = jsondata["Backup List"][backupListID]["Message Before"]
+  elMsgAfter.value = jsondata["Backup List"][backupListID]["Message After"]
+  elSendEmail.checked = jsondata["Backup List"][backupListID]["Send Email After"]
+  elEmail.value = jsondata["Backup List"][backupListID]["Email Address"]
+  elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
+  elActive.checked = jsondata["Backup List"][backupListID]["Active"]
+  // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
+  // This may change from Create to Regenerate - on name change or edit or create
 
-  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][profileID]["Last edited"]))
+
+  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   var today = new Date()
   elLastEdited.classList.remove("txt-today")
   elLastEdited.classList.remove("txt-soon")
@@ -421,30 +429,13 @@ function dataLoad(profileID) {
 
   warnings(jsondata)
 
-  debugger
+  // debugger
   active(elActive.checked)
 
-}
+  console.log("File list")
+  console.log(jsondata["Backup List"][backupListID]["Files"].length)
 
 
-function dateDDMMYYYYToDate(string) {
-  // debugger
-  if (string.length !== 10) {
-    return null
-  } else {
-    let result = new Date()
-    result.setDate(string.substring(0, 2))
-    result.setMonth(Number(string.substring(3,5)) - 1)
-    result.setYear(string.substring(6))
-    return result
-  }
-}
-
-function dateToDDMMYYYY(dt, seperator) {
-  let d = dt.getDate() < 10 ? "0" + dt.getDate() : dt.getDate()
-  let m = dt.getMonth() < 9 ? "0" + Number(dt.getMonth() + 1) : Number(dt.getMonth() + 1)
-  let y = dt.getFullYear()
-  return d + seperator + m + seperator + y
 }
 
 
@@ -465,6 +456,7 @@ function dateDisplay(fieldDate) {
   if (fieldDate.length === 0) {
     return ""
   }
+
   let d = new Date(fieldDate)
   let today = new Date()
   let currentYear = today.getFullYear()
@@ -531,25 +523,6 @@ function dateDisplay(fieldDate) {
 }
 
 
-function numberOfNightsBetweenDates(startDate, endDate) {
-  let start = new Date(startDate)
-  let end = new Date(endDate)
-  start.setHours("1")
-  end.setHours("1")
-  start.setMinutes("0")
-  end.setMinutes("0")
-  start.setSeconds("0")
-  end.setSeconds("0")
-  start.setMilliseconds("0")
-  end.setMilliseconds("0")
-
-  let oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-  let diffDays = Math.floor(Math.abs((end - start) / (oneDay)))
-
-  return diffDays
-}
-
-
 function dateColor(startDate, endDate) {
   // given 2 dates, it tells it what class to add
   // if today - purple, if last 7 days, purple, else normal color
@@ -571,4 +544,35 @@ function dateColor(startDate, endDate) {
   }
 }
 
+
+function fileLineAdd() {
+  createElementAtt(elFileList, 'hr', [], [], '')
+
+  let elFL = createElementAtt(elFileList, 'div', ['filelist__line'], [], '')
+
+  let elFileDiv = createElementAtt(elFL, 'div', ['filelist__file'], [], '')
+
+  let elFileTxt = createElementAtt(elFileDiv, 'input', ['e-input--primary'], [['type', 'text'], ['placeholder', 'File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt']], '')
+  // this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
+  createElementAtt(elFL, 'span', [], [], ' ')
+
+  let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir'], [], '')
+
+  createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox']], [], '')
+  createElementAtt(elFL, 'span', [], [], ' ')
+
+  let elModifiedDiv = createElementAtt(elFL, 'div', ['filelist__modified'], [], '')
+  createElementAtt(elFL, 'span', [], [], ' ')
+
+  let elDateDiv = createElementAtt(elFL, 'div', ['filelist__date'], [], '')
+  createElementAtt(elDateDiv, 'input', [], [['type', 'checkbox']], [], '')
+  createElementAtt(elFL, 'span', [], [], ' ')
+
+  let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip'], [], '')
+  createElementAtt(elZipDiv, 'input', [], [['type', 'checkbox']], [], '')
+  createElementAtt(elFL, 'span', [], [], ' ')
+
+  let elBinDiv = createElementAtt(elFL, 'div', ['filelist__bin'], [], '')
+  createElementAtt(elBinDiv, 'button', ['c-btn', 'c-btn--secondary', 'createscript', 'u-text-center'], [], '')
+}
 

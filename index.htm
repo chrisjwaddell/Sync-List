@@ -98,9 +98,6 @@
               <div class="filelist__zip">
                 <p>Zip It</p>
               </div>
-              <div class="filelist__edit">
-                <p>Edit</p>
-              </div>
               <div class="filelist__bin">
                 <p>Remove</p>
               </div>
@@ -110,7 +107,7 @@
 
           <div class="filelist__line">
             <div class="filelist__file">
-              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents, C:\My Documents\*.txt">
+              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents or C:\My Documents\*.txt">
             </div>
             <div class="filelist__subdir">
               <input type="checkbox">
@@ -122,17 +119,8 @@
             <div class="filelist__zip">
               <input type="checkbox">
             </div>
-            <div class="filelist__edit">
-              <button class="c-btn c-btn--secondary createscript">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"  width="30" height="30" viewBox="6 8 34 34"><path d="M9.6 40.4l2.5-9.9L27 15.6l7.4 7.4-14.9 14.9-9.9 2.5zm4.3-8.9l-1.5 6.1 6.1-1.5L31.6 23 27 18.4 13.9 31.5z"/><path d="M17.8 37.3c-.6-2.5-2.6-4.5-5.1-5.1l.5-1.9c3.2.8 5.7 3.3 6.5 6.5l-1.9.5z"/><path d="M29.298 19.287l1.414 1.414-13.01 13.02-1.414-1.41z"/><path d="M11 39l2.9-.7c-.3-1.1-1.1-1.9-2.2-2.2L11 39z"/><path d="M35 22.4L27.6 15l3-3 .5.1c3.6.5 6.4 3.3 6.9 6.9l.1.5-3.1 2.9zM30.4 15l4.6 4.6.9-.9c-.5-2.3-2.3-4.1-4.6-4.6l-.9.9z"/></svg>
-              </button>
-            </div>
             <div class="filelist__bin">
-              <button class="c-btn c-btn--secondary createscript u-text-center">
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                <path d="M4 10v20c0 1.1 0.9 2 2 2h18c1.1 0 2-0.9 2-2v-20h-22zM10 28h-2v-14h2v14zM14 28h-2v-14h2v14zM18 28h-2v-14h2v14zM22 28h-2v-14h2v14z"></path>
-                <path d="M26.5 4h-6.5v-2.5c0-0.825-0.675-1.5-1.5-1.5h-7c-0.825 0-1.5 0.675-1.5 1.5v2.5h-6.5c-0.825 0-1.5 0.675-1.5 1.5v2.5h26v-2.5c0-0.825-0.675-1.5-1.5-1.5zM18 4h-6v-1.975h6v1.975z"></path>
-                </svg></button>
+              <button class="c-btn c-btn--secondary createscript u-text-center"></button>
             </div>
           </div>  <!-- line -->
 
@@ -140,7 +128,7 @@
 
           <div class="filelist__line">
             <div class="filelist__file">
-              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents, C:\My Documents\*.txt">
+              <input type="text" class="e-input--primary" placeholder="File, Directory or Filetype eg C:\My Documents or C:\My Documents\*.txt">
             </div>
             <div class="filelist__subdir">
               <input type="checkbox">
@@ -152,19 +140,33 @@
             <div class="filelist__zip">
               <input type="checkbox">
             </div>
-            <div class="filelist__edit">
-              <button class="c-btn c-btn--secondary createscript">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg"  width="30" height="30" viewBox="6 8 34 34"><path d="M9.6 40.4l2.5-9.9L27 15.6l7.4 7.4-14.9 14.9-9.9 2.5zm4.3-8.9l-1.5 6.1 6.1-1.5L31.6 23 27 18.4 13.9 31.5z"/><path d="M17.8 37.3c-.6-2.5-2.6-4.5-5.1-5.1l.5-1.9c3.2.8 5.7 3.3 6.5 6.5l-1.9.5z"/><path d="M29.298 19.287l1.414 1.414-13.01 13.02-1.414-1.41z"/><path d="M11 39l2.9-.7c-.3-1.1-1.1-1.9-2.2-2.2L11 39z"/><path d="M35 22.4L27.6 15l3-3 .5.1c3.6.5 6.4 3.3 6.9 6.9l.1.5-3.1 2.9zM30.4 15l4.6 4.6.9-.9c-.5-2.3-2.3-4.1-4.6-4.6l-.9.9z"/></svg>
-              </button>
-            </div>
             <div class="filelist__bin">
               <button class="c-btn c-btn--secondary createscript u-text-center">
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <!-- <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                 <path d="M4 10v20c0 1.1 0.9 2 2 2h18c1.1 0 2-0.9 2-2v-20h-22zM10 28h-2v-14h2v14zM14 28h-2v-14h2v14zM18 28h-2v-14h2v14zM22 28h-2v-14h2v14z"></path>
                 <path d="M26.5 4h-6.5v-2.5c0-0.825-0.675-1.5-1.5-1.5h-7c-0.825 0-1.5 0.675-1.5 1.5v2.5h-6.5c-0.825 0-1.5 0.675-1.5 1.5v2.5h26v-2.5c0-0.825-0.675-1.5-1.5-1.5zM18 4h-6v-1.975h6v1.975z"></path>
-                </svg></button>
+                </svg> -->
+              </button>
             </div>
           </div>  <!-- line -->
+
+
+          <!-- <hr> -->
+
+          <!-- <div class="filelist__line"><div class="filelist__file"><input class="e-input--primary" type="text" placeholder="File, Directory or Filetype eg C:\My Documents or C:\My Documents\*.txt"></div><span></span><div class="filelist__subdir">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__modified"></div>
+            <div class="filelist__date">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__zip">
+              <input type="checkbox">
+            </div>
+            <div class="filelist__bin">
+              <button class="c-btn c-btn--secondary createscript u-text-center"></button>
+            </div>
+          </div> -->
     </div>
 
 
@@ -183,6 +185,7 @@
 </div>
 </body>
 
+<script src="./tools.js"></script>
 <script src="./backup.js"></script>
 <script>
 
