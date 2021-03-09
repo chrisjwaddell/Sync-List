@@ -8,7 +8,7 @@
             "Message After": "",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": "08/03/2021",
+            "Last edited": "09/03/2021",
             "Script created": "27/02/2021",
             "Active": true,
             "Files": [
@@ -16,7 +16,7 @@
                     "File Or Folder": "E:\\programming\\0-General.txt",
                     "File Type": "",
                     "Zip It": false,
-                    "Sub-Directories": false,
+                    "Sub-Directories": true,
                     "Date In File": false
                 },
                 {
