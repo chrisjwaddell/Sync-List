@@ -87,6 +87,10 @@ input {
   transition: transform ease-out 250ms, bottom ease-out 50ms;
 }
 
+.filelist .field[data-description]::after {
+  width: 350px;
+}
+
 .warning {
   width: 450px;
   margin: 5px auto 0px 250px;
