@@ -1,3 +1,4 @@
+
 const elBtn1 = document.querySelector(".btn1")
 const elBtn2 = document.querySelector(".btn2")
 const elBtn3 = document.querySelector(".btn3")
@@ -28,6 +29,12 @@ const elFileAdd = document.querySelector('.filelist__add button')
 const warningvisible = (fieldname, visible) => { (visible) ? document.querySelector('p.' + fieldname).classList.add("isvisible") : document.querySelector('p.' + fieldname).classList.remove("isvisible") };
 const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail, elEmail, elLastEdited, elActive];
 
+const elBackupNameListTB = document.querySelector('.backupnamelist tbody')
+
+var jsondata = ''
+
+var bListID = 0
+
 
 function IsJsonString(str) {
   try {
@@ -38,7 +45,6 @@ function IsJsonString(str) {
   return false;
 }
 
-var jsondata = ''
 
 elBtn1.addEventListener("click", () => {
   fetch("http://localhost:21311")
@@ -115,7 +121,6 @@ elBtn6.addEventListener("click", async () => {
 
   console.timeEnd('convert')
   console.timeEnd('st')
-
 })
 
 
@@ -141,22 +146,9 @@ elBtn7.addEventListener("click", async () => {
 })
 
 
-var backupListID = 0
-
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOM fully loaded and parsed');
 });
-
-
-var t
-function tt() {
-  const templateSettings = '{"Backup List":[{ "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "03/03/2021", "Script created": "27/02/2021", "Active": true, "Files": [] } ] }'
-  t = JSON.parse(templateSettings)
-  console.log(t)
-  console.log(typeof t)
-  console.log(t[0])
-
-}
 
 
 window.addEventListener('load', async () => {
@@ -182,13 +174,13 @@ window.addEventListener('load', async () => {
       console.log("Error in fetch")
     }
 
-    dataLoad(backupListID)
+    dataLoad(bListID)
 
 });
 
 
 elName.addEventListener("change", function() {
-  dataSet(backupListID, "Backup Name", this.value)
+  dataSet(bListID, "Backup Name", this.value)
 })
 
 // elName.addEventListener("keydown", function(e) {
@@ -209,12 +201,12 @@ elName.addEventListener("keypress", function(e) {
 
 
 elBackupTo.addEventListener("change", function() {
-  dataSet(backupListID, "Backup Root Directory", this.value)
+  dataSet(bListID, "Backup Root Directory", this.value)
 })
 
 elDate.addEventListener("change", function() {
   // debugger
-  dataSet(backupListID, "Include Date", Boolean(this.checked))
+  dataSet(bListID, "Include Date", Boolean(this.checked))
   debugger
   for (let i = 0; i < document.querySelectorAll(".filelist__date input").length; i++) {
     if (elDate.checked) {
@@ -226,7 +218,7 @@ elDate.addEventListener("change", function() {
 })
 
 elMsgBefore.addEventListener("change", function() {
-  dataSet(backupListID, "Message Before", this.value)
+  dataSet(bListID, "Message Before", this.value)
 })
 
 elMsgBefore.addEventListener("keypress  ", function(e) {
@@ -236,7 +228,7 @@ elMsgBefore.addEventListener("keypress  ", function(e) {
 })
 
 elMsgAfter.addEventListener("change", function() {
-  dataSet(backupListID, "Message After", this.value)
+  dataSet(bListID, "Message After", this.value)
 })
 
 elMsgAfter.addEventListener("keydown", function(e) {
@@ -248,23 +240,30 @@ elMsgAfter.addEventListener("keydown", function(e) {
 
 
 elActive.addEventListener("click", function(e) {
+  debugStart(debugGetFuncName(), arguments)
+  debugLog(debugGetFuncName(), "1", { bListID })
+
   // alert(e.key)
   let txt
   // alert(elActive.checked)
   if (!elActive.checked) {
     var r = confirm("Are you sure you want to make it inactive?")
+    console.log("r is ")
+    console.log(r)
+    debugger
     if (r == true) {
       // txt = "You pressed OK!";
       active(false)
-      dataSet(backupListID, "Active", this.checked)
+      dataSet(bListID, "Active", this.checked)
 
     } else {
       active(true)
       elActive.checked = true
     }
   } else {
+    debugger
     active(true)
-    dataSet(backupListID, "Active", this.checked)
+    dataSet(bListID, "Active", this.checked)
   }
 })
 
@@ -301,15 +300,15 @@ elMsgAfter.addEventListener("keypress", function(e) {
 })
 
 elSendEmail.addEventListener("change", function() {
-  dataSet(backupListID, "Send Email After", Boolean(this.checked))
+  dataSet(bListID, "Send Email After", Boolean(this.checked))
 })
 
 elEmail.addEventListener("change", function() {
-  dataSet(backupListID, "Email Address", this.value)
+  dataSet(bListID, "Email Address", this.value)
 })
 
 
-async function dataSet(backupListID, property, value, fileIndex, fileField) {
+function dataSet(backupListID, property, value, fileIndex, fileField) {
   // fileIndex - optional, if this is filled in, it means we are talking about file fields
   let json
   debugger
@@ -320,46 +319,40 @@ async function dataSet(backupListID, property, value, fileIndex, fileField) {
     jsondata["Backup List"][backupListID]["Files"][fileIndex][fileField] = value
   }
 
+  dataSave()
+}
+
+async function dataSave() {
   let today = new Date()
   // debugger
-  jsondata["Backup List"][backupListID]["Last edited"] = dateToDDMMYYYY(today, '/')
+  jsondata["Backup List"][bListID]["Last edited"] = dateToDDMMYYYY(today, '/')
 
   elLastEdited.innerText = "Today"
   elLastEdited.classList.add("txt-today")
 
-
   // fetch()
-  console.log(JSON.stringify(jsondata))
+  // console.log(JSON.stringify(jsondata))
 
-const url = 'http://localhost:21311/';
-const options = {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(jsondata)
-};
+  const url = 'http://localhost:21311/';
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(jsondata)
+  };
 
-// console.log(options)
-// console.log(JSON.stringify(options.body))
-// fetch(url, options)
-//   .then(response => {
-//     console.log(response.status);
-// })
-// .then(r => console.log(r))
-// .then(resp => resp.text())
+  let r = await fetch(url, options)
+  // debugger
+  let txt = await r.text()
 
-let r = await fetch(url, options)
-// debugger
-let txt = await r.text()
-
-try {
-  json = JSON.parse(txt)
-  // json = IsJsonString(txt)
-  warnings(json)
-} catch(err) {
-  console.log(err)
-}
+  try {
+    json = JSON.parse(txt)
+    // json = IsJsonString(txt)
+    warnings(json)
+  } catch(err) {
+    console.log(err)
+  }
 
 }
 
@@ -397,9 +390,9 @@ function warnings(json) {
 
   // debugger
   if (elActive.checked) {
-  // console.log(json["Error List"][backupListID])
-  for (let i = 0; i < Object.keys(json["Error List"][backupListID]).length; i++) {
-    switch (Object.keys(json["Error List"][backupListID])[i]) {
+  // console.log(json["Error List"][bListID])
+  for (let i = 0; i < Object.keys(json["Error List"][bListID]).length; i++) {
+    switch (Object.keys(json["Error List"][bListID])[i]) {
       case "Backup Name":
         warningvisible("backupname", true)
         break
@@ -419,6 +412,10 @@ function warnings(json) {
 }
 
 function dataLoad(backupListID) {
+  debugStart(debugGetFuncName(), arguments)
+  debugLog(debugGetFuncName(), "1", { bListID })
+  // debugLog(debugGetFuncName(), "1", bListID )
+
   // debugger
   elName.value = jsondata["Backup List"][backupListID]["Backup Name"]
   elBackupTo.value = jsondata["Backup List"][backupListID]["Backup Root Directory"]
@@ -442,13 +439,18 @@ function dataLoad(backupListID) {
     elLastEdited.classList.add(datecolor)
   }
 
+// debugLog(debugGetFuncName(), "2", { backupListID })
+
   warnings(jsondata)
+
+// debugLog(debugGetFuncName(), "3", { backupListID })
 
   // debugger
   active(elActive.checked)
 
-  console.log("File list")
-  console.log(jsondata["Backup List"][backupListID]["Files"].length)
+
+debugLog(debugGetFuncName(), "4", { backupListID })
+
   for (let i = 0; i < jsondata["Backup List"][backupListID]["Files"].length; i++) {
     fileLineAdd(i)
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Or Folder"]
@@ -464,7 +466,33 @@ function dataLoad(backupListID) {
     document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Sub-Directories"]
     document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Date In File"]
 
+  }
 
+
+  for (let i = 0; i < jsondata["Backup List"].length; i++) {
+    debugLog(debugGetFuncName(), "5",  { backupListID })
+
+    let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', [], [['data-index', i]], ' ')
+
+    // debugger
+    if (jsondata["Backup List"][i]["Active"]) {
+      createElementAtt(elTR, 'td', ['backupname'], [], jsondata["Backup List"][i]["Backup Name"])
+      createElementAtt(elTR, 'td', ['active'], [], jsondata["Backup List"][i]["Active"])
+      createElementAtt(elTR, 'td', ['lastrun'], [], '')
+    } else {
+      createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], jsondata["Backup List"][i]["Backup Name"])
+      createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], String(jsondata["Backup List"][i]["Active"]))
+      createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
+    }
+
+    elTR.addEventListener("click", function () {
+      // console.log(this.getAttribute('data-index'))
+      bListID = Number(this.getAttribute('data-index'))
+      fileListClear()
+      backupListClear()
+      debugger
+      dataLoad(Number(this.getAttribute('data-index')))
+    })
 
   }
 
@@ -579,7 +607,10 @@ function dateColor(startDate, endDate) {
 
 
 function fileLineAdd(index) {
+  debugStart(debugGetFuncName(), arguments)
   createElementAtt(elFileList, 'hr', [], [], '')
+
+  console.log( { bListID })
 
   let elFL = createElementAtt(elFileList, 'div', ['filelist__line'], [["data-index", index]], '')
 
@@ -587,54 +618,83 @@ function fileLineAdd(index) {
 
   let elFileTxt = createElementAtt(elFileDiv, 'input', ['e-input--primary'], [['type', 'text'], ['placeholder', 'File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt']], '')
   // this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
-  createElementAtt(elFL, 'span', [], [], ' ')
+  // createElementAtt(elFL, 'span', [], [], ' ')
+  elFL.appendChild(document.createTextNode(' '))
 
   let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir'], [], '')
 
   let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox']], [], '')
-  createElementAtt(elFL, 'span', [], [], ' ')
+  if (index % 2 === 0) {
+    createElementAtt(elFL, 'span', [], [], ' ')
+  } else {
+    elFL.appendChild(document.createTextNode(' '))
+  }
 
   let elModifiedDiv = createElementAtt(elFL, 'div', ['filelist__modified'], [], '')
-  createElementAtt(elFL, 'span', [], [], ' ')
+  if (index % 2 === 0) {
+    createElementAtt(elFL, 'span', [], [], ' ')
+  } else {
+    elFL.appendChild(document.createTextNode(' '))
+  }
 
   let elDateDiv = createElementAtt(elFL, 'div', ['filelist__date'], [], '')
   let elDateChk = createElementAtt(elDateDiv, 'input', ['field'], [['type', 'checkbox'], ["data-description", "This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype."]], '')
-  createElementAtt(elFL, 'span', [], [], ' ')
+  if (index % 2 === 0) {
+    createElementAtt(elFL, 'span', [], [], ' ')
+  } else {
+    elFL.appendChild(document.createTextNode(' '))
+  }
 
   let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip'], [], '')
   let elZipChk = createElementAtt(elZipDiv, 'input', [], [['type', 'checkbox']], [], '')
-  createElementAtt(elFL, 'span', [], [], ' ')
+  if (index % 2 === 0) {
+    createElementAtt(elFL, 'span', [], [], ' ')
+  } else {
+    elFL.appendChild(document.createTextNode(' '))
+  }
 
   let elBinDiv = createElementAtt(elFL, 'div', ['filelist__bin'], [], '')
   let elDeleteBtn = createElementAtt(elBinDiv, 'button', ['c-btn', 'c-btn--secondary', 'createscript', 'u-text-center'], [["data-index", index]], '')
 
+  console.log( { bListID })
+  debugStart(debugGetFuncName(), arguments)
+  debugLog(debugGetFuncName(), "1", { bListID } )
+
+
   elFileTxt.addEventListener("change", function() {
-    dataSet(backupListID, "Files", this.value, index, "File Or Folder")
+    dataSet(gackupListID, "Files", this.value, index, "File Or Folder")
   })
 
   elSDChk.addEventListener("change", function() {
-    dataSet(backupListID, "Files", this.checked, index, "Sub-Directories")
+    dataSet(bListID, "Files", this.checked, index, "Sub-Directories")
   })
 
   elDateChk.addEventListener("change", function() {
-    dataSet(backupListID, "Files", this.checked, index, "Date In File")
+    dataSet(bListID, "Files", this.checked, index, "Date In File")
   })
 
   elZipChk.addEventListener("change", function() {
-    dataSet(backupListID, "Files", this.checked, index, "Zip It")
+    dataSet(bListID, "Files", this.checked, index, "Zip It")
   })
 
+
   elDeleteBtn.addEventListener("click", function() {
-    // dataSet(backupListID, "Files", this.value, index, "File Or Folder")
-    console.log(this)
-    alert("this")
-    console.log(this.getAttribute("data-index"))
+    // dataSet(bListID, "Files", this.value, index, "File Or Folder")
     var r = confirm("Are you sure you want to remove this line?")
-    debugger
     if (r == true) {
-      document.querySelectorAll("hr")[index].remove()
-      document.querySelectorAll(`.filelist__line[data-index="${index + 1}"]`).remove()
-      jsondata["Backup List"][index]["Files"]
+      let lineNumber = Number(this.getAttribute('data-index'))
+      document.querySelectorAll("hr")[lineNumber].remove()
+      let strLine = `.filelist__line[data-index="${lineNumber}"]`
+      debugger
+      let index
+      for (let i = 0; i < document.querySelectorAll('.filelist__bin button').length; i++) {
+        if (lineNumber === Number(document.querySelectorAll('.filelist__bin button')[i].getAttribute('data-index'))) {
+          jsondata["Backup List"][bListID]["Files"].splice(i, 1)
+          document.querySelector(strLine).remove()
+        }
+      }
+
+      dataSave()
     }
   })
 
@@ -643,12 +703,43 @@ function fileLineAdd(index) {
 
 
 elFileAdd.addEventListener("click", function() {
-  let len = jsondata["Backup List"][backupListID]["Files"].length
-  debugger
+  let len = jsondata["Backup List"][bListID]["Files"].length
   fileLineAdd(len)
-  jsondata["Backup List"][backupListID]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": "", "Sub-Directories": "", "Date In File": "" })
+  debugger
+  jsondata["Backup List"][bListID]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false })
+
+  dataSave()
 })
 
 
+function fileListClear() {
+// debugStart(debugGetFuncName(), arguments)
+debugLog(debugGetFuncName(), "1", { bListID } )
+
+  if (document.querySelectorAll(".filelist__line")[1] !== undefined) {
+    if (document.querySelectorAll("hr")[0] !== undefined) {
+      document.querySelectorAll("hr")[0].remove()
+   }
+    document.querySelectorAll(".filelist__line")[1].remove()
+    fileListClear()
+    return true
+  } else {
+    return false
+  }
+
+}
 
 
+function backupListClear() {
+// debugStart(debugGetFuncName(), arguments)
+debugLog(debugGetFuncName(), "2", { bListID } )
+
+  if (document.querySelectorAll(".backupnamelist tbody tr")[0] !== undefined) {
+    document.querySelectorAll(".backupnamelist tbody tr")[0].remove()
+    backupListClear()
+    return true
+  } else {
+    return false
+  }
+
+}
