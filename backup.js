@@ -31,6 +31,10 @@ const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail
 
 const elBackupNameListTB = document.querySelector('.backupnamelist tbody')
 
+const elAdd = document.querySelector('.backupnamelist__buttons .add')
+const elRemove = document.querySelector('.backupnamelist__buttons .remove')
+
+
 var jsondata = ''
 
 var bListID = 0
@@ -152,8 +156,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 
 window.addEventListener('load', async () => {
-    console.log('loaded');
-
     // debugger
     try {
       let a = await fetch("http://localhost:21311")
@@ -167,8 +169,8 @@ window.addEventListener('load', async () => {
         // console.log("jsondata still string")
         jsondata = JSON.parse(jsondata)
       }
-      console.log(jsondata)
-      console.log(typeof jsondata)
+      // console.log(jsondata)
+      // console.log(typeof jsondata)
     } catch(err) {
       console.log(err)
       console.log("Error in fetch")
@@ -248,9 +250,6 @@ elActive.addEventListener("click", function(e) {
   // alert(elActive.checked)
   if (!elActive.checked) {
     var r = confirm("Are you sure you want to make it inactive?")
-    console.log("r is ")
-    console.log(r)
-    debugger
     if (r == true) {
       // txt = "You pressed OK!";
       active(false)
@@ -311,7 +310,7 @@ elEmail.addEventListener("change", function() {
 function dataSet(backupListID, property, value, fileIndex, fileField) {
   // fileIndex - optional, if this is filled in, it means we are talking about file fields
   let json
-  debugger
+  // debugger
 
   if (fileIndex === undefined) {
     jsondata["Backup List"][backupListID][property] = value
@@ -411,6 +410,7 @@ function warnings(json) {
   }
 }
 
+
 function dataLoad(backupListID) {
   debugStart(debugGetFuncName(), arguments)
   debugLog(debugGetFuncName(), "1", { bListID })
@@ -472,13 +472,24 @@ debugLog(debugGetFuncName(), "4", { backupListID })
   for (let i = 0; i < jsondata["Backup List"].length; i++) {
     debugLog(debugGetFuncName(), "5",  { backupListID })
 
-    let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', [], [['data-index', i]], ' ')
+    let elTR
+    if (i === bListID) {
+      elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-index', i]], ' ')
+    } else {
+      elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', [], [['data-index', i]], ' ')
+    }
 
     // debugger
     if (jsondata["Backup List"][i]["Active"]) {
-      createElementAtt(elTR, 'td', ['backupname'], [], jsondata["Backup List"][i]["Backup Name"])
-      createElementAtt(elTR, 'td', ['active'], [], jsondata["Backup List"][i]["Active"])
-      createElementAtt(elTR, 'td', ['lastrun'], [], '')
+      if (i === bListID) {
+          createElementAtt(elTR, 'td', ['backupname', 'selected'], [], jsondata["Backup List"][i]["Backup Name"])
+          createElementAtt(elTR, 'td', ['active', 'selected'], [], jsondata["Backup List"][i]["Active"])
+          createElementAtt(elTR, 'td', ['lastrun', 'selected'], [], '')
+      } else {
+          createElementAtt(elTR, 'td', ['backupname'], [], jsondata["Backup List"][i]["Backup Name"])
+          createElementAtt(elTR, 'td', ['active'], [], jsondata["Backup List"][i]["Active"])
+          createElementAtt(elTR, 'td', ['lastrun'], [], '')
+      }
     } else {
       createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], jsondata["Backup List"][i]["Backup Name"])
       createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], String(jsondata["Backup List"][i]["Active"]))
@@ -490,7 +501,7 @@ debugLog(debugGetFuncName(), "4", { backupListID })
       bListID = Number(this.getAttribute('data-index'))
       fileListClear()
       backupListClear()
-      debugger
+      // debugger
       dataLoad(Number(this.getAttribute('data-index')))
     })
 
@@ -716,6 +727,8 @@ function fileListClear() {
 // debugStart(debugGetFuncName(), arguments)
 debugLog(debugGetFuncName(), "1", { bListID } )
 
+console.count("fileListClear")
+
   if (document.querySelectorAll(".filelist__line")[1] !== undefined) {
     if (document.querySelectorAll("hr")[0] !== undefined) {
       document.querySelectorAll("hr")[0].remove()
@@ -743,3 +756,26 @@ debugLog(debugGetFuncName(), "2", { bListID } )
   }
 
 }
+
+
+elAdd.addEventListener("click", function() {
+  debugger
+  jsondata["Backup List"].push( {"Backup Name": "", "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false }]} )
+
+  dataSave()
+  dataLoad()
+})
+
+
+elRemove.addEventListener("click", function() {
+  let index = Number(document.querySelector('.backupnamelist tr.selected').getAttribute('data-index'))
+  var r = confirm(`Are you sure you want to make this Backup Profile - ${elName.value} inactive?`)
+  if (r == true) {
+    debugger
+    jsondata["Backup List"].splice(index, 1)
+    bListID = 0
+    dataSave()
+    dataLoad()
+  }
+})
+
