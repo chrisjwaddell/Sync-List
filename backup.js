@@ -1,4 +1,3 @@
-
 const elBtn1 = document.querySelector(".btn1")
 const elBtn2 = document.querySelector(".btn2")
 const elBtn3 = document.querySelector(".btn3")
@@ -386,7 +385,8 @@ function warningsRemove() {
 
 function warnings(json) {
   warningsRemove()
-
+  var bName = false
+  var bEdited = false
   // debugger
   if (elActive.checked) {
   // console.log(json["Error List"][bListID])
@@ -394,6 +394,7 @@ function warnings(json) {
     switch (Object.keys(json["Error List"][bListID])[i]) {
       case "Backup Name":
         warningvisible("backupname", true)
+        bName = true
         break
       case "Backup Root Directory":
         warningvisible("backupto", true)
@@ -402,16 +403,32 @@ function warnings(json) {
         // warningvisible("lastedited", true)
         // debugger
         warningvisible("createscript", true)
+        bEdited = true
         break
       default:
         break
     }
   }
   }
+
+  debugger
+  if (!bName && !bEdited) {
+    elCreateScript.classList.remove('isvisible')
+  } else if (bName) {
+    elCreateScript.classList.add('isvisible')
+    elCreateScript.innerText = "Create Backup Script"
+  } else if (bEdited) {
+    elCreateScript.classList.add('isvisible')
+    elCreateScript.innerText = "Regenerate Backup Script"
+  }
 }
 
 
 function dataLoad(backupListID) {
+  // console.log("from dataLoad")
+  // console.log(arguments)
+  // console.log(arguments[0])
+  // debugStart()
   debugStart(debugGetFuncName(), arguments)
   debugLog(debugGetFuncName(), "1", { bListID })
   // debugLog(debugGetFuncName(), "1", bListID )
@@ -449,7 +466,7 @@ function dataLoad(backupListID) {
   active(elActive.checked)
 
 
-debugLog(debugGetFuncName(), "4", { backupListID })
+  debugLog(debugGetFuncName(), "4", { backupListID })
 
   for (let i = 0; i < jsondata["Backup List"][backupListID]["Files"].length; i++) {
     fileLineAdd(i)
@@ -506,7 +523,6 @@ debugLog(debugGetFuncName(), "4", { backupListID })
     })
 
   }
-
 
 }
 
@@ -779,3 +795,8 @@ elRemove.addEventListener("click", function() {
   }
 })
 
+
+elCreateScript.addEventListener("click", function() {
+  debugStart(debugGetFuncName(), arguments)
+  // debugLog(debugGetFuncName(), "2", { bListID } )
+})
