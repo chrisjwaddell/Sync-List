@@ -15,7 +15,7 @@ body {
 .wrapper {
   border: 1px solid #860;
   width: 1400px;
-  margin: 0 auto;
+  margin: 0 auto 200px auto;
   /* padding: 10px; */
   padding: 10px 0;
   background-color: #cdf;
@@ -27,6 +27,10 @@ body {
 
 .dib {
   display: inline-block;
+}
+
+.selected {
+  background-color: #c0c5ff !important;
 }
 
 h1 {
@@ -132,6 +136,10 @@ input {
   font-weight: 600;
 }
 
+.createscript {
+  visibility: hidden;
+}
+
 .filelist {
   width: 1300px;
   border: 3px solid #ffffff;
@@ -163,7 +171,7 @@ hr {
 }
 .filelist input[type='checkbox'] {
   width: 100%;
-  /* margin: 10px auto; */
+  margin: 10px auto;
 }
 
 .filelist__file {
@@ -267,6 +275,60 @@ hr {
   /* text-align: right; */
 }
 
+.backupnamelist {
+  margin: 70px auto 10px;
+  overflow:hidden;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 
+.backupnamelist th, .backupnamelist td {
+  padding:.25em .5em;
+  text-align:left;
+  vertical-align:top;
+}
+
+.backupnamelist .backupname {
+    width: 500px;
+}
+
+.backupnamelist .active {
+  width: 75px;
+}
+
+.backupnamelist .lastrun {
+  width: 100px;
+}
+
+.backupnamelist tbody {
+  /* border: 1px solid #000000; */
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+.backupnamelist th {
+  background-color:#557ff1;
+  border: 1px solid #000000;
+  color:#fff;
+}
+
+.backupnamelist td {
+  background-color:#fff;
+  /* border-bottom: 1px solid #000000; */
+  border: 1px solid #000000;
+}
+
+.backupnamelist__buttons button {
+  margin-right: 25px;
+  color: #ffffff;
+}
+
+.backupnamelist__buttons .add {
+  background-color: #22ee66;
+}
+
+.backupnamelist__buttons .remove {
+  background-color: #ee7777;
+}
 
 

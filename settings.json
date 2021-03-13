@@ -4,11 +4,11 @@
             "Backup Name": "Main",
             "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive",
             "Include Date": true,
-            "Message Before": "",
+            "Message Before": "a",
             "Message After": "",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": "09/03/2021",
+            "Last edited": "12/03/2021",
             "Script created": "27/02/2021",
             "Active": true,
             "Files": [
@@ -25,6 +25,27 @@
                     "Zip It": false,
                     "Sub-Directories": false,
                     "Date In File": false
+                },
+                {
+                    "File Or Folder": "a1235",
+                    "File Type": "",
+                    "Zip It": false,
+                    "Sub-Directories": "",
+                    "Date In File": ""
+                },
+                {
+                    "File Or Folder": "b1235",
+                    "File Type": "",
+                    "Zip It": true,
+                    "Sub-Directories": true,
+                    "Date In File": true
+                },
+                {
+                    "File Or Folder": "c1237",
+                    "File Type": "",
+                    "Zip It": false,
+                    "Sub-Directories": false,
+                    "Date In File": false
                 }
             ]
         },
@@ -36,7 +57,7 @@
             "Message After": "",
             "Send Email After": false,
             "Email Address": "yesitschris@hotmail.com",
-            "Last edited": "27/02/2021",
+            "Last edited": "10/03/2021",
             "Script created": "27/02/2021",
             "Active": true,
             "Files": [
@@ -62,7 +83,8 @@
             "Last edited": "Changes have been made since the Backup Script was generated last."
         },
         {
-            "Backup Name": "Script file doesn't exist."
+            "Backup Name": "Script file doesn't exist.",
+            "Last edited": "Changes have been made since the Backup Script was generated last."
         }
     ]
 }
