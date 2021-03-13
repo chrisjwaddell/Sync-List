@@ -85,8 +85,8 @@ app.get('/', async function(req, res) {
 
   try {
     let r = await services.getSettings()
-    console.log("in get after await")
-    console.log(r)
+    // console.log("in get after await")
+    // console.log(r)
     // console.log(typeof r)
     // console.log(JSON.parse(r))
     res.json(r)
@@ -133,10 +133,10 @@ settings = req.body
 
 let json = await services.putSettings(settings)
 
-console.log("settings")
-console.log(settings)
-console.log("json")
-console.log(json)
+// console.log("settings")
+// console.log(settings)
+// console.log("json")
+// console.log(json)
 
 res.json(json)
 
@@ -154,6 +154,20 @@ return
 
  res.send("got it")
 })
+
+
+app.put('/build', async function(req, res, next) {
+  console.log("=====================================================================")
+
+  // console.log("put build")
+  // console.log(req.body)
+
+  let json = services.putBuild(req.body)
+
+  res.send(req.body)
+})
+
+
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

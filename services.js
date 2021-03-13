@@ -36,10 +36,11 @@ async function getSettings() {
     // Settings file
     console.log("start of Settings")
     try {
-        console.log("Before try - settings.json read")
+
+      // console.log("Before try - settings.json read")
 
         let strFileContent = await fsp.readFile(settingsFile,'utf8')
-        console.log(strFileContent)
+        // console.log(strFileContent)
         let objJSON = IsJsonString(strFileContent)
         let fileContentPlusErrors = await buildErrorChecker(objJSON)
         return fileContentPlusErrors
@@ -89,9 +90,9 @@ async function putSettings(jsonobj) {
   } catch (err) {
       console.log("xxx")
       console.error(err)
-    }
-    //file written successfully
-    console.log("file written to")
+  }
+  //file written successfully
+  console.log("file written to")
 }
 
 
@@ -100,33 +101,6 @@ async function buildErrorChecker(jsonobj) {
   var json = ""
 
   console.log("in buildErrorChecker")
-  // console.log(jsonobj)
-  // console.log(typeof jsonobj)
-  // console.log(typeof jsonstring)
-  // console.log(jsonstring.substring(0,50))
-
-//   let js2 = '{"Backup List": "gg"}'
-  // let js = '{"Backup List": [ { "Backup Name": "Main" } ]}'
-
-  // try {
-  //   json = JSON.parse(jsonstring)
-  // } catch(err) {
-  //   console.log("error in parsing settings file")
-  //   console.log(err)
-
-  //   let today = new Date()
-  //   let strToday =   dateToYYYYMMDD(today, '')
-  //   let fileRenamed = __dirname + '\\' + 'settings-' + strToday + '.json'
-  //   // console.dir({fileRenamed})
-
-  //   await fsp.rename(settingsFile, fileRenamed)
-
-  //   let jsontemplate = JSON.parse(templateSettings)
-  //   jsontemplate["Important Error Message"] = `The settings.json file isn't in JSON format and has been moved to ${fileRenamed}`
-  //   // let strjson = JSON.stringify(templateSettings, null, 4)
-  //   await fsp.writeFile(settingsFile,templateSettings)
-  //   return jsontemplate
-  // }
 
   json = jsonobj
 
@@ -135,14 +109,11 @@ async function buildErrorChecker(jsonobj) {
   delete json["Error List"]
   json["Error List"] = []
 
-  // console.log(json["Backup List"])
-  // console.log(json["Backup List"].length)
+  delete json["BackupListID"]
 
-  // console.log("before for loop")
   for(let i = 0; i < json["Backup List"].length; i++){
 
     json["Error List"].push({})
-    // console.log(json)
 
     // Backup Name
   try {
@@ -165,17 +136,89 @@ async function buildErrorChecker(jsonobj) {
   let diff = numberOfNightsBetweenDates(dateDDMMYYYYToDate(json["Backup List"][i]["Script created"]), dateDDMMYYYYToDate(json["Backup List"][i]["Last edited"]))
   if (diff > 1) {
     json["Error List"][i]["Last edited"] = "Changes have been made since the Backup Script was generated last."
-    // console.log(json)
   }
 
-  // console.log("end of for - " + i)
 }  // for
 
-
-// console.log(json)
 return json
 
 }  // buildErrorChecker
+
+
+
+function powershellStart(filesArray, edited) {
+  var strFileList = "<#"
+  debugger
+  for (let i = 0; i < filesArray.length; i++) {
+     strFileList += "\n" + filesArray[i]["File Or Folder"]
+  }
+  strFileList += "\n" + "\n"
+
+  strFileList += "Last Edited - " + edited + "\n" + "#>" + "\n" + "\n"
+
+  console.log("powershellStart")
+  console.log(strFileList)
+  return strFileList
+  }
+
+  // Remove this
+  function powershellVars2(backupListID) {
+    let v = ''
+    let bt = jsondata["Backup List"][backupListID]["Backup Root Directory"]
+    v = `$BackupTo = ${bt}`
+    return v
+  }
+
+  const powershellVars = (bt) => `$BackupTo = '${bt}'\n`
+
+
+  // Remove this
+  function powershellMsgBefore2(backupListID) {
+    let strMB = ""
+    strMB = '$wsh = New-Object -ComObject Wscript.Shell' + '\n'
+    strMB += '$wsh.Popup("Test")' + '\n'
+  }
+
+  const powershellMsgBefore = (msgBefore) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgBefore}")\n`
+  const powershellMsgAfter = (msgAfter) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgAfter}")\n`
+
+  const powershellDestination = ()  => 'Test-Path $BackupTo\nIf (!(Test-Path $BackupTo)) {\n\tWrite-Output "does not exist"\n\tExit\n}\n'
+
+  async function powershellFileWrite(fileName, fileText) {
+    try {
+      fsp.writeFile(fileName, fileText)
+      return fileText
+    } catch (err) {
+        console.log("xxx")
+        console.error(err)
+    }
+    //file written successfully
+
+  }
+
+
+async function putBuild(jsondata) {
+  console.log("in putBuild")
+
+      // Backup Name
+      var backupID = Number(jsondata["BackupListID"])
+      var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][backupID]["Backup Name"] + '.ps1'
+
+      console.log(jsondata["Backup List"][backupID]["Last edited"])
+      var strFile = ''
+      strFile = powershellStart(jsondata["Backup List"][backupID]["Files"], jsondata["Backup List"][backupID]["Last edited"])
+      strFile += powershellVars(jsondata["Backup List"][backupID]["Backup Root Directory"])
+      if (jsondata["Backup List"][backupID]["Message Before"]) strFile += powershellMsgBefore(jsondata["Backup List"][backupID]["Message Before"])
+      console.log(strFile)
+      if (jsondata["Backup List"][backupID]["Message After"]) strFile += powershellMsgAfter(jsondata["Backup List"][backupID]["Message After"])
+      console.log(strFile)
+      strFile += powershellDestination()
+      console.log(strFile)
+      powershellFileWrite(batchFileName, strFile)
+
+
+  return "test"
+}
 
 
   function dateDDMMYYYYToDate(string) {
@@ -221,5 +264,6 @@ function dateToYYYYMMDD(dt, seperator) {
 
 module.exports = {
   getSettings,
-  putSettings
+  putSettings,
+  putBuild
 }

@@ -149,9 +149,9 @@ elBtn7.addEventListener("click", async () => {
 })
 
 
-window.addEventListener('DOMContentLoaded', (event) => {
-    console.log('DOM fully loaded and parsed');
-});
+// window.addEventListener('DOMContentLoaded', (event) => {
+//     console.log('DOM fully loaded and parsed');
+// });
 
 
 window.addEventListener('load', async () => {
@@ -411,7 +411,7 @@ function warnings(json) {
   }
   }
 
-  debugger
+  // debugger
   if (!bName && !bEdited) {
     elCreateScript.classList.remove('isvisible')
   } else if (bName) {
@@ -445,7 +445,6 @@ function dataLoad(backupListID) {
   elActive.checked = jsondata["Backup List"][backupListID]["Active"]
   // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   // This may change from Create to Regenerate - on name change or edit or create
-
 
   var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   var today = new Date()
@@ -799,4 +798,38 @@ elRemove.addEventListener("click", function() {
 elCreateScript.addEventListener("click", function() {
   debugStart(debugGetFuncName(), arguments)
   // debugLog(debugGetFuncName(), "2", { bListID } )
+  // debugger
+  buildBackupScript()
 })
+
+
+  async function buildBackupScript() {
+
+    jsondata["BackupListID"]= bListID
+    console.log(jsondata)
+    // debugger
+
+    const url = 'http://localhost:21311/build'
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsondata)
+    };
+
+    let r = await fetch(url, options)
+    // debugger
+    let txt = await r.text()
+
+    try {
+      json = JSON.parse(txt)
+      // json = IsJsonString(txt)
+      warnings(json)
+    } catch(err) {
+      console.log(err)
+    }
+
+  }
+
+
