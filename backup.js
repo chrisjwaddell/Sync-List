@@ -688,7 +688,7 @@ function fileLineAdd(index) {
 
 
   elFileTxt.addEventListener("change", function() {
-    dataSet(gackupListID, "Files", this.value, index, "File Or Folder")
+    dataSet(bListID, "Files", this.value, index, "File Or Folder")
   })
 
   elSDChk.addEventListener("change", function() {
@@ -819,7 +819,7 @@ elCreateScript.addEventListener("click", function() {
     };
 
     let r = await fetch(url, options)
-    // debugger
+    debugger
     let txt = await r.text()
 
     try {
@@ -833,3 +833,16 @@ elCreateScript.addEventListener("click", function() {
   }
 
 
+  function dirFromPath(path) {
+    let p = path
+    console.log("path - " + path)
+    if (p.indexOf("\\") !==-1) {
+      console.log("1")
+      // return p.substring(0, p.indexOf('\\')) + dirFromPath(p.substring(p.indexOf('\\'), p.length))
+      return dirFromPath(p.substring(p.indexOf("\\"), p.length))
+    } else {
+      console.log("2")
+      return p
+    }
+
+  }

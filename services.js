@@ -17,6 +17,9 @@ function IsJsonString(str) {
 }
 
 async function getSettings() {
+//buildErrorChecker is run to get the updated information of the filesystem
+// But it is not saved to the file, it's not necesary to save the error array
+
   // See if scripts Directory exists
   let scriptsDir = __dirname + '\\' + 'Backup-scripts'
   try {
@@ -30,13 +33,12 @@ async function getSettings() {
           // settingsFile()
       })
       .catch(err => console.error("Error: In making Backup-scripts directory"))
-    }
+ }
 
 
-    // Settings file
-    console.log("start of Settings")
-    try {
-
+   // Settings file
+   console.log("start of Settings")
+   try {
       // console.log("Before try - settings.json read")
 
         let strFileContent = await fsp.readFile(settingsFile,'utf8')
@@ -57,7 +59,7 @@ async function getSettings() {
 
         await fsp.writeFile(settingsFile, strjson).catch(err => console.error("Error: Couldn't create settings.json"))
 
-          return jsontemplate
+        return jsontemplate
     }
 
 }
@@ -161,28 +163,50 @@ function powershellStart(filesArray, edited) {
   return strFileList
   }
 
-  // Remove this
-  function powershellVars2(backupListID) {
-    let v = ''
-    let bt = jsondata["Backup List"][backupListID]["Backup Root Directory"]
-    v = `$BackupTo = ${bt}`
-    return v
-  }
 
-  const powershellVars = (bt) => `$BackupTo = '${bt}'\n`
+  const powershellVars = (bt) => `$BackupTo = '${bt}'\n$Now = Get-Date -Format "yyyyMMdd"\n`
 
-
-  // Remove this
-  function powershellMsgBefore2(backupListID) {
-    let strMB = ""
-    strMB = '$wsh = New-Object -ComObject Wscript.Shell' + '\n'
-    strMB += '$wsh.Popup("Test")' + '\n'
-  }
 
   const powershellMsgBefore = (msgBefore) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgBefore}")\n`
   const powershellMsgAfter = (msgAfter) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgAfter}")\n`
 
   const powershellDestination = ()  => 'Test-Path $BackupTo\nIf (!(Test-Path $BackupTo)) {\n\tWrite-Output "does not exist"\n\tExit\n}\n'
+
+  function powershellDirData(rootdir) {
+    let str = ''
+
+    let rd = rootdir
+    if (rd.endsWith('\'')) {
+      rd = rd.substring(0, rd.length - 1)
+      if (rd.endsWith('\'')) {
+        rd = rd.substring(0, rd.length - 1)
+      }
+    }
+
+    str = "$BackupToFinal = " + rd + '\\' + "$Now"
+    str += str + 'Test-Path $BackupToFinal'
+    str += 'If (!(Test-Path $BackupToFinal)) {'
+    str += '\tWrite-Output "Date directory does not exist"'
+    str += '\tNew-Item -Path $BackupTo -Name $Now -ItemType "directory"'
+    str += '}'
+
+    return str
+  }
+
+
+  async function fileFolderType(fileLine) {
+    if (fileLine.indexOf('*') === -1) {
+      var stats = await fsp.stat(fileLine)
+      console.log("no *")
+      stats.isFile() ? filetype = 0 : filetype = 1
+      // console.log('is directory ? ' + stats.isDirectory());
+    } else {
+      console.log("* in file")
+      filetype = 2
+    }
+    return filetype
+  }
+
 
   async function powershellFileWrite(fileName, fileText) {
     try {
@@ -193,31 +217,177 @@ function powershellStart(filesArray, edited) {
         console.error(err)
     }
     //file written successfully
-
   }
 
 
+
 async function putBuild(jsondata) {
-  console.log("in putBuild")
+    console.log("in putBuild")
 
-      // Backup Name
-      var backupID = Number(jsondata["BackupListID"])
-      var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][backupID]["Backup Name"] + '.ps1'
+     // Backup Name
+     var backupID = Number(jsondata["BackupListID"])
+     var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][backupID]["Backup Name"] + '.ps1'
+    //  console.log(jsondata["Backup List"][backupID]["Last edited"])
+     var strFile = ''
+     strFile = powershellStart(jsondata["Backup List"][backupID]["Files"], jsondata["Backup List"][backupID]["Last edited"])
+     strFile += powershellVars(jsondata["Backup List"][backupID]["Backup Root Directory"])
+     if (jsondata["Backup List"][backupID]["Message Before"]) strFile += powershellMsgBefore(jsondata["Backup List"][backupID]["Message Before"])
+    //  console.log(strFile)
+     if (jsondata["Backup List"][backupID]["Message After"]) strFile += powershellMsgAfter(jsondata["Backup List"][backupID]["Message After"])
+    //  console.log(strFile)
+     strFile += powershellDestination()
+    //  console.log(strFile)
 
-      console.log(jsondata["Backup List"][backupID]["Last edited"])
-      var strFile = ''
-      strFile = powershellStart(jsondata["Backup List"][backupID]["Files"], jsondata["Backup List"][backupID]["Last edited"])
-      strFile += powershellVars(jsondata["Backup List"][backupID]["Backup Root Directory"])
-      if (jsondata["Backup List"][backupID]["Message Before"]) strFile += powershellMsgBefore(jsondata["Backup List"][backupID]["Message Before"])
-      console.log(strFile)
-      if (jsondata["Backup List"][backupID]["Message After"]) strFile += powershellMsgAfter(jsondata["Backup List"][backupID]["Message After"])
-      console.log(strFile)
-      strFile += powershellDestination()
-      console.log(strFile)
-      powershellFileWrite(batchFileName, strFile)
+     jsondata["Backup List"][backupID]["Include Date"] ? strFile += powershellDirData(jsondata["Backup List"][backupID]["Backup Root Directory"]) : strFile += '$BackupToFinal = $BackupTo'
+    //  console.log(strFile)
+
+    let json = jsondata
+
+    for (let i = 0; i < jsondata["Backup List"][backupID]["Files"].length; i++) {
+      // console.log(jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"])
+      // console.log(jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].substring(3, jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].length))
+      let s = jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].split('\\')
+      console.log(s)
+      var dir = ''
+      // console.log(s)
+      // console.log(s.length)
+
+      var ft
+      try {
+        ft = await fileFolderType(jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"])
+      } catch (err) {
+        ft = -1
+        // throw new Error("Error in filetype")
+        // process.exit(1)
+      }
+
+      let rd = jsondata["Backup List"][backupID]["Backup Root Directory"]
+      if (rd.endsWith('\'')) {
+        rd = rd.substring(0, rd.length - 1)
+        if (rd.endsWith('\'')) {
+          rd = rd.substring(0, rd.length - 1)
+        }
+      }
+
+      let sd = jsondata["Backup List"][backupID]["Files"][i]["Sub-Directories"]
+      let dateinfile = jsondata["Backup List"][backupID]["Files"][i]["Date In File"]
+      let zip = jsondata["Backup List"][backupID]["Files"][i]["Zip It"]
+
+      let toda = new Date()
+      // toda = Date.now()
+      // console.log(toda)
+      var td = dateToYYYYMMDD(toda, '')
+      console.log("td - " + td)
+
+      // console.log(ft + ' ' + sd + ' ' + dateinfile + ' ' + zip)
+
+      if (ft !== -1) {
+        if (ft === 0) {
+          if (!sd) {
+            if ((!dateinfile) && (!zip)) {
+              console.log("File copy")
+              if (s.length> 1) {
+                for (j = 1; j < s.length - 1; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+            } else if ((dateinfile) && (!zip))  {
+              console.log("File copy with date")
+              if (s.length> 1) {
+                for (j = 1; j < s.length - 1; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(s.length)
+              console.log(s[s.length - 1])
+              console.log(rd + '\\' + dir + '\\' + td + '-' + s[s.length - 1])
+
+            } else if ((!dateinfile) && (zip))  {
+              console.log("File zip copy")
+            } else if ((dateinfile) && (zip))  {
+              console.log("File zip copy with date")
+            }
+          } else {
+            if ((!dateinfile) && (!zip)) {
+              console.log("File copy with sub-directories")
+            } else if ((dateinfile) && (!zip))  {
+              console.log("File copy with date with sub-directories")
+            } else if ((!dateinfile) && (zip))  {
+              console.log("File zip copy with sub-directories")
+            } else if ((dateinfile) && (zip))  {
+              console.log("File zip copy with date with sub-directories")
+            }
+          }
+        } else if (ft === 1) {
+          if (!sd) {
+            if ((!dateinfile) && (!zip)) {
+              console.log("Directory copy")
+            } else if ((dateinfile) && (!zip))  {
+              console.log("Directory copy with date")
+            } else if ((!dateinfile) && (zip))  {
+              console.log("Directory zip copy")
+            } else if ((dateinfile) && (zip))  {
+              console.log("Directory zip copy with date")
+            }
+          } else {
+            if ((!dateinfile) && (!zip)) {
+              console.log("Directory copy with sub-directories")
+            } else if ((dateinfile) && (!zip))  {
+              console.log("Directory copy with date with sub-directories")
+            } else if ((!dateinfile) && (zip))  {
+              console.log("Directory zip copy with sub-directories")
+            } else if ((dateinfile) && (zip))  {
+              console.log("Directory zip copy with date with sub-directories")
+            }
+          }
+        } else if (ft === 2) {
+          if (!sd) {
+            if ((!dateinfile) && (!zip)) {
+              console.log("Filetype copy")
+            } else if ((dateinfile) && (!zip))  {
+              console.log("Filetype copy with date")
+            } else if ((!dateinfile) && (zip))  {
+              console.log("Filetype zip copy")
+            } else if ((dateinfile) && (zip))  {
+              console.log("Filetype zip copy with date")
+            }
+          } else {
+            if ((!dateinfile) && (!zip)) {
+              console.log("Filetype copy with sub-directories")
+            } else if ((dateinfile) && (!zip))  {
+              console.log("Filetype copy with date with sub-directories")
+            } else if ((!dateinfile) && (zip))  {
+              console.log("Filetype zip copy with sub-directories")
+            } else if ((dateinfile) && (zip))  {
+              console.log("Filetype zip copy with date with sub-directories")
+            }
+          }
+        }
+      }
+    }  // for
 
 
-  return "test"
+    powershellFileWrite(batchFileName, strFile)
+
+
+    let today = new Date()
+    json["Backup List"][backupID]["Script created"] = dateToYYYYMMDD(today, '/')
+
+    let fileContentPlusErrors = ''
+    try {
+      fileContentPlusErrors = await buildErrorChecker(json)
+    } catch(err) {
+      throw new Error("Error building ErrorChecker")
+      process.exit(1)
+    }
+    return fileContentPlusErrors
+
 }
 
 
@@ -260,6 +430,19 @@ function dateToYYYYMMDD(dt, seperator) {
 
     return diffDays
   }
+
+
+
+  // app.use((error, req, res, next) => {
+  //   console.log(error)
+  //   res.status(error.status || 500).send({
+  //     error: {
+  //       status: error.status || 500,
+  //       message: error.message || 'Internal Server Error',
+  //     },
+  //   });
+  //   process.exit(1)
+  //   });
 
 
 module.exports = {

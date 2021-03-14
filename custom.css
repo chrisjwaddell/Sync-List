@@ -237,6 +237,7 @@ hr {
   height: 35px;
   padding: 2px;
   margin-top: -10px;
+  visibility: visible;
   background-color: #eeeeee;
   border: 1px solid orange;
 }

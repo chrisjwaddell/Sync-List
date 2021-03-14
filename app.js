@@ -142,17 +142,6 @@ res.json(json)
 
 return
 
-  fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
-    if (err) {
-      console.log("xxx")
-      console.error(err)
-      return
-    }
-    //file written successfully
-    console.log("file written to")
-  })
-
- res.send("got it")
 })
 
 
@@ -162,7 +151,9 @@ app.put('/build', async function(req, res, next) {
   // console.log("put build")
   // console.log(req.body)
 
-  let json = services.putBuild(req.body)
+  let json = await services.putBuild(req.body)
+  console.log("return build")
+  console.log(json)
 
   res.send(req.body)
 })
