@@ -164,13 +164,13 @@ function powershellStart(filesArray, edited) {
   }
 
 
-  const powershellVars = (bt) => `$BackupTo = '${bt}'\n$Now = Get-Date -Format "yyyyMMdd"\n`
+  const powershellVars = (bt) => `$BackupTo = '${bt}'\n$Now = Get-Date -Format "yyyyMMdd"\n\n`
 
 
-  const powershellMsgBefore = (msgBefore) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgBefore}")\n`
-  const powershellMsgAfter = (msgAfter) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgAfter}")\n`
+  const powershellMsgBefore = (msgBefore) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgBefore}")\n\n`
+  const powershellMsgAfter = (msgAfter) => `$wsh = New-Object -ComObject Wscript.Shell\n$wsh.Popup("${msgAfter}")\n\n`
 
-  const powershellDestination = ()  => 'Test-Path $BackupTo\nIf (!(Test-Path $BackupTo)) {\n\tWrite-Output "does not exist"\n\tExit\n}\n'
+  const powershellDestination = ()  => 'Test-Path "$BackupTo"\nIf (!(Test-Path "$BackupTo")) {\n\tWrite-Output "does not exist"\n\tExit\n}\n\n\n'
 
   function powershellDirData(rootdir) {
     let str = ''
@@ -183,21 +183,23 @@ function powershellStart(filesArray, edited) {
       }
     }
 
-    str = "$BackupToFinal = " + rd + '\\' + "$Now"
-    str += str + 'Test-Path $BackupToFinal'
-    str += 'If (!(Test-Path $BackupToFinal)) {'
-    str += '\tWrite-Output "Date directory does not exist"'
-    str += '\tNew-Item -Path $BackupTo -Name $Now -ItemType "directory"'
-    str += '}'
+
+    str = `$BackupToFinal = "${rd}\\$Now"` + '\n'
+    str += 'If (!(Test-Path "$BackupToFinal")) {' + '\n'
+    str += '\tWrite-Output "Directory does not exist"' + '\n'
+    str += '\tNew-Item -Path "$BackupTo" -Name $Now -ItemType "directory"' + '\n'
+    str += '}' + '\n\n\n'
 
     return str
   }
 
 
   async function fileFolderType(fileLine) {
+    // console.log("fileFolderType - fileLine - " + fileLine)
+    // console.log(fileLine.indexOf('*'))
     if (fileLine.indexOf('*') === -1) {
       var stats = await fsp.stat(fileLine)
-      console.log("no *")
+      // console.log("no *")
       stats.isFile() ? filetype = 0 : filetype = 1
       // console.log('is directory ? ' + stats.isDirectory());
     } else {
@@ -205,6 +207,65 @@ function powershellStart(filesArray, edited) {
       filetype = 2
     }
     return filetype
+  }
+
+
+  function powershellFunctions() {
+    str = `function CreateDir {
+      param (
+          $Path
+      )
+
+      $len = $Path.length
+
+      $Drive = $Path.substring(0,2)
+      $Drive
+      $Folders = $Path[[int](-1 * ($len - 3))..-1] -join ''
+      $Folders
+
+      $arrFolders = $Folders.split("\\")
+      $arrFolders
+
+      $FolderBuild = "$Drive\\"
+      $FolderRoot = "$Drive\\"
+      Foreach ($i in $arrFolders)
+      {
+          $i
+
+          $FolderBuild = $FolderBuild + "\\" + $i
+          $FolderBuild
+          Test-Path $FolderBuild
+          If (!(Test-Path "$FolderBuild")) {
+              Write-Output "doesn't exist"
+              New-Item -Path "$FolderRoot" -Name $i -ItemType "directory"
+          }
+
+          $FolderRoot = $FolderRoot + "\\" + $i
+          $FolderRoot
+      }
+  }
+
+
+  function compressFiles {
+
+    param (
+        $zipFile = 'E:\programming\programming-txt.zip',
+        $RootDir = 'E:\programming\',
+        $FilesToZip = 'E:\programming\*.txt'
+    )
+
+    $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
+    $zip = [System.IO.Compression.ZipFile]::Open($zipFile, 'Update')
+
+    Get-ChildItem $FilesToZip -Recurse | ForEach-Object {
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $_.FullName.Replace($RootDir,""), $compressionLevel)
+    }
+
+    $zip.Dispose()
+
+}`
+
+  return str
   }
 
 
@@ -218,7 +279,6 @@ function powershellStart(filesArray, edited) {
     }
     //file written successfully
   }
-
 
 
 async function putBuild(jsondata) {
@@ -238,7 +298,7 @@ async function putBuild(jsondata) {
      strFile += powershellDestination()
     //  console.log(strFile)
 
-     jsondata["Backup List"][backupID]["Include Date"] ? strFile += powershellDirData(jsondata["Backup List"][backupID]["Backup Root Directory"]) : strFile += '$BackupToFinal = $BackupTo'
+     jsondata["Backup List"][backupID]["Include Date"] ? strFile += powershellDirData(jsondata["Backup List"][backupID]["Backup Root Directory"]) : strFile += '$BackupToFinal = $BackupTo\n\n'
     //  console.log(strFile)
 
     let json = jsondata
@@ -279,11 +339,11 @@ async function putBuild(jsondata) {
       var td = dateToYYYYMMDD(toda, '')
       console.log("td - " + td)
 
-      // console.log(ft + ' ' + sd + ' ' + dateinfile + ' ' + zip)
+      console.log(ft + ' ' + sd + ' ' + dateinfile + ' ' + zip)
 
       if (ft !== -1) {
         if (ft === 0) {
-          if (!sd) {
+            // sub-dir doesn't matter for file
             if ((!dateinfile) && (!zip)) {
               console.log("File copy")
               if (s.length> 1) {
@@ -295,8 +355,41 @@ async function putBuild(jsondata) {
               console.log("dir - " + dir)
               console.log(rd + '\\' + dir)
 
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '" -Destination "$BackupToFinal' + '\\' + dir + '"\n\n'
+
             } else if ((dateinfile) && (!zip))  {
               console.log("File copy with date")
+
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir = td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    dir === '' ? dir = s[j] : dir += '\\' + td + '-' + s[j]
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(s.length)
+              console.log(s[s.length - 1])
+              console.log(rd + '\\' + dir + '\\' + s[s.length - 1])
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += '\tCreateDir -Path "$BackupToFinal' + '\\' + dir + '"\n'
+              strFile += '}' + '\n'
+
+              strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '" -Destination "$BackupToFinal' + '\\' + dir + '\\' + s[s.length - 1] + '"\n\n'
+
+            } else if ((!dateinfile) && (zip))  {
+              console.log("File zip copy")
+
               if (s.length> 1) {
                 for (j = 1; j < s.length - 1; j++) {
                   dir === '' ? dir = s[j] : dir += '\\' + s[j]
@@ -304,46 +397,234 @@ async function putBuild(jsondata) {
               }
 
               console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
               console.log(s.length)
               console.log(s[s.length - 1])
-              console.log(rd + '\\' + dir + '\\' + td + '-' + s[s.length - 1])
 
-            } else if ((!dateinfile) && (zip))  {
-              console.log("File zip copy")
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += `Compress-Archive -Update "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}" "$BackupToFinal\\${dir}\\${s[s.length - 1].replace('.', "-")}.zip"\n\n`
+
             } else if ((dateinfile) && (zip))  {
               console.log("File zip copy with date")
+
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir = td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    dir === '' ? dir = s[j] : dir += '\\' + td + '-' + s[j]
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+              console.log(s.length)
+              console.log(s[s.length - 1])
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += `Compress-Archive -Update "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}" "$BackupToFinal\\${dir}\\${td}-${s[s.length - 1].replace('.', "-")}.zip"\n\n`
+
             }
-          } else {
-            if ((!dateinfile) && (!zip)) {
-              console.log("File copy with sub-directories")
-            } else if ((dateinfile) && (!zip))  {
-              console.log("File copy with date with sub-directories")
-            } else if ((!dateinfile) && (zip))  {
-              console.log("File zip copy with sub-directories")
-            } else if ((dateinfile) && (zip))  {
-              console.log("File zip copy with date with sub-directories")
-            }
-          }
-        } else if (ft === 1) {
+
+          } else if (ft === 1) {
           if (!sd) {
             if ((!dateinfile) && (!zip)) {
               console.log("Directory copy")
+
+              if (s.length > 0) {
+                for (j = 1; j < s.length; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              // strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '\\*" -Destination "$BackupToFinal' + '\\' + dir + '"\n\n'
+              strFile += `Get-ChildItem "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -file | Copy-Item -Destination "$BackupToFinal\\${dir}" -Force\n\n`
+
             } else if ((dateinfile) && (!zip))  {
               console.log("Directory copy with date")
+
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir =td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    dir === '' ? dir = s[j] : dir += '\\' + td + '-' + s[j]
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '\\*" -Destination "$BackupToFinal' + '\\' + dir + '"\n\n'
+              // strFile += 'Get-ChildItem "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '\\*"' + ' -file | Copy-Item -Destination "$BackupToFinal' + '\\' + td + '-' + dir + ' -Force' + '\n\n'
+
+
             } else if ((!dateinfile) && (zip))  {
               console.log("Directory zip copy")
+
+              if (s.length > 0) {
+                for (j = 1; j < s.length; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              // strFile += `Compress-Archive -Path "jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}`
+              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+              strFile += `compressFiles -zipFile "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -FilesToZip "E:\programming\*.txt"`
+              strFile += `compressFiles -zipFile "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -RootDir "E:\programming\" -FilesToZip "E:\programming\*.txt"`
+
+
             } else if ((dateinfile) && (zip))  {
               console.log("Directory zip copy with date")
+
+              console.log("s.length - " + s.length)
+              console.log(s[0] + "; " + s[1] + "; " + s[2])
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir = td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    console.log(dir)
+                    if ((j === s.length - 1) || (j === s.length)) {
+                      dir ? dir = td + '-' + s[j] : dir += td + '-' + s[j]
+                    } else {
+                      dir ? dir = s[j] : dir += s[j]
+                    }
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+
             }
+
           } else {
             if ((!dateinfile) && (!zip)) {
               console.log("Directory copy with sub-directories")
+
+              if (s.length > 0) {
+                for (j = 1; j < s.length; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              // strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '\\*" -Destination "$BackupToFinal' + '\\' + dir + '" -Recurse\n\n'
+              strFile += `Get-ChildItem "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" | Copy-Item -Destination "$BackupToFinal\\${dir}" -Force -Recurse\n\n`
+
             } else if ((dateinfile) && (!zip))  {
               console.log("Directory copy with date with sub-directories")
+
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir =td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    dir === '' ? dir = s[j] : dir += '\\' + td + '-' + s[j]
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              // strFile += 'Copy-Item -Path "' + jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '\\*" -Destination "$BackupToFinal' + '\\' + td + '-' + dir + '"\n\n'
+              strFile += `Get-ChildItem "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" | Copy-Item -Destination "$BackupToFinal\\${dir}" -Force -Recurse\n\n`
+
             } else if ((!dateinfile) && (zip))  {
               console.log("Directory zip copy with sub-directories")
+
+              if (s.length > 0) {
+                for (j = 1; j < s.length; j++) {
+                  dir === '' ? dir = s[j] : dir += '\\' + s[j]
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*.*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+
+
             } else if ((dateinfile) && (zip))  {
               console.log("Directory zip copy with date with sub-directories")
+
+              if (s.length > 0) {
+                if (s.length === 1) {
+                  dir =td + '-' + s[1]
+                } else {
+                  for (j = 1; j < s.length; j++) {
+                    dir === '' ? dir = s[j] : dir += '\\' + td + '-' + s[j]
+                  }
+                }
+              }
+
+              console.log("dir - " + dir)
+              console.log(rd + '\\' + dir)
+
+              strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
+              strFile += '\tWrite-Output "Directory does not exist"' + '\n'
+              strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
+              strFile += '}' + '\n'
+
+              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*.*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+
             }
           }
         } else if (ft === 2) {
@@ -366,12 +647,15 @@ async function putBuild(jsondata) {
               console.log("Filetype zip copy with sub-directories")
             } else if ((dateinfile) && (zip))  {
               console.log("Filetype zip copy with date with sub-directories")
+
             }
           }
         }
       }
     }  // for
 
+
+    strFile += powershellFunctions()
 
     powershellFileWrite(batchFileName, strFile)
 

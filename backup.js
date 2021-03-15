@@ -181,7 +181,7 @@ window.addEventListener('load', async () => {
 
 
 elName.addEventListener("change", function() {
-  dataSet(bListID, "Backup Name", this.value)
+  dataSet(bListID, "Backup Name", this.value.trim())
 })
 
 // elName.addEventListener("keydown", function(e) {
@@ -202,7 +202,7 @@ elName.addEventListener("keypress", function(e) {
 
 
 elBackupTo.addEventListener("change", function() {
-  dataSet(bListID, "Backup Root Directory", this.value)
+  dataSet(bListID, "Backup Root Directory", this.value.trim())
 })
 
 elDate.addEventListener("change", function() {
@@ -302,7 +302,7 @@ elSendEmail.addEventListener("change", function() {
 })
 
 elEmail.addEventListener("change", function() {
-  dataSet(bListID, "Email Address", this.value)
+  dataSet(bListID, "Email Address", this.value.trim())
 })
 
 
@@ -364,7 +364,16 @@ function active(active) {
         warningsRemove()
         fld.setAttribute("disabled", true)
       } else {
-        fld.removeAttribute("disabled")
+
+        if (elDate.checked) {
+          console.log(fld)
+          if (!fld.getAttribute('name') === "includedate") {
+            fld.removeAttribute("disabled")
+          }
+        } else {
+          fld.removeAttribute("disabled")
+        }
+
       }
       fld.disabled = !active
     } else {
@@ -665,11 +674,7 @@ function fileLineAdd(index) {
 
   let elDateDiv = createElementAtt(elFL, 'div', ['filelist__date'], [], '')
   let elDateChk = createElementAtt(elDateDiv, 'input', ['field'], [['type', 'checkbox'], ["data-description", "This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype."]], '')
-  if (index % 2 === 0) {
-    createElementAtt(elFL, 'span', [], [], ' ')
-  } else {
-    elFL.appendChild(document.createTextNode(' '))
-  }
+  elFL.appendChild(document.createTextNode(' '))
 
   let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip'], [], '')
   let elZipChk = createElementAtt(elZipDiv, 'input', [], [['type', 'checkbox']], [], '')
@@ -688,7 +693,7 @@ function fileLineAdd(index) {
 
 
   elFileTxt.addEventListener("change", function() {
-    dataSet(bListID, "Files", this.value, index, "File Or Folder")
+    dataSet(bListID, "Files", this.value.trim(), index, "File Or Folder")
   })
 
   elSDChk.addEventListener("change", function() {
@@ -819,7 +824,7 @@ elCreateScript.addEventListener("click", function() {
     };
 
     let r = await fetch(url, options)
-    debugger
+    // debugger
     let txt = await r.text()
 
     try {
