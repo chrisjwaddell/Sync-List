@@ -249,9 +249,9 @@ function powershellStart(filesArray, edited) {
   function compressFiles {
 
     param (
-        $zipFile = 'E:\programming\programming-txt.zip',
-        $RootDir = 'E:\programming\',
-        $FilesToZip = 'E:\programming\*.txt'
+        $zipFile,
+        $RootDir,
+        $FilesToZip
     )
 
     $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
@@ -435,7 +435,7 @@ async function putBuild(jsondata) {
 
             }
 
-          } else if (ft === 1) {
+        } else if (ft === 1) {
           if (!sd) {
             if ((!dateinfile) && (!zip)) {
               console.log("Directory copy")
@@ -485,10 +485,14 @@ async function putBuild(jsondata) {
             } else if ((!dateinfile) && (zip))  {
               console.log("Directory zip copy")
 
+              let filename = ''
               if (s.length > 0) {
                 for (j = 1; j < s.length; j++) {
                   dir === '' ? dir = s[j] : dir += '\\' + s[j]
                 }
+                filename = s[s.length - 1] + '.zip'
+              } else {
+                filename = jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '.zip'
               }
 
               console.log("dir - " + dir)
@@ -500,13 +504,14 @@ async function putBuild(jsondata) {
               strFile += '}' + '\n'
 
               // strFile += `Compress-Archive -Path "jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}`
-              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
-              strFile += `compressFiles -zipFile "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -FilesToZip "E:\programming\*.txt"`
-              strFile += `compressFiles -zipFile "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -RootDir "E:\programming\" -FilesToZip "E:\programming\*.txt"`
+              // strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+              // strFile += `compressFiles -zipFile "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -FilesToZip "E:\programming\*.txt"`
+              strFile += `compressFiles -zipFile "$BackupToFinal\\${dir}\\${filename}" -RootDir "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}" -FilesToZip "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*"` + '\n\n'
 
 
             } else if ((dateinfile) && (zip))  {
               console.log("Directory zip copy with date")
+              let filename = ''
 
               console.log("s.length - " + s.length)
               console.log(s[0] + "; " + s[1] + "; " + s[2])
@@ -523,7 +528,11 @@ async function putBuild(jsondata) {
                     }
                   }
                 }
-              }
+
+                filename = td + '-' + s[s.length - 1] + '.zip'
+            } else {
+              filename = jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"] + '.zip'
+            }
 
               console.log("dir - " + dir)
               console.log(rd + '\\' + dir)
@@ -533,8 +542,8 @@ async function putBuild(jsondata) {
               strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
               strFile += '}' + '\n'
 
-              strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
-
+              // strFile += `Compress-Archive -Path "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
+              strFile += `compressFiles -zipFile "$BackupToFinal\\${dir}\\${filename}" -RootDir "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}" -FilesToZip "${jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"]}\\*"` + '\n\n'
             }
 
           } else {
@@ -647,9 +656,9 @@ async function putBuild(jsondata) {
               console.log("Filetype zip copy with sub-directories")
             } else if ((dateinfile) && (zip))  {
               console.log("Filetype zip copy with date with sub-directories")
-
             }
           }
+
         }
       }
     }  // for
