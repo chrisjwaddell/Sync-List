@@ -716,7 +716,7 @@ function fileLineAdd(index) {
       let lineNumber = Number(this.getAttribute('data-index'))
       document.querySelectorAll("hr")[lineNumber].remove()
       let strLine = `.filelist__line[data-index="${lineNumber}"]`
-      debugger
+      // debugger
       let index
       for (let i = 0; i < document.querySelectorAll('.filelist__bin button').length; i++) {
         if (lineNumber === Number(document.querySelectorAll('.filelist__bin button')[i].getAttribute('data-index'))) {
@@ -736,7 +736,7 @@ function fileLineAdd(index) {
 elFileAdd.addEventListener("click", function() {
   let len = jsondata["Backup List"][bListID]["Files"].length
   fileLineAdd(len)
-  debugger
+  // debugger
   jsondata["Backup List"][bListID]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false })
 
   dataSave()
