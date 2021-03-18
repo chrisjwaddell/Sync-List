@@ -75,6 +75,7 @@ async function putSettings(jsonobj) {
 
   // console.log("in putSettings:")
   // console.log(json)
+
   let strjson = JSON.stringify(json, null, 4)
   console.log(strjson)
   // fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
@@ -87,7 +88,7 @@ async function putSettings(jsonobj) {
   // })
 
   try {
-    fsp.writeFile(settingsFile, strjson)
+    await fsp.writeFile(settingsFile, strjson)
     return json
   } catch (err) {
       console.log("xxx")
@@ -289,7 +290,7 @@ function powershellStart(filesArray, edited) {
       fsp.writeFile(fileName, fileText)
       return fileText
     } catch (err) {
-        console.log("xxx")
+        // console.log("xxx")
         console.error(err)
     }
     //file written successfully
@@ -348,6 +349,13 @@ async function putBuild(jsondata) {
     for (let i = 0; i < jsondata["Backup List"][backupID]["Files"].length; i++) {
       // console.log(jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"])
       // console.log(jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].substring(3, jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].length))
+
+      // if file line is disabled don't look at it
+      if (!jsondata["Backup List"][backupID]["Files"][i]["Active"]) {
+        i++
+        if (i >= jsondata["Backup List"][backupID]["Files"].length) break
+      }
+
       let s = jsondata["Backup List"][backupID]["Files"][i]["File Or Folder"].split('\\')
       console.log(s)
       var dir = ''
@@ -1017,6 +1025,7 @@ async function putBuild(jsondata) {
 
     let today = new Date()
     json["Backup List"][backupID]["Script created"] = dateToYYYYMMDD(today, '/')
+    json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically run it regularly.`
 
     let fileContentPlusErrors = ''
     try {
