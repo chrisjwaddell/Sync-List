@@ -14,7 +14,7 @@ body {
 
 .wrapper {
   border: 1px solid #860;
-  width: 1400px;
+  width: 1450px;
   margin: 0 auto 200px auto;
   /* padding: 10px; */
   padding: 10px 0;
@@ -141,7 +141,7 @@ input {
 }
 
 .filelist {
-  width: 1300px;
+  width: 1400px;
   border: 3px solid #ffffff;
   margin: 0 auto;
   padding-bottom: 20px;
@@ -174,38 +174,33 @@ hr {
   margin: 10px auto;
 }
 
-.filelist__file {
+.col {
   display: inline-block;
-  width: 700px;
   height: 100%;
 }
-.filelist__subdir {
-  display: inline-block;
-  height: 100%;
+
+.filelist__file {
+  width: 700px;
+}
+.filelist__subdir, .filelist__date, .filelist__zip, .filelist__active {
   width: 75px;
 }
 .filelist__modified {
-  display: inline-block;
   width: 250px;
-  height: 100%;
 }
-.filelist__date {
-  display: inline-block;
-  height: 100%;
+/* .filelist__date {
   width: 75px;
 }
 .filelist__zip {
-  display: inline-block;
-  height: 100%;
   width: 75px;
-}
+} */
 
-.filelist__edit {
+/* .filelist__edit {
   display: inline-block;
   width: 60px;
   height: 100%;
   text-align: center;
-}
+} */
 
 .filelist__edit button {
   /* background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='6 8 34 34'%3E%3Cpath d='M9.6 40.4l2.5-9.9L27 15.6l7.4 7.4-14.9 14.9-9.9 2.5zm4.3-8.9l-1.5 6.1 6.1-1.5L31.6 23 27 18.4 13.9 31.5z'/%3E%3Cpath d='M17.8 37.3c-.6-2.5-2.6-4.5-5.1-5.1l.5-1.9c3.2.8 5.7 3.3 6.5 6.5l-1.9.5z'/%3E%3Cpath d='M29.298 19.287l1.414 1.414-13.01 13.02-1.414-1.41z'/%3E%3Cpath d='M11 39l2.9-.7c-.3-1.1-1.1-1.9-2.2-2.2L11 39z'/%3E%3Cpath d='M35 22.4L27.6 15l3-3 .5.1c3.6.5 6.4 3.3 6.9 6.9l.1.5-3.1 2.9zM30.4 15l4.6 4.6.9-.9c-.5-2.3-2.3-4.1-4.6-4.6l-.9.9z'/%3E%3C/svg%3E"); */
