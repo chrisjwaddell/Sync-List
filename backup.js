@@ -25,6 +25,9 @@ const elFileList = document.querySelector('.filelist')
 
 const elFileAdd = document.querySelector('.filelist__add button')
 
+// date in root dir, it needs to be checked in various places
+var scriptRootDirDate
+
 const warningvisible = (fieldname, visible) => { (visible) ? document.querySelector('p.' + fieldname).classList.add("isvisible") : document.querySelector('p.' + fieldname).classList.remove("isvisible") };
 const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail, elEmail, elLastEdited, elActive];
 
@@ -207,13 +210,17 @@ elBackupTo.addEventListener("change", function() {
 
 elDate.addEventListener("change", function() {
   // debugger
+  scriptRootDirDate = this.checked
   dataSet(bListID, "Include Date", Boolean(this.checked))
   debugger
   for (let i = 0; i < document.querySelectorAll(".filelist__date input").length; i++) {
     if (elDate.checked) {
       document.querySelectorAll(".filelist__date input")[i].setAttribute("disabled", '')
     } else {
-      document.querySelectorAll(".filelist__date input")[i].removeAttribute("disabled")
+      // enable if the line is active
+      if (document.querySelectorAll(".filelist__active input")[i].checked) {
+        document.querySelectorAll(".filelist__date input")[i].removeAttribute("disabled")
+      }
     }
   }
 })
@@ -433,6 +440,29 @@ function warnings(json) {
 }
 
 
+function fileLineIndexNew() {
+  let elTemp = document.querySelectorAll('.filelist__line')
+  let arrIndexes = []
+  elTemp.forEach(item => arrIndexes.push(Number(item.getAttribute('data-index'))))
+  let a = arrIndexes.reduce((acc, cv) => cv > acc ? cv : acc, 0)
+  return a + 1
+}
+
+function fileLineIndexToLineNumber(index) {
+  elTemp = document.querySelectorAll(".filelist__line")
+
+  // Get the line number in the DOM and array
+  let i = 0
+  do {
+    i = i + 1
+    console.log(elTemp[i]) //value
+    console.log(elTemp[i].getAttribute('data-index'))
+  } while ((Number(elTemp[i].getAttribute('data-index')) !== index) || (i ==200))
+
+  return i
+}
+
+
 function dataLoad(backupListID) {
   // console.log("from dataLoad")
   // console.log(arguments)
@@ -464,20 +494,21 @@ function dataLoad(backupListID) {
     elLastEdited.classList.add(datecolor)
   }
 
-// debugLog(debugGetFuncName(), "2", { backupListID })
-
   warnings(jsondata)
-
-// debugLog(debugGetFuncName(), "3", { backupListID })
 
   // debugger
   active(elActive.checked)
+  scriptRootDirDate = elActive.checked
+  // debugger
 
 
-  debugLog(debugGetFuncName(), "4", { backupListID })
+  // debugLog(debugGetFuncName(), "4", { backupListID })
 
   for (let i = 0; i < jsondata["Backup List"][backupListID]["Files"].length; i++) {
-    fileLineAdd(i)
+    console.log("i - " + i + "; length - " + jsondata["Backup List"][backupListID]["Files"].length)
+    let dataindex = fileLineIndexNew()
+
+    fileLineAdd(dataindex)
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Or Folder"]
 
     // document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Type"]
@@ -491,11 +522,14 @@ function dataLoad(backupListID) {
     document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Sub-Directories"]
     document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Date In File"]
 
+    document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Active"]
+    let active = document.querySelectorAll(".filelist__active input")[i].checked
+    fileLineActive(dataindex, active)
   }
 
 
   for (let i = 0; i < jsondata["Backup List"].length; i++) {
-    debugLog(debugGetFuncName(), "5",  { backupListID })
+    // debugLog(debugGetFuncName(), "5",  { backupListID })
 
     let elTR
     if (i === bListID) {
@@ -642,49 +676,46 @@ function dateColor(startDate, endDate) {
 
 
 function fileLineAdd(index) {
-  debugStart(debugGetFuncName(), arguments)
+  // debugStart(debugGetFuncName(), arguments)
   createElementAtt(elFileList, 'hr', [], [], '')
 
   console.log( { bListID })
 
   let elFL = createElementAtt(elFileList, 'div', ['filelist__line'], [["data-index", index]], '')
 
-  let elFileDiv = createElementAtt(elFL, 'div', ['filelist__file'], [], '')
+  let elFileDiv = createElementAtt(elFL, 'div', ['filelist__file', 'col'], [], '')
 
   let elFileTxt = createElementAtt(elFileDiv, 'input', ['e-input--primary'], [['type', 'text'], ['placeholder', 'File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt']], '')
   // this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
   // createElementAtt(elFL, 'span', [], [], ' ')
   elFL.appendChild(document.createTextNode(' '))
 
-  let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir'], [], '')
+  let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir', 'col'], [], '')
 
   let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox']], [], '')
-  if (index % 2 === 0) {
-    createElementAtt(elFL, 'span', [], [], ' ')
-  } else {
-    elFL.appendChild(document.createTextNode(' '))
-  }
+  elFL.appendChild(document.createTextNode(' '))
 
-  let elModifiedDiv = createElementAtt(elFL, 'div', ['filelist__modified'], [], '')
-  if (index % 2 === 0) {
-    createElementAtt(elFL, 'span', [], [], ' ')
-  } else {
-    elFL.appendChild(document.createTextNode(' '))
-  }
 
-  let elDateDiv = createElementAtt(elFL, 'div', ['filelist__date'], [], '')
+  let elModifiedDiv = createElementAtt(elFL, 'div', ['filelist__modified', 'col'], [], '')
+  elFL.appendChild(document.createTextNode(' '))
+
+
+  let elDateDiv = createElementAtt(elFL, 'div', ['filelist__date', 'col'], [], '')
   let elDateChk = createElementAtt(elDateDiv, 'input', ['field'], [['type', 'checkbox'], ["data-description", "This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype."]], '')
   elFL.appendChild(document.createTextNode(' '))
 
-  let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip'], [], '')
+  let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip', 'col'], [], '')
   let elZipChk = createElementAtt(elZipDiv, 'input', [], [['type', 'checkbox']], [], '')
-  if (index % 2 === 0) {
-    createElementAtt(elFL, 'span', [], [], ' ')
-  } else {
-    elFL.appendChild(document.createTextNode(' '))
-  }
+  elFL.appendChild(document.createTextNode(' '))
 
-  let elBinDiv = createElementAtt(elFL, 'div', ['filelist__bin'], [], '')
+
+  let elActiveDiv = createElementAtt(elFL, 'div', ['filelist__active', 'col'], [], '')
+  let elActiveChk = createElementAtt(elActiveDiv, 'input', [], [['type', 'checkbox'], ["data-index", index]], '')
+  elFL.appendChild(document.createTextNode(' '))
+  elActiveChk.checked = true
+
+
+  let elBinDiv = createElementAtt(elFL, 'div', ['filelist__bin', 'col'], [], '')
   let elDeleteBtn = createElementAtt(elBinDiv, 'button', ['c-btn', 'c-btn--secondary', 'createscript', 'u-text-center'], [["data-index", index]], '')
 
   console.log( { bListID })
@@ -708,13 +739,25 @@ function fileLineAdd(index) {
     dataSet(bListID, "Files", this.checked, index, "Zip It")
   })
 
+  elActiveChk.addEventListener("change", function() {
+    let index = Number(this.getAttribute('data-index'))
+    let lineNumber = fileLineIndexToLineNumber(index)
+
+    fileLineActive(lineNumber, this.checked)
+
+    dataSet(bListID, "Files", this.checked, lineNumber - 1, "Active")
+  })
+
 
   elDeleteBtn.addEventListener("click", function() {
     // dataSet(bListID, "Files", this.value, index, "File Or Folder")
+    debugger
     var r = confirm("Are you sure you want to remove this line?")
     if (r == true) {
+      debugger
       let lineNumber = Number(this.getAttribute('data-index'))
-      document.querySelectorAll("hr")[lineNumber].remove()
+      let line = fileLineIndexToLineNumber(lineNumber)
+      document.querySelectorAll("hr")[line -1].remove()
       let strLine = `.filelist__line[data-index="${lineNumber}"]`
       // debugger
       let index
@@ -734,10 +777,10 @@ function fileLineAdd(index) {
 
 
 elFileAdd.addEventListener("click", function() {
-  let len = jsondata["Backup List"][bListID]["Files"].length
-  fileLineAdd(len)
+  let dataindex = fileLineIndexNew()
+  fileLineAdd(dataindex - 1)
   // debugger
-  jsondata["Backup List"][bListID]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false })
+  jsondata["Backup List"][bListID]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false, "Active": true })
 
   dataSave()
 })
@@ -779,7 +822,7 @@ debugLog(debugGetFuncName(), "2", { bListID } )
 
 
 elAdd.addEventListener("click", function() {
-  debugger
+  // debugger
   jsondata["Backup List"].push( {"Backup Name": "", "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false }]} )
 
   dataSave()
@@ -791,7 +834,7 @@ elRemove.addEventListener("click", function() {
   let index = Number(document.querySelector('.backupnamelist tr.selected').getAttribute('data-index'))
   var r = confirm(`Are you sure you want to make this Backup Profile - ${elName.value} inactive?`)
   if (r == true) {
-    debugger
+    // debugger
     jsondata["Backup List"].splice(index, 1)
     bListID = 0
     dataSave()
@@ -799,9 +842,35 @@ elRemove.addEventListener("click", function() {
   }
 })
 
+function fileLineActive(index, value) {
+  // debugger
+  if (value) {
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__file input`).removeAttribute('disabled')
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__subdir input`).removeAttribute('disabled')
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__zip input`).removeAttribute('disabled')
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__bin button`).removeAttribute('disabled')
+  } else {
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__file input`).setAttribute('disabled', true)
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__subdir input`).setAttribute('disabled', true)
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__zip input`).setAttribute('disabled', true)
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__bin button`).setAttribute('disabled', true)
+  }
+
+  if (scriptRootDirDate) {
+    document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).setAttribute('disabled', true)
+  } else {
+    if (value) {
+      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).removeAttribute('disabled')
+    } else {
+      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).setAttribute('disabled', true)
+    }
+  }
+}
+
+
 
 elCreateScript.addEventListener("click", function() {
-  debugStart(debugGetFuncName(), arguments)
+  // debugStart(debugGetFuncName(), arguments)
   // debugLog(debugGetFuncName(), "2", { bListID } )
   // debugger
   buildBackupScript()
