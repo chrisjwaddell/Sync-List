@@ -314,7 +314,7 @@ elEmail.addEventListener("change", function() {
 
 
 function dataSet(backupListID, property, value, fileIndex, fileField) {
-  // fileIndex - optional, if this is filled in, it means we are talking about file fields
+  // fileIndex - if this is filled in, it means we are talking about file fields
   let json
   // debugger
 
@@ -354,7 +354,9 @@ async function dataSave() {
   try {
     json = JSON.parse(txt)
     // json = IsJsonString(txt)
-    warnings(json)
+    if (json.hasOwnProperty("Error List")) {
+      warnings(json)
+    }
   } catch(err) {
     console.log(err)
   }
@@ -494,21 +496,26 @@ function dataLoad(backupListID) {
     elLastEdited.classList.add(datecolor)
   }
 
-  warnings(jsondata)
+  debugger
+  if (jsondata.hasOwnProperty("Error List")) {
+    warnings(jsondata)
+  }
 
   // debugger
   active(elActive.checked)
   scriptRootDirDate = elActive.checked
   // debugger
 
-
   // debugLog(debugGetFuncName(), "4", { backupListID })
+
+  var dataindex = fileLineIndexNew()
 
   for (let i = 0; i < jsondata["Backup List"][backupListID]["Files"].length; i++) {
     console.log("i - " + i + "; length - " + jsondata["Backup List"][backupListID]["Files"].length)
-    let dataindex = fileLineIndexNew()
 
-    fileLineAdd(dataindex)
+    debugger
+    fileLineAdd(dataindex - 1)
+    dataindex++
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Or Folder"]
 
     // document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Type"]
@@ -524,7 +531,7 @@ function dataLoad(backupListID) {
 
     document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][backupListID]["Files"][i]["Active"]
     let active = document.querySelectorAll(".filelist__active input")[i].checked
-    fileLineActive(dataindex, active)
+    fileLineActive(i, active)
   }
 
 
@@ -705,7 +712,7 @@ function fileLineAdd(index) {
   elFL.appendChild(document.createTextNode(' '))
 
   let elZipDiv = createElementAtt(elFL, 'div', ['filelist__zip', 'col'], [], '')
-  let elZipChk = createElementAtt(elZipDiv, 'input', [], [['type', 'checkbox']], [], '')
+  let elZipChk = createElementAtt(elZipDiv, 'input', ['field'], [['type', 'checkbox'], ['data-description', 'Zip up these files. The zip file can be a maximum size of 8Gb. It is best to have a date in either the Root Directory or in the file name.']], '')
   elFL.appendChild(document.createTextNode(' '))
 
 
@@ -896,10 +903,15 @@ elCreateScript.addEventListener("click", function() {
     // debugger
     let txt = await r.text()
 
+    debugger
+
     try {
       json = JSON.parse(txt)
       // json = IsJsonString(txt)
-      warnings(json)
+      if (json.hasOwnProperty("Script message")) {
+        alert(json['Script message'])
+        warnings(json)
+      }
     } catch(err) {
       console.log(err)
     }
