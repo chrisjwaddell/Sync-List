@@ -158,11 +158,14 @@ elBtn7.addEventListener("click", async () => {
 
 
 window.addEventListener('load', async () => {
-    // debugger
     try {
-      let a = await fetch("http://localhost:21311")
+      let a = await fetch("http://localhost:21311").catch(err => {
+        console.log(err)
+        alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+      })
+
       let txt = await a.text()
-      // console.log(txt)
+      console.log(txt)
       // console.log(typeof txt)
       // debugger
       jsondata = await JSON.parse(txt)
@@ -173,9 +176,17 @@ window.addEventListener('load', async () => {
       }
       // console.log(jsondata)
       // console.log(typeof jsondata)
+
+      if (jsondata.hasOwnProperty("Important Error Message")) {
+        alert(jsondata['Important Error Message'])
+        warnings(jsondata)
+      } else {
+        warnings(jsondata)
+      }
+
+
     } catch(err) {
       console.log(err)
-      console.log("Error in fetch")
     }
 
     dataLoad(bListID)
@@ -350,16 +361,27 @@ async function dataSave() {
     body: JSON.stringify(jsondata)
   };
 
-  let r = await fetch(url, options)
+  let r = await fetch(url, options).catch(err => {
+    console.log(err)
+    alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+  })
+
   // debugger
   let txt = await r.text()
+  console.log(txt)
+  debugger
 
   try {
     json = JSON.parse(txt)
     // json = IsJsonString(txt)
-    if (json.hasOwnProperty("Error List")) {
+    // debugger
+    if (json.hasOwnProperty("Important Error Message")) {
+      alert(json['Important Error Message'])
+      warnings(json)
+    } else {
       warnings(json)
     }
+
   } catch(err) {
     console.log(err)
   }
@@ -502,7 +524,6 @@ function dataLoad(backupListID) {
     elLastEdited.classList.add(datecolor)
   }
 
-  debugger
   if (jsondata.hasOwnProperty("Error List")) {
     warnings(jsondata)
   }
@@ -900,7 +921,10 @@ elCreateScript.addEventListener("click", function() {
       body: JSON.stringify(jsondata)
     };
 
-    let r = await fetch(url, options)
+    let r = await fetch(url, options).catch(err => {
+      console.log(err)
+      alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+    })
     // debugger
     let txt = await r.text()
 

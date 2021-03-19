@@ -2,7 +2,7 @@ const fsp = require('fs/promises');
 // const fs = require('fs');
 // const fsp = fs.promises;
 
-const templateSettings = '{"Backup List":[{ "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "03/03/2021", "Script created": "27/02/2021", "Active": true, "Files": [] } ] }'
+const templateSettings = '{"Backup List":[{ "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": 123, "Script created": 123, "Active": true, "Files": [] } ] }'
 //take the date out
 
 var settingsFile = __dirname + '\\' + 'settings.json'
@@ -41,9 +41,10 @@ async function getSettings() {
    try {
       // console.log("Before try - settings.json read")
 
-        let strFileContent = await fsp.readFile(settingsFile,'utf8')
-        // console.log(strFileContent)
+        var strFileContent = await fsp.readFile(settingsFile,'utf8')
+        console.log(strFileContent)
         let objJSON = IsJsonString(strFileContent)
+        console.log(objJSON)
         let fileContentPlusErrors = await buildErrorChecker(objJSON)
         return fileContentPlusErrors
 
@@ -52,10 +53,22 @@ async function getSettings() {
         console.error(err)
         console.error("Settings file DOESN'T exists...... Making settings.json")
 
+        // save the file before overwritting settings.json
+        let today = new Date()
+        // today = Date.now()
+        console.log("today - " + today)
+        console.log(dateToYYYYMMDD(today, ''))
+        let settingsFileError = __dirname + '\\' + 'settings-' + dateToYYYYMMDD(today, '') + '-' + dateToHHMM(today, '') + '.json'
+        await fsp.writeFile(settingsFileError, strFileContent).catch(err => console.error("Error: Couldn't create settings Error json file"))
+
+
         let jsontemplate = IsJsonString(templateSettings)
-        jsontemplate["Important Error Message"] = "The settings.json doesn't exist."
+        jsontemplate["Important Error Message"] = "The settings.json isn't in the correct format. A new, blank settings.json file has been created and the previous settings file was save to " + settingsFileError
+
 
         let strjson = JSON.stringify(jsontemplate, null, 4)
+        console.log(jsontemplate)
+
 
         await fsp.writeFile(settingsFile, strjson).catch(err => console.error("Error: Couldn't create settings.json"))
 
@@ -107,6 +120,13 @@ async function buildErrorChecker(jsonobj) {
 
   json = jsonobj
 
+  try {
+    let objJSON = JSON.parse(json)
+  } catch (err) {
+    console.error(err)
+  }
+
+
   delete json["Important Error Message"]
 
   delete json['Script message']
@@ -121,29 +141,29 @@ async function buildErrorChecker(jsonobj) {
     json["Error List"].push({})
 
     // Backup Name
-  try {
-    await fsp.access(__dirname + '\\' + 'Backup-scripts' + '\\' + json["Backup List"][i]["Backup Name"] + '.ps1')
-    // console.log("Check script file - after await")
-  } catch (error){
-    console.error(error)
-    json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
-    // console.log(json)
-  }
+    try {
+      await fsp.access(__dirname + '\\' + 'Backup-scripts' + '\\' + json["Backup List"][i]["Backup Name"] + '.ps1')
+      // console.log("Check script file - after await")
+    } catch (error){
+      console.error(error)
+      json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
+      // console.log(json)
+    }
 
-  // Backup Root Directory
-  try {
-    await fsp.access(json["Backup List"][i]["Backup Root Directory"])
-  } catch (error){
-    json["Error List"][i]["Backup Root Directory"] = "Backup Root Directory not found."
-  }
+    // Backup Root Directory
+    try {
+      await fsp.access(json["Backup List"][i]["Backup Root Directory"])
+    } catch (error){
+      json["Error List"][i]["Backup Root Directory"] = "Backup Root Directory not found."
+    }
 
-  // Backup script created less than Last edited
-  let d1 = json["Backup List"][i]["Script created"]
-  let d2 = json["Backup List"][i]["Last edited"]
+    // Backup script created less than Last edited
+    let d1 = json["Backup List"][i]["Script created"]
+    let d2 = json["Backup List"][i]["Last edited"]
 
-  if (d2 > d1) {
-    json["Error List"][i]["Last edited"] = "Changes have been made since the Backup Script was generated last."
-  }
+    if (d2 > d1) {
+      json["Error List"][i]["Last edited"] = "Changes have been made since the Backup Script was generated last."
+    }
 
 }  // for
 
@@ -1081,14 +1101,16 @@ async function putBuild(jsondata) {
   }
 
 function dateToYYYYMMDD(dt, seperator) {
-  let d = dt.getDate() < 10 ? "0" + dt.getDate() : dt.getDate()
-  let m = dt.getMonth() < 9 ? "0" + Number(dt.getMonth() + 1) : Number(dt.getMonth() + 1)
-  let y = dt.getFullYear()
+  let da = new Date(dt)
+
+  let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
+  let m = da.getMonth() < 9 ? "0" + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
+  let y = da.getFullYear()
   return y + seperator + m + seperator + d
 }
 
 function dateToDDMMYYYY(dt, seperator) {
-  let da = new Date()
+  let da = new Date(dt)
 
   let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
   let m = da.getMonth() < 9 ? "0" + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
@@ -1116,6 +1138,13 @@ function dateToDDMMYYYY(dt, seperator) {
     return diffDays
   }
 
+  function dateToHHMM(dt, seperator) {
+    let da = new Date(dt)
+
+    let h = da.getHours() < 10 ? "0" + da.getHours() : da.getHours()
+    let m = da.getMinutes() < 9 ? "0" + Number(da.getMinutes() + 1) : Number(da.getMinutes() + 1)
+    return h + seperator + m
+  }
 
 
   // app.use((error, req, res, next) => {
