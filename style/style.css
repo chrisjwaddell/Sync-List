@@ -3,6 +3,45 @@
    #MAIN
    ========================================================================== */
 /* ==========================================================================
+   #BASE-FRAMEWORK
+   ========================================================================== */
+/**
+ * CSS framework code that's handy
+ *
+ */
+.dib {
+  display: inline-block;
+}
+
+.db {
+  display: block !important;
+}
+
+.dn {
+  display: none;
+}
+
+.b-black {
+  border: 1px solid #000000;
+}
+
+.red {
+  color: #f00;
+}
+
+.isvisible.isvisible {
+  visibility: visible;
+}
+
+.u-text-center {
+  text-align: center !important;
+}
+
+.u-text-line-through {
+  text-decoration: line-through;
+}
+
+/* ==========================================================================
    #FIELDS
    ========================================================================== */
 /**
@@ -21,13 +60,13 @@ input {
 }
 
 label {
-  font-size: 24px;
+  font-size: 20px;
   /* font-weight: 600; */
 }
 
 input {
   /* width: 100%; */
-  font-size: 20px;
+  font-size: 18px;
   width: 60px;
   border-style: solid;
   border-width: 1px;
@@ -146,13 +185,13 @@ input {
 }
 
 label {
-  font-size: 24px;
+  font-size: 20px;
   /* font-weight: 600; */
 }
 
 input {
   /* width: 100%; */
-  font-size: 20px;
+  font-size: 18px;
   width: 60px;
   border-style: solid;
   border-width: 1px;
@@ -162,8 +201,8 @@ input {
    ========================================================================== */
 .e-input--primary {
   height: 2rem;
-  padding: 0.25em 0.5em;
-  font-size: 22px;
+  padding: 0.1em 0.4em;
+  font-size: 18px;
   font-family: "Source Sans Pro", sans-serif;
   border: 2px solid #606;
   border-radius: 6px;
@@ -180,7 +219,7 @@ input {
   box-shadow: 0 0 0 0.125rem white, 0 0 0 0.325rem #606;
 }
 .e-input--primary:placeholder-shown {
-  background-color: #606;
+  background-color: #c0c5ff;
 }
 
 .e-input--secondary {
@@ -230,6 +269,171 @@ input {
 .e-input--negative {
   background-color: red;
   color: white;
+}
+
+/* ==========================================================================
+   #BUTTONS
+   ========================================================================== */
+/**
+ * This is an example component. Extend inuitcss by building your own components
+ * that make up your UI. Component classes are prefixed with a `c-`.
+ */
+/**
+*  Example
+*  <button class="c-btn c-btn--primary btn-stopwatch">Start</button>
+*/
+/**
+ * 1. Allow us to style box model properties.
+ * 2. Line different sized buttons up a little nicer.
+ * 3. Make buttons inherit font styles (often necessary when styling `input`s as
+ *    buttons).
+ * 4. Reset/normalize some styles.
+ * 5. Force all button-styled elements to appear clickable.
+ */
+.c-btn {
+  display: inline-block;
+  /* [1] */
+  vertical-align: middle;
+  /* [2] */
+  font: inherit;
+  /* [3] */
+  text-align: center;
+  /* [4] */
+  margin: 0;
+  /* [4] */
+  cursor: pointer;
+  /* [5] */
+  padding: 6px 8px;
+  transition: all 300ms ease-in-out;
+  border-radius: 3px;
+}
+
+/* Style variants
+   ========================================================================== */
+.c-btn--primary {
+  background-color: #606;
+}
+.c-btn--primary:hover, .c-btn--primary:focus, .c-btn--primary:active {
+  color: white;
+  text-decoration: none;
+  /* [4] */
+  background-color: #ff6000;
+  transition: background-color 0.2s linear, color 0.2s linear;
+}
+.c-btn--primary:focus, .c-btn--primary:active {
+  outline: none;
+  box-shadow: 0 0 0 0.175rem white, 0 0 0 0.35rem #606;
+}
+
+.c-btn--secondary {
+  background-color: #aa0;
+  background-color: #E0E0E0;
+  color: black;
+}
+.c-btn--secondary:hover, .c-btn--secondary:focus, .c-btn--secondary:active {
+  text-decoration: none;
+  /* [4] */
+  background-color: #aaa;
+  transition: background-color 0.2s linear, color 0.2s linear;
+}
+.c-btn--secondary:focus, .c-btn--secondary:active {
+  outline: none;
+  box-shadow: 0 0 0 0.125rem #606, 0 0 0 0.325rem white;
+}
+
+.c-btn--tertiary {
+  background-color: #fff;
+  color: #4a8ec2;
+}
+.c-btn--tertiary, .c-btn--tertiary:hover, .c-btn--tertiary:active, .c-btn--tertiary:focus {
+  text-decoration: none;
+  color: #4a8ec2;
+}
+.c-btn--tertiary:hover, .c-btn--tertiary:focus {
+  color: #3774a2;
+}
+
+/* Size variants
+   ========================================================================== */
+.c-btn--small {
+  padding: 2px 6px;
+}
+
+.c-btn--large {
+  padding: 8px 20px;
+}
+
+/* Ghost buttons
+   ========================================================================== */
+/**
+ * Ghost buttons have see-through backgrounds and are bordered.
+ */
+.c-btn--ghost {
+  border: 2px solid currentColor;
+  padding: 4px 6px;
+}
+.c-btn--ghost, .c-btn--ghost:hover, .c-btn--ghost:active, .c-btn--ghost:focus {
+  background: none;
+}
+.c-btn--ghost.c-btn--small {
+  padding: 0px 4px;
+}
+.c-btn--ghost.c-btn--large {
+  padding: 6px 18px;
+}
+.c-btn--ghost.c-btn--primary {
+  color: #4a8ec2;
+}
+.c-btn--ghost.c-btn--primary:hover, .c-btn--ghost.c-btn--primary:focus {
+  color: #3774a2;
+}
+.c-btn--ghost.c-btn--secondary {
+  color: #2f4054;
+}
+.c-btn--ghost.c-btn--secondary:hover, .c-btn--ghost.c-btn--secondary:focus {
+  color: #1d2733;
+}
+.c-btn--ghost.c-btn--tertiary {
+  color: #fff;
+}
+.c-btn--ghost.c-btn--tertiary:hover, .c-btn--ghost.c-btn--tertiary:focus {
+  color: #fff;
+}
+
+/**
+ * Positive buttons skin. Extends `.btn`.
+ */
+.btn--positive {
+  background-color: #3f990f;
+  color: white;
+}
+
+/**
+ * Negative buttons skin. Extends `.btn`.
+ */
+.btn--negative {
+  background-color: #9f102e;
+  color: white;
+}
+
+.btn--primary,
+.btn--secondary {
+  height: 30px;
+  line-height: 1;
+  padding: initial;
+  border-radius: 20px;
+  font-size: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.btn--primary {
+  border: 1px solid #aa0;
+  color: white;
+}
+
+.btn--secondary {
+  border: 1px solid black;
 }
 
 /*# sourceMappingURL=style.css.map */

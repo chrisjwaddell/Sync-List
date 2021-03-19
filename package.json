@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "start-dev": "nodemon -e js,css,htm app.js",
-    "watch-css": "onchange 'scss/*.scss' -- npm run build-css",
-    "build-css": "sass --watch scss:."
+    "watch-css": "onchange 'style/scss/*.scss' -- npm run build-css",
+    "build-css": "sass --watch style/scss/style.scss:style/style.css"
   },
   "author": "",
   "license": "ISC",
