@@ -109,6 +109,8 @@ async function buildErrorChecker(jsonobj) {
 
   delete json["Important Error Message"]
 
+  delete json['Script message']
+
   delete json["Error List"]
   json["Error List"] = []
 
@@ -136,8 +138,10 @@ async function buildErrorChecker(jsonobj) {
   }
 
   // Backup script created less than Last edited
-  let diff = numberOfNightsBetweenDates(dateDDMMYYYYToDate(json["Backup List"][i]["Script created"]), dateDDMMYYYYToDate(json["Backup List"][i]["Last edited"]))
-  if (diff > 1) {
+  let d1 = json["Backup List"][i]["Script created"]
+  let d2 = json["Backup List"][i]["Last edited"]
+
+  if (d2 > d1) {
     json["Error List"][i]["Last edited"] = "Changes have been made since the Backup Script was generated last."
   }
 
@@ -196,7 +200,7 @@ function powershellStart(filesArray, edited) {
 
 
   async function fileFolderType(fileLine) {
-    // console.log("fileFolderType - fileLine - " + fileLine)
+    console.log("fileFolderType - fileLine - " + fileLine)
     // console.log(fileLine.indexOf('*'))
     if (fileLine.indexOf('*') === -1) {
       var stats = await fsp.stat(fileLine)
@@ -1024,8 +1028,9 @@ async function putBuild(jsondata) {
 
 
     let today = new Date()
-    json["Backup List"][backupID]["Script created"] = dateToYYYYMMDD(today, '/')
-    json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically run it regularly.`
+    today = Date.now()
+    json["Backup List"][backupID]["Script created"] = today
+    json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
 
     let fileContentPlusErrors = ''
     try {
@@ -1043,13 +1048,36 @@ async function putBuild(jsondata) {
     // debugger
     if (string.length !== 10) {
       return null
-    } else {
-      let result = new Date()
-      result.setDate(string.substring(0, 2))
-      result.setMonth(Number(string.substring(3,5)) - 1)
-      result.setYear(string.substring(6))
-      return result
     }
+
+    let d = Number(string.substring(0, 2))
+    let m = Number(string.substring(3,5))
+    let y = string.substring(6)
+
+    if (d < 0) {
+      return null
+    }
+    if (d > 31) {
+      return null
+    }
+
+    if ((m === 4) || (m === 6) || (m === 9) || (m === 11)) {
+      if (d > 30) {
+        return null
+      }
+    }
+    if (m === 2) {
+      if (d > 28) {
+        return null
+      }
+    }
+
+
+    let result = new Date()
+    result.setDate(d)
+    result.setMonth(m - 1)
+    result.setYear(y)
+    return result
   }
 
 function dateToYYYYMMDD(dt, seperator) {
@@ -1057,6 +1085,15 @@ function dateToYYYYMMDD(dt, seperator) {
   let m = dt.getMonth() < 9 ? "0" + Number(dt.getMonth() + 1) : Number(dt.getMonth() + 1)
   let y = dt.getFullYear()
   return y + seperator + m + seperator + d
+}
+
+function dateToDDMMYYYY(dt, seperator) {
+  let da = new Date()
+
+  let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
+  let m = da.getMonth() < 9 ? "0" + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
+  let y = da.getFullYear()
+  return d + '/' + m + seperator + y
 }
 
 

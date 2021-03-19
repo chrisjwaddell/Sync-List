@@ -329,8 +329,11 @@ function dataSet(backupListID, property, value, fileIndex, fileField) {
 
 async function dataSave() {
   let today = new Date()
+  today = Date.now()
+
   // debugger
-  jsondata["Backup List"][bListID]["Last edited"] = dateToDDMMYYYY(today, '/')
+  // jsondata["Backup List"][bListID]["Last edited"] = dateToDDMMYYYY(today, '/')
+  jsondata["Backup List"][bListID]["Last edited"] = today
 
   elLastEdited.innerText = "Today"
   elLastEdited.classList.add("txt-today")
@@ -405,6 +408,8 @@ function warnings(json) {
   warningsRemove()
   var bName = false
   var bEdited = false
+
+  warningvisible("createscript", false)
   // debugger
   if (elActive.checked) {
   // console.log(json["Error List"][bListID])
@@ -482,7 +487,8 @@ function dataLoad(backupListID) {
   elMsgAfter.value = jsondata["Backup List"][backupListID]["Message After"]
   elSendEmail.checked = jsondata["Backup List"][backupListID]["Send Email After"]
   elEmail.value = jsondata["Backup List"][backupListID]["Email Address"]
-  elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
+  // elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
+  elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][backupListID]["Last edited"], '-'))
   elActive.checked = jsondata["Backup List"][backupListID]["Active"]
   // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   // This may change from Create to Regenerate - on name change or edit or create
@@ -577,13 +583,14 @@ function dataLoad(backupListID) {
 
 
 function dateDisplay(fieldDate) {
+  // This takes a YYYYMMDD string
   // If the date is within a week, just say the day name
   // If date is this year but not within the next week, show the month 3 letter abbreviation but not the year
   // debugger
 
   // debugger
   if (typeof cd === "undefined") {
-    let today = new Date()
+    var today = new Date()
     cd = today.getDate()
     cm = today.getMonth()
     cy = today.getFullYear()
@@ -594,9 +601,7 @@ function dateDisplay(fieldDate) {
     return ""
   }
 
-  let d = new Date(fieldDate)
-  let today = new Date()
-  let currentYear = today.getFullYear()
+  var d = new Date(fieldDate)
   let day = d.getDate()
   let mnth = monthabbrev(Number(d.getMonth()))
   let yr
@@ -652,10 +657,6 @@ function dateDisplay(fieldDate) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     return days[i]
   }
-
-  // const test1 = () => {
-  //   console.log("hello")
-  // }
 
 }
 
@@ -910,6 +911,8 @@ elCreateScript.addEventListener("click", function() {
       // json = IsJsonString(txt)
       if (json.hasOwnProperty("Script message")) {
         alert(json['Script message'])
+        warnings(json)
+      } else {
         warnings(json)
       }
     } catch(err) {
