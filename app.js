@@ -118,25 +118,9 @@ app.put('/', async function(req, res) {
 
 console.log("=====================================================================")
 
- console.log("put")
-//  console.log(req)
-//  console.log(JSON.stringify(await (req.header)))
-//  console.log(req.headers)
-//  console.log(req.body)
 settings = req.body
-// console.log(settings)
-// console.log(__dirname)
-// console.log(__dirname + '\\' + 'settings.json')
-
-// let strjson = await JSON.stringify(settings, null, 4)
-// services.putSettings(strjson)
 
 let json = await services.putSettings(settings)
-
-// console.log("settings")
-// console.log(settings)
-// console.log("json")
-// console.log(json)
 
 res.json(json)
 
@@ -147,9 +131,6 @@ return
 
 app.put('/build', async function(req, res, next) {
   console.log("=====================================================================")
-
-  // console.log("put build")
-  // console.log(req.body)
 
   let json = await services.putBuild(req.body)
   console.log("return build")

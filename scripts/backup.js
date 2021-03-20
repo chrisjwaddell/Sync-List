@@ -6,9 +6,6 @@ const elBtn5 = document.querySelector(".btn5")
 const elBtn6 = document.querySelector(".btn6")
 const elBtn7 = document.querySelector(".btn7")
 
-// elBtn.addEventListener("click", () => {
-//   alert("Clicked")
-// })
 
 const elName = document.querySelector('#backupname');
 const elBackupTo = document.querySelector('#backupto');
@@ -152,9 +149,6 @@ elBtn7.addEventListener("click", async () => {
 })
 
 
-// window.addEventListener('DOMContentLoaded', (event) => {
-//     console.log('DOM fully loaded and parsed');
-// });
 
 
 window.addEventListener('load', async () => {
@@ -165,17 +159,12 @@ window.addEventListener('load', async () => {
       })
 
       let txt = await a.text()
-      console.log(txt)
-      // console.log(typeof txt)
-      // debugger
+
       jsondata = await JSON.parse(txt)
 
       if (typeof jsondata === "string") {
-        // console.log("jsondata still string")
         jsondata = JSON.parse(jsondata)
       }
-      // console.log(jsondata)
-      // console.log(typeof jsondata)
 
       if (jsondata.hasOwnProperty("Important Error Message")) {
         alert(jsondata['Important Error Message'])
@@ -184,25 +173,17 @@ window.addEventListener('load', async () => {
         warnings(jsondata)
       }
 
-
     } catch(err) {
       console.log(err)
     }
 
     dataLoad(bListID)
-
 });
 
 
 elName.addEventListener("change", function() {
   dataSet(bListID, "Backup Name", this.value.trim())
 })
-
-// elName.addEventListener("keydown", function(e) {
-//   if (e.key !== "Shift") {
-//     alert(windowsFilenameIllegalCharacters(e.key))
-//   }
-// })
 
 elName.addEventListener("keypress", function(e) {
   if (!windowsFilenameIllegalCharacters(e.key)) {
@@ -220,7 +201,6 @@ elBackupTo.addEventListener("change", function() {
 })
 
 elDate.addEventListener("change", function() {
-  // debugger
   scriptRootDirDate = this.checked
   dataSet(bListID, "Include Date", Boolean(this.checked))
   debugger
@@ -259,10 +239,6 @@ elMsgAfter.addEventListener("keydown", function(e) {
 
 
 elActive.addEventListener("click", function(e) {
-  debugStart(debugGetFuncName(), arguments)
-  debugLog(debugGetFuncName(), "1", { bListID })
-
-  // alert(e.key)
   let txt
   // alert(elActive.checked)
   if (!elActive.checked) {
@@ -496,10 +472,6 @@ function dataLoad(backupListID) {
   // console.log("from dataLoad")
   // console.log(arguments)
   // console.log(arguments[0])
-  // debugStart()
-  debugStart(debugGetFuncName(), arguments)
-  debugLog(debugGetFuncName(), "1", { bListID })
-  // debugLog(debugGetFuncName(), "1", bListID )
 
   // debugger
   elName.value = jsondata["Backup List"][backupListID]["Backup Name"]
@@ -528,19 +500,15 @@ function dataLoad(backupListID) {
     warnings(jsondata)
   }
 
-  // debugger
   active(elActive.checked)
   scriptRootDirDate = elActive.checked
-  // debugger
 
-  // debugLog(debugGetFuncName(), "4", { backupListID })
 
   var dataindex = fileLineIndexNew()
 
   for (let i = 0; i < jsondata["Backup List"][backupListID]["Files"].length; i++) {
     console.log("i - " + i + "; length - " + jsondata["Backup List"][backupListID]["Files"].length)
 
-    debugger
     fileLineAdd(dataindex - 1)
     dataindex++
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupListID]["Files"][i]["File Or Folder"]
@@ -747,10 +715,6 @@ function fileLineAdd(index) {
   let elBinDiv = createElementAtt(elFL, 'div', ['filelist__bin', 'col'], [], '')
   let elDeleteBtn = createElementAtt(elBinDiv, 'button', ['c-btn', 'c-btn--secondary', 'createscript', 'u-text-center'], [["data-index", index]], '')
 
-  console.log( { bListID })
-  debugStart(debugGetFuncName(), arguments)
-  debugLog(debugGetFuncName(), "1", { bListID } )
-
 
   elFileTxt.addEventListener("change", function() {
     dataSet(bListID, "Files", this.value.trim(), index, "File Or Folder")
@@ -817,7 +781,7 @@ elFileAdd.addEventListener("click", function() {
 
 function fileListClear() {
 // debugStart(debugGetFuncName(), arguments)
-debugLog(debugGetFuncName(), "1", { bListID } )
+// debugLog(debugGetFuncName(), "1", { bListID } )
 
 console.count("fileListClear")
 
@@ -837,7 +801,7 @@ console.count("fileListClear")
 
 function backupListClear() {
 // debugStart(debugGetFuncName(), arguments)
-debugLog(debugGetFuncName(), "2", { bListID } )
+// debugLog(debugGetFuncName(), "2", { bListID } )
 
   if (document.querySelectorAll(".backupnamelist tbody tr")[0] !== undefined) {
     document.querySelectorAll(".backupnamelist tbody tr")[0].remove()
@@ -897,11 +861,7 @@ function fileLineActive(index, value) {
 }
 
 
-
 elCreateScript.addEventListener("click", function() {
-  // debugStart(debugGetFuncName(), arguments)
-  // debugLog(debugGetFuncName(), "2", { bListID } )
-  // debugger
   buildBackupScript()
 })
 
