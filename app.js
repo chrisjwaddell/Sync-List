@@ -24,55 +24,6 @@ app.use(express.json());
 app.use(cors())
 
 
-app.get('/test', async function(req, res) {
-  console.log("test")
-  fs.readFile('./zicons.json', 'utf8', function (err,data) {
-
-    if (err) {
-      // next(err) // Pass errors to Express.
-      throw new Error("Something went wrong!");
-    } else {
-      // console.log(data);
-      // res.send('this is homepage')
-      res.json(data)
-    }
-  });
-
-})
-
-app.get('/test2', async function(req, res) {
-  console.log("test")
-  fs.readFile('./zicons1.json', 'utf8', function (err,data) {
-
-    if (err) {
-      // next(err) // Pass errors to Express.
-      throw new Error("Something went wrong!");
-    } else {
-      console.log(data.substring(0,100));
-      // res.send('this is homepage')
-      res.send(data)
-    }
-  });
-
-})
-
-app.get('/testjson', async function(req, res) {
-  console.log("test")
-  fs.readFile('./zicons1.json', 'utf8', function (err,data) {
-
-    if (err) {
-      // next(err) // Pass errors to Express.
-      throw new Error("Something went wrong!");
-    } else {
-      console.log(data.substring(0,100));
-      // res.send('this is homepage')
-      res.send(data)
-    }
-  });
-
-})
-
-
 app.get('/', async function(req, res) {
 // A get request is submitted from the frontened GUI at the start to get the settings
 // We send back settings.json to it since the frontend can't read files on the computer, but Node can
