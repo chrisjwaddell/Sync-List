@@ -30,7 +30,7 @@ app.get('/', async function(req, res) {
 
   console.log("=====================================================================")
 
-  console.log("get")
+  // console.log("get")
   debugger
   // services.scriptsFolder3()
 
@@ -47,7 +47,7 @@ app.get('/', async function(req, res) {
     }
   // console.log(g)
   // services.scriptsDirAndSettingsFile()
-  console.log("here")
+  // console.log("here")
   return
   fsp.readFile('./settings.json', 'utf8', function (err,data) {
 
