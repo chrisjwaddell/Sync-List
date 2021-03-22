@@ -233,7 +233,7 @@ async function dataSave() {
 
   // debugger
   let txt = await r.text()
-  console.log(txt)
+  // console.log(txt)
   debugger
 
   try {
@@ -363,6 +363,8 @@ function dataLoad(backupListID) {
   // console.log(arguments[0])
 
   // debugger
+  // console.log(typeof jsondata)
+
   elName.value = jsondata["Backup List"][backupListID]["Backup Name"]
   elBackupTo.value = jsondata["Backup List"][backupListID]["Backup Root Directory"]
   elDate.checked = jsondata["Backup List"][backupListID]["Include Date"]
@@ -375,6 +377,7 @@ function dataLoad(backupListID) {
   elActive.checked = jsondata["Backup List"][backupListID]["Active"]
   // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   // This may change from Create to Regenerate - on name change or edit or create
+
 
   var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][backupListID]["Last edited"]))
   var today = new Date()
@@ -418,6 +421,8 @@ function dataLoad(backupListID) {
     fileLineActive(i, active)
   }
 
+
+  backupListClear()
 
   for (let i = 0; i < jsondata["Backup List"].length; i++) {
     // debugLog(debugGetFuncName(), "5",  { backupListID })
@@ -708,7 +713,8 @@ elAdd.addEventListener("click", function() {
   jsondata["Backup List"].push( {"Backup Name": "", "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Date In File": false }]} )
 
   dataSave()
-  dataLoad()
+  debugger
+  dataLoad(fileLineIndexNew())
 })
 
 
@@ -720,7 +726,7 @@ elRemove.addEventListener("click", function() {
     jsondata["Backup List"].splice(index, 1)
     bListID = 0
     dataSave()
-    dataLoad()
+    dataLoad(fileLineIndexNew())
   }
 })
 
