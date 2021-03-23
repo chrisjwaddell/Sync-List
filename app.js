@@ -40,28 +40,13 @@ app.get('/', async function(req, res) {
     // console.log(r)
     // console.log(typeof r)
     // console.log(JSON.parse(r))
-    res.json(r)
+      res.json(r)
     // res.send(JSON.stringify(r))
     } catch (err) {
       console.error(err)
     }
-  // console.log(g)
-  // services.scriptsDirAndSettingsFile()
-  // console.log("here")
-  return
-  fsp.readFile('./settings.json', 'utf8', function (err,data) {
-
-    if (err) {
-      // next(err) // Pass errors to Express.
-      throw new Error("Something went wrong!");
-    } else {
-      // console.log(data);
-      // res.send('this is homepage')
-      res.send(data)
-    }
-  });
-
 })
+
 
 app.put('/', async function(req, res) {
 // Put requests update json from the frontend and writes to the settings.json file
@@ -75,8 +60,6 @@ let json = await services.putSettings(settings)
 
 res.json(json)
 
-return
-
 })
 
 
@@ -84,8 +67,8 @@ app.put('/build', async function(req, res, next) {
   console.log("=====================================================================")
 
   let json = await services.putBuild(req.body)
-  console.log("return build")
-  console.log(json)
+  // console.log("return build")
+  // console.log(json)
 
   res.send(req.body)
 })
@@ -107,7 +90,7 @@ app.use((error, req, res, next) => {
     },
   });
   process.exit(1)
-  });
+});
 
 app.listen(port, () => {
   console.log("=====================================================================")
