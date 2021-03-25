@@ -107,6 +107,11 @@ input {
 .path {
   display: inline-block;
 }
+
+.field .backupid {
+  display: none;
+}
+
 #backupto {
   width: 450px;
 }
@@ -144,7 +149,7 @@ input {
   width: 1400px;
   border: 3px solid #ffffff;
   margin: 0 auto;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   background-color: #557ff1;
 }
 
