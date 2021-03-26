@@ -108,7 +108,7 @@ elMsgAfter.addEventListener("keydown", function(e) {
 elActive.addEventListener("click", function(e) {
     var t;
     if (!elActive.checked) {
-        var a;
+        var i;
         if (true == confirm("Are you sure you want to make it inactive?")) {
             active(false);
             dataSet(bIndex, "Active", this.checked);
@@ -125,29 +125,13 @@ elActive.addEventListener("click", function(e) {
 function windowsFilenameIllegalCharacters(e) {
     switch (e) {
       case "/":
-        return false;
-
       case "\\":
-        return false;
-
       case ":":
-        return false;
-
       case "*":
-        return false;
-
       case "?":
-        return false;
-
       case '"':
-        return false;
-
       case "<":
-        return false;
-
       case ">":
-        return false;
-
       case "|":
         return false;
 
@@ -168,9 +152,9 @@ elEmail.addEventListener("change", function() {
     dataSet(bIndex, "Email Address", this.value.trim());
 });
 
-function dataSet(e, t, a, i, n) {
+function dataSet(e, t, i, a, n) {
     var l;
-    if (void 0 === i) jsondata["Backup List"][e][t] = a; else jsondata["Backup List"][e].Files[i][n] = a;
+    if (void 0 === a) jsondata["Backup List"][e][t] = i; else jsondata["Backup List"][e].Files[a][n] = i;
     dataSave();
 }
 
@@ -188,11 +172,11 @@ async function dataSave() {
         },
         body: JSON.stringify(jsondata)
     };
-    let a = await fetch(t, e).catch(e => {
+    let i = await fetch(t, e).catch(e => {
         console.log(e);
         alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.");
     });
-    var e = await a.text();
+    var e = await i.text();
     try {
         json = JSON.parse(e);
         if (json.hasOwnProperty("Important Error Message")) {
@@ -229,13 +213,13 @@ function warningsRemove() {
 
 function warnings(t) {
     warningsRemove();
-    var a = false;
     var i = false;
+    var a = false;
     warningvisible("createscript", false);
     if (Boolean(t["Error List"][bIndex])) if (elActive.checked) for (let e = 0; e < Object.keys(t["Error List"][bIndex]).length; e++) switch (Object.keys(t["Error List"][bIndex])[e]) {
       case "Backup Name":
         warningvisible("backupname", true);
-        a = true;
+        i = true;
         break;
 
       case "Backup Root Directory":
@@ -244,16 +228,12 @@ function warnings(t) {
 
       case "Last edited":
         warningvisible("createscript", true);
-        i = true;
-        break;
-
-      default:
-        break;
+        a = true;
     }
-    if (!a && !i) elCreateScript.classList.remove("isvisible"); else if (a) {
+    if (!i && !a) elCreateScript.classList.remove("isvisible"); else if (i) {
         elCreateScript.classList.add("isvisible");
         elCreateScript.innerText = "Create Backup Script";
-    } else if (i) {
+    } else if (a) {
         elCreateScript.classList.add("isvisible");
         elCreateScript.innerText = "Regenerate Backup Script";
     }
@@ -263,7 +243,7 @@ function fileLineIndexNew() {
     let e = document.querySelectorAll(".filelist__line");
     let t = [];
     e.forEach(e => t.push(Number(e.getAttribute("data-id"))));
-    var a;
+    var i;
     return t.reduce((e, t) => e < t ? t : e, 0) + 1;
 }
 
@@ -278,22 +258,22 @@ function backupLineIndexNew() {
     let e = document.querySelectorAll(".backupnamelist tbody tr");
     let t = [];
     e.forEach(e => t.push(Number(e.getAttribute("data-id"))));
-    var a;
+    var i;
     return t.reduce((e, t) => e < t ? t : e, 0) + 1;
 }
 
-function dataLoad(a) {
-    elID.textContent = jsondata["Backup List"][a].ID;
-    elName.value = jsondata["Backup List"][a]["Backup Name"];
-    elBackupTo.value = jsondata["Backup List"][a]["Backup Root Directory"];
-    elDate.checked = jsondata["Backup List"][a]["Include Date"];
-    elMsgBefore.value = jsondata["Backup List"][a]["Message Before"];
-    elMsgAfter.value = jsondata["Backup List"][a]["Message After"];
-    elSendEmail.checked = jsondata["Backup List"][a]["Send Email After"];
-    elEmail.value = jsondata["Backup List"][a]["Email Address"];
-    elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][a]["Last edited"], "-"));
-    elActive.checked = jsondata["Backup List"][a].Active;
-    var e = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][a]["Last edited"]));
+function dataLoad(i) {
+    elID.textContent = jsondata["Backup List"][i].ID;
+    elName.value = jsondata["Backup List"][i]["Backup Name"];
+    elBackupTo.value = jsondata["Backup List"][i]["Backup Root Directory"];
+    elDate.checked = jsondata["Backup List"][i]["Include Date"];
+    elMsgBefore.value = jsondata["Backup List"][i]["Message Before"];
+    elMsgAfter.value = jsondata["Backup List"][i]["Message After"];
+    elSendEmail.checked = jsondata["Backup List"][i]["Send Email After"];
+    elEmail.value = jsondata["Backup List"][i]["Email Address"];
+    elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][i]["Last edited"], "-"));
+    elActive.checked = jsondata["Backup List"][i].Active;
+    var e = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][i]["Last edited"]));
     var t = new Date();
     elLastEdited.classList.remove("txt-today");
     elLastEdited.classList.remove("txt-soon");
@@ -302,23 +282,23 @@ function dataLoad(a) {
     if (jsondata.hasOwnProperty("Error List")) warnings(jsondata);
     active(elActive.checked);
     scriptRootDirDate = elActive.checked;
-    var i = fileLineIndexNew();
-    for (let e = 0; e < jsondata["Backup List"][a].Files.length; e++) {
-        fileLineAdd(i - 1);
-        i++;
-        document.querySelectorAll(".filelist__file input")[e].value = jsondata["Backup List"][a].Files[e]["File Or Folder"];
-        if (jsondata["Backup List"][a].Files[e]["Zip It"]) document.querySelectorAll(".filelist__zip input")[e].setAttribute("checked", "checked"); else document.querySelectorAll(".filelist__zip input")[e].removeAttribute("checked");
-        document.querySelectorAll(".filelist__subdir input")[e].checked = jsondata["Backup List"][a].Files[e]["Sub-Directories"];
-        document.querySelectorAll(".filelist__date input")[e].checked = jsondata["Backup List"][a].Files[e]["Date In File"];
-        document.querySelectorAll(".filelist__active input")[e].checked = jsondata["Backup List"][a].Files[e].Active;
+    var a = fileLineIndexNew();
+    for (let e = 0; e < jsondata["Backup List"][i].Files.length; e++) {
+        fileLineAdd(a - 1);
+        a++;
+        document.querySelectorAll(".filelist__file input")[e].value = jsondata["Backup List"][i].Files[e]["File Or Folder"];
+        if (jsondata["Backup List"][i].Files[e]["Zip It"]) document.querySelectorAll(".filelist__zip input")[e].setAttribute("checked", "checked"); else document.querySelectorAll(".filelist__zip input")[e].removeAttribute("checked");
+        document.querySelectorAll(".filelist__subdir input")[e].checked = jsondata["Backup List"][i].Files[e]["Sub-Directories"];
+        document.querySelectorAll(".filelist__date input")[e].checked = jsondata["Backup List"][i].Files[e]["Date In File"];
+        document.querySelectorAll(".filelist__active input")[e].checked = jsondata["Backup List"][i].Files[e].Active;
         var n = document.querySelectorAll(".filelist__active input")[e].checked;
         fileLineActive(e, n);
     }
     backupListClear();
     for (let t = 0; t < jsondata["Backup List"].length; t++) {
         let e;
-        if (Number(jsondata["Backup List"][t].ID) === Number(jsondata["Backup List"][a].ID)) e = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [ "selected" ], [ [ "data-id", jsondata["Backup List"][t].ID ] ], " "); else e = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [], [ [ "data-id", jsondata["Backup List"][t].ID ] ], " ");
-        if (jsondata["Backup List"][t].Active) if (Number(jsondata["Backup List"][t].ID) === Number(jsondata["Backup List"][a].ID)) {
+        if (Number(jsondata["Backup List"][t].ID) === Number(jsondata["Backup List"][i].ID)) e = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [ "selected" ], [ [ "data-id", jsondata["Backup List"][t].ID ] ], " "); else e = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [], [ [ "data-id", jsondata["Backup List"][t].ID ] ], " ");
+        if (jsondata["Backup List"][t].Active) if (Number(jsondata["Backup List"][t].ID) === Number(jsondata["Backup List"][i].ID)) {
             createElementAtt(e, "td", [ "backupname", "selected" ], [], jsondata["Backup List"][t]["Backup Name"]);
             createElementAtt(e, "td", [ "active", "selected" ], [], jsondata["Backup List"][t].Active);
             createElementAtt(e, "td", [ "lastrun", "selected" ], [], "");
@@ -351,31 +331,31 @@ function dateDisplay(e) {
     }
     if (0 === e.length) return "";
     var e = new Date(e);
-    let a = e.getDate();
-    let i = l(Number(e.getMonth()));
+    let i = e.getDate();
+    let a = l(Number(e.getMonth()));
     let n;
     if (cy === e.getFullYear()) {
         n = "";
         if (e < t) {
             if (numberOfNightsBetweenDates(e, t) < 7) if (0 === numberOfNightsBetweenDates(e, t)) {
-                a = "Today";
-                i = "";
+                i = "Today";
+                a = "";
             } else if (1 === numberOfNightsBetweenDates(e, t)) {
-                a = "Yesterday";
-                i = "";
+                i = "Yesterday";
+                a = "";
             }
         } else if (numberOfNightsBetweenDates(t, e) < 7) if (0 === numberOfNightsBetweenDates(t, e)) {
-            a = "Today";
-            i = "";
+            i = "Today";
+            a = "";
         } else if (1 == numberOfNightsBetweenDates(t, e)) {
-            a = "Tomorrow";
-            i = "";
+            i = "Tomorrow";
+            a = "";
         } else {
-            a = r(e.getDay());
-            i = "";
+            i = r(e.getDay());
+            a = "";
         }
     } else n = e.getFullYear();
-    return String(a + ("" == i ? "" : " " + i) + ("" == n ? "" : " " + n));
+    return String(i + ("" == a ? "" : " " + a) + ("" == n ? "" : " " + n));
     function l(e) {
         var t;
         return [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ][e];
@@ -394,27 +374,27 @@ function dateColor(e, t) {
 function fileLineAdd(e) {
     createElementAtt(elFileList, "hr", [], [], "");
     let t = createElementAtt(elFileList, "div", [ "filelist__line" ], [ [ "data-index", e ] ], "");
-    var a = createElementAtt(t, "div", [ "filelist__file", "col" ], [], "");
-    let i = createElementAtt(a, "input", [ "e-input--primary" ], [ [ "type", "text" ], [ "placeholder", "File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt" ] ], "");
+    var i = createElementAtt(t, "div", [ "filelist__file", "col" ], [], "");
+    let a = createElementAtt(i, "input", [ "e-input--primary" ], [ [ "type", "text" ], [ "placeholder", "File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt" ] ], "");
     t.appendChild(document.createTextNode(" "));
-    var a = createElementAtt(t, "div", [ "filelist__subdir", "col" ], [], "");
-    let n = createElementAtt(a, "input", [], [ [ "type", "checkbox" ] ], [], "");
+    var i = createElementAtt(t, "div", [ "filelist__subdir", "col" ], [], "");
+    let n = createElementAtt(i, "input", [], [ [ "type", "checkbox" ] ], [], "");
     t.appendChild(document.createTextNode(" "));
     var l = createElementAtt(t, "div", [ "filelist__modified", "col" ], [], "");
     t.appendChild(document.createTextNode(" "));
-    var a = createElementAtt(t, "div", [ "filelist__date", "col" ], [], "");
-    let r = createElementAtt(a, "input", [ "field" ], [ [ "type", "checkbox" ], [ "data-description", "This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype." ] ], "");
+    var i = createElementAtt(t, "div", [ "filelist__date", "col" ], [], "");
+    let r = createElementAtt(i, "input", [ "field" ], [ [ "type", "checkbox" ], [ "data-description", "This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype." ] ], "");
     t.appendChild(document.createTextNode(" "));
-    var a = createElementAtt(t, "div", [ "filelist__zip", "col" ], [], "");
-    let s = createElementAtt(a, "input", [ "field" ], [ [ "type", "checkbox" ], [ "data-description", "Zip up these files. The zip file can be a maximum size of 8Gb. It is best to have a date in either the Root Directory or in the file name." ] ], "");
+    var i = createElementAtt(t, "div", [ "filelist__zip", "col" ], [], "");
+    let s = createElementAtt(i, "input", [ "field" ], [ [ "type", "checkbox" ], [ "data-description", "Zip up these files. The zip file can be a maximum size of 8Gb. It is best to have a date in either the Root Directory or in the file name." ] ], "");
     t.appendChild(document.createTextNode(" "));
-    var a = createElementAtt(t, "div", [ "filelist__active", "col" ], [], "");
-    let c = createElementAtt(a, "input", [], [ [ "type", "checkbox" ], [ "data-index", e ] ], "");
+    var i = createElementAtt(t, "div", [ "filelist__active", "col" ], [], "");
+    let c = createElementAtt(i, "input", [], [ [ "type", "checkbox" ], [ "data-index", e ] ], "");
     t.appendChild(document.createTextNode(" "));
     c.checked = true;
-    var a = createElementAtt(t, "div", [ "filelist__bin", "col" ], [], "");
-    let d = createElementAtt(a, "button", [ "c-btn", "c-btn--secondary", "createscript", "u-text-center" ], [ [ "data-index", e ] ], "");
-    i.addEventListener("change", function() {
+    var i = createElementAtt(t, "div", [ "filelist__bin", "col" ], [], "");
+    let d = createElementAtt(i, "button", [ "c-btn", "c-btn--secondary", "createscript", "u-text-center" ], [ [ "data-index", e ] ], "");
+    a.addEventListener("change", function() {
         dataSet(bIndex, "Files", this.value.trim(), e, "File Or Folder");
     });
     n.addEventListener("change", function() {
@@ -434,13 +414,13 @@ function fileLineAdd(e) {
         var e;
         if (true == confirm("Are you sure you want to remove this line?")) {
             var t = Number(this.getAttribute("data-index"));
-            var a = fileLineIndexToLineNumber(t);
-            document.querySelectorAll("hr")[a - 1].remove();
-            var i = `.filelist__line[data-index="${t}"]`;
+            var i = fileLineIndexToLineNumber(t);
+            document.querySelectorAll("hr")[i - 1].remove();
+            var a = `.filelist__line[data-index="${t}"]`;
             var n;
             for (let e = 0; e < document.querySelectorAll(".filelist__bin button").length; e++) if (t === Number(document.querySelectorAll(".filelist__bin button")[e].getAttribute("data-index"))) {
                 jsondata["Backup List"][bIndex].Files.splice(e, 1);
-                document.querySelector(i).remove();
+                document.querySelector(a).remove();
             }
             dataSave();
         }
@@ -508,7 +488,7 @@ elAdd.addEventListener("click", function() {
 elRemove.addEventListener("click", function() {
     var e;
     var t = backupIDToIndex(Number(document.querySelector(".backupnamelist tr.selected").getAttribute("data-id")));
-    var a;
+    var i;
     if (true == confirm(`Are you sure you want to make this Backup Profile - ${elName.value} inactive?`)) {
         jsondata["Backup List"].splice(t, 1);
         dataSave();
@@ -544,11 +524,11 @@ async function buildBackupScript() {
         },
         body: JSON.stringify(jsondata)
     };
-    let a = await fetch(e, t).catch(e => {
+    let i = await fetch(e, t).catch(e => {
         console.log(e);
         alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.");
     });
-    var t = await a.text();
+    var t = await i.text();
     try {
         json = JSON.parse(t);
         if (json.hasOwnProperty("Script message")) {
@@ -562,13 +542,7 @@ async function buildBackupScript() {
 
 function dirFromPath(e) {
     let t = e;
-    if (-1 !== t.indexOf("\\")) {
-        console.log("1");
-        return dirFromPath(t.substring(t.indexOf("\\"), t.length));
-    } else {
-        console.log("2");
-        return t;
-    }
+    if (-1 !== t.indexOf("\\")) return dirFromPath(t.substring(t.indexOf("\\"), t.length)); else return t;
 }
 
 function backupIDToIndex(e) {
