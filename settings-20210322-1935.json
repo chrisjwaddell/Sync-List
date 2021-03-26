@@ -1,0 +1,17 @@
+{
+    "Backup List": [
+        {
+            "Backup Name": "Main",
+            "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive",
+            "Include Date": true,
+            "Message Before": "",
+            "Message After": "",
+            "Send Email After": false,
+            "Email Address": "",
+            "Last edited": 1616402059315,
+            "Script created": 1,
+            "Active": true,
+            "Files": []
+        }
+    }
+}

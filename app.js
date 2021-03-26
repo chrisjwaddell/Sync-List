@@ -1,100 +1,68 @@
-const express = require('express')
-const app = express()
+const express = require("express");
 
-const fs = require('fs');
-// const fsp = require('fs/promises');
+const app = express();
 
-const services = require('./services');
+const fs = require("fs");
 
-const cors = require('cors');
-// const { exit, send } = require('process');
+const services = require("./services");
 
-const hostname = 'localhost'
-const port = 21311
+const cors = require("cors");
 
-var settings = ""
+const hostname = "localhost";
 
-app.use(
-  express.urlencoded({
+const port = 21311;
+
+var settings = "";
+
+app.use(express.urlencoded({
     extended: true
-  })
-)
+}));
+
 app.use(express.json());
 
-app.use(cors())
+app.use(cors());
 
-
-app.get('/', async function(req, res) {
-// A get request is submitted from the frontened GUI at the start to get the settings
-// We send back settings.json to it since the frontend can't read files on the computer, but Node can
-
-  console.log("=====================================================================")
-
-  // console.log("get")
-  debugger
-  // services.scriptsFolder3()
-
-  try {
-    let r = await services.getSettings()
-    // console.log("in get after await")
-    // console.log(r)
-    // console.log(typeof r)
-    // console.log(JSON.parse(r))
-      res.json(r)
-    // res.send(JSON.stringify(r))
-    } catch (err) {
-      console.error(err)
+app.get("/", async function(s, e) {
+    console.log("=====================================================================");
+    try {
+        var o = await services.getSettings();
+        e.json(o);
+    } catch (s) {
+        console.error(s);
     }
-})
-
-
-app.put('/', async function(req, res) {
-// Put requests update json from the frontend and writes to the settings.json file
-// It gets the json data from the body of the request
-
-console.log("=====================================================================")
-
-settings = req.body
-
-let json = await services.putSettings(settings)
-
-res.json(json)
-
-})
-
-
-app.put('/build', async function(req, res, next) {
-  console.log("=====================================================================")
-
-  let json = await services.putBuild(req.body)
-  // console.log("return build")
-  // console.log(json)
-
-  res.send(req.body)
-})
-
-
-app.use((req, res, next) => {
-  const error = new Error("Not found");
-  error.status = 404;
-  next(error);
 });
 
-// error handler middleware
-app.use((error, req, res, next) => {
-  console.log(error)
-  res.status(error.status || 500).send({
-    error: {
-      status: error.status || 500,
-      message: error.message || 'Internal Server Error',
-    },
-  });
-  process.exit(1)
+app.put("/", async function(s, e) {
+    console.log("=====================================================================");
+    settings = s.body;
+    var s = await services.putSettings(settings);
+    e.json(s);
+});
+
+app.put("/build", async function(s, e, o) {
+    console.log("=====================================================================");
+    var t = await services.putBuild(s.body);
+    e.send(s.body);
+});
+
+app.use((s, e, o) => {
+    const t = new Error("Not found");
+    t.status = 404;
+    o(t);
+});
+
+app.use((s, e, o, t) => {
+    console.log(s);
+    o.status(s.status || 500).send({
+        error: {
+            status: s.status || 500,
+            message: s.message || "Internal Server Error"
+        }
+    });
+    process.exit(1);
 });
 
 app.listen(port, () => {
-  console.log("=====================================================================")
-  console.log("Backup app listening on port ", port)
-})
-
-
+    console.log("=====================================================================");
+    console.log("Backup app listening on port ", port);
+});
