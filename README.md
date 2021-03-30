@@ -13,12 +13,10 @@ You can zip up your files, select a specific file or directory or certain file t
 
 `
 git clone https://github.com/chrisjwaddell/Sync-List.git
-
 cd "Sync List"
 `
 
 To run it
-
 `
 node app.js
 `
