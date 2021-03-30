@@ -8,6 +8,23 @@ You can zip up your files, select a specific file or directory or certain file t
 ![Sync List File list](https://github.com/chrisjwaddell/Sync-List/blob/main/img/sync-list.jpg)
 
 
+##How to install
+
+``
+git clone git@github.com:taniarascia/takenote
+cd takenote
+npm i
+``
+
+To run it
+``
+node app.js
+``
+
+Then open index.htm in your browser
+
+
+
 
 
 
