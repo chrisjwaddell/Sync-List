@@ -11,17 +11,17 @@ You can zip up your files, select a specific file or directory or certain file t
 ## How to install
 
 
-`
+```bash
 git clone https://github.com/chrisjwaddell/Sync-List.git
 cd "Sync List"
-`
+```
 
 To run it
-`
+```bash
 node app.js
-`
+```
 
-Then open index.htm in your browser
+Then open index.htm in your browser.
 
 
 
