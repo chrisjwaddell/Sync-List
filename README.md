@@ -8,12 +8,11 @@ You can zip up your files, select a specific file or directory or certain file t
 ![Sync List File list](https://github.com/chrisjwaddell/Sync-List/blob/main/img/sync-list.jpg)
 
 
-##How to install
+## How to install
 
 ``
-git clone git@github.com:taniarascia/takenote
-cd takenote
-npm i
+git clone https://github.com/chrisjwaddell/Sync-List.git
+cd "Sync List"
 ``
 
 To run it
