@@ -250,7 +250,7 @@ function fileLineIndexNew() {
 function fileLineIndexToLineNumber(e) {
     elTemp = document.querySelectorAll(".filelist__line");
     let t = 0;
-    for (;t += 1, Number(elTemp[t].getAttribute("data-index")) !== e || 200 == t; ) ;
+    for (;t += 1, Number(elTemp[t].getAttribute("data-index")) !== e && 200 !== t; ) ;
     return t;
 }
 
