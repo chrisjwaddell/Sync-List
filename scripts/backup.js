@@ -459,6 +459,7 @@ function backupListClear() {
 }
 
 elAdd.addEventListener("click", function() {
+    fileListClear();
     var e = backupLineIndexNew();
     jsondata["Backup List"].push({
         ID: e,
