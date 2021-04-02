@@ -517,6 +517,8 @@ elCreateScript.addEventListener("click", function() {
 });
 
 async function buildBackupScript() {
+    delete jsondata.BackupListID;
+    jsondata.BackupListID = Number(elID.textContent);
     var e = "http://localhost:21311/build";
     var t = {
         method: "PUT",
@@ -534,7 +536,7 @@ async function buildBackupScript() {
         json = JSON.parse(t);
         if (json.hasOwnProperty("Script message")) {
             alert(json["Script message"]);
-            warnings(json);
+            warrnings(json);
         } else warnings(json);
     } catch (e) {
         console.log(e);

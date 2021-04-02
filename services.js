@@ -201,7 +201,6 @@ async function powershellFileWrite(e, t) {
 }
 
 async function putBuild(l) {
-    console.log("in putBuild");
     var n;
     if (l.BackupListID) n = l.BackupListID; else n = 0;
     var e = __dirname + "\\Backup-scripts\\" + l["Backup List"][n]["Backup Name"] + ".ps1";
