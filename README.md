@@ -16,12 +16,17 @@ git clone https://github.com/chrisjwaddell/Sync-List.git
 cd "Sync List"
 ```
 
-To run it
+To run it:
 ```bash
 node app.js
 ```
 
-Then open index.htm in your browser.
+Then open index.htm in your browser and start using Sync List.
+
+Three ways to add files:
+1. Specific file *eg C:\Projects\project list.txt*
+2. Directory *eg C:\Projects*
+3. File type *eg C:\Projects\*.txt*
 
 
 
