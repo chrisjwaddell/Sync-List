@@ -24,12 +24,15 @@ node app.js
 Then open index.htm in your browser and start using Sync List.
 
 
-###There are three ways to add files:
+### There are three ways to add files:
 1. Specific file *eg C:\Projects\project list.txt*
 2. Directory *eg C:\Projects*
 3. File type *eg C:\Projects\*.txt*
 
-
+### Options for each line
+You can include all sub-directories
+You can zip all the files together
+You can include date in the filename
 
 
 
