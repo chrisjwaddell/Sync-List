@@ -4,11 +4,12 @@ Backup your frequently changed computer files to your cloud backup folder.
 
 Sync List works well with OneDrive, Dropbox or other cloud storage systems.
 You can zip up your files, select a specific file or directory or certain file types.
+
 Sync List is for Windows only.
 
 ![Sync List File list](https://github.com/chrisjwaddell/Sync-List/blob/main/img/sync-list.jpg)
 
-Sync List automatically backs up a list of files and directories you've selected to your directory synced to the cloud using your prefered cloud storage service.
+Sync List automatically backs up a list of files and directories you've selected to your directory synced to the cloud using your preferred cloud storage service.
 
 
 ## How to install
@@ -39,16 +40,23 @@ Then open index.htm in your browser and start using Sync List.
 - You can **include date in the filename**
 
 
-Sync List generates a Powershell script and saves it in your *Backup-scripts\* directory. You can then run the .ps1 file and schedule it to run periodically.
+Sync List generates a Powershell script and saves it in your *Backup-scripts\* directory.
 
-You can have multiple backup lists such as Weekly, Monthly, Work files etc.
+You can have several different backup lists such as Weekly, Monthly, Work files, website files etc. A Powershell backup script gets created for each backup list.
+You can then run the .ps1 file and schedule it to run periodically.
 
 **Include date in filename**
 This feature puts a date in the filename in *YYYYMMDD* format so you don't overwrite the previous backup. A sort of incremental backup.
 
-**Zip** files together
+**Zip**
 This is handy for zipping a folder or certain types of files together. It keeps your backup size lower to maximize cloud storage.
 You can zip up a maximum of 8 Gb of files together.
+
+You can have the date in the root backup directory as well. This will give you a backup directory structure such as:
+![Sync List Directory structure](https://github.com/chrisjwaddell/Sync-List/blob/main/img/directories.jpg)
+
+
+
 
 
 
