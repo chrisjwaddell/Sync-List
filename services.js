@@ -1,6 +1,6 @@
 const fsp = require("fs/promises");
 
-const templateSettings = e => '{"Backup List":[{ "ID": ID, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": 123, "Script created": 123, "Active": true, "Files": [] } ] }';
+const templateSettings = e => '{"Backup List":[{ "ID": ID, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup complete", "Send Email After": false, "Email Address": "", "Last edited": 123, "Script created": 123, "Active": true, "Files": [] } ] }';
 
 var settingsFile = __dirname + "\\settings.json";
 
@@ -84,7 +84,7 @@ async function buildErrorChecker(e) {
 
 function powershellStart(t, e) {
     var i = "<#";
-    for (let e = 0; e < t.length; e++) i += "\n" + t[e]["File Or Folder"];
+    for (let e = 0; e < t.length; e++) if (t[e].Active) i += "\n" + t[e]["File Or Folder"];
     i += "\n\n";
     return i += "Last Edited - " + e + "\n#>\n\n";
 }
@@ -191,6 +191,15 @@ function powershellFunctions() {
     return str;
 }
 
+function backupIDToIndex(e, t) {
+    let i = 0;
+    for (;e["Backup List"][i]; ) {
+        if (e["Backup List"][i].ID === t) return i;
+        i++;
+    }
+    return 200;
+}
+
 async function powershellFileWrite(e, t) {
     try {
         fsp.writeFile(e, t);
@@ -201,325 +210,326 @@ async function powershellFileWrite(e, t) {
 }
 
 async function putBuild(l) {
-    var n;
-    if (l.BackupListID) n = l.BackupListID; else n = 0;
-    var e = __dirname + "\\Backup-scripts\\" + l["Backup List"][n]["Backup Name"] + ".ps1";
-    var s = "";
-    s = powershellStart(l["Backup List"][n].Files, l["Backup List"][n]["Last edited"]);
-    s += powershellVars(l["Backup List"][n]["Backup Root Directory"]);
-    s += "Add-Type -As System.IO.Compression.FileSystem\n\n";
-    s += powershellFunctions() + "\n\n";
-    if (l["Backup List"][n]["Message Before"]) s += powershellMsgBefore(l["Backup List"][n]["Message Before"]);
-    if (l["Backup List"][n]["Message After"]) s += powershellMsgAfter(l["Backup List"][n]["Message After"]);
-    s += powershellDestination();
-    let t = l["Backup List"][n]["Backup Root Directory"];
-    var i = new Date();
+    var e;
+    if (l.BackupListID) e = l.BackupListID; else e = 0;
+    var n = backupIDToIndex(l, e);
+    var t = __dirname + "\\Backup-scripts\\" + l["Backup List"][n]["Backup Name"] + ".ps1";
+    var o = "";
+    o = powershellStart(l["Backup List"][n].Files, l["Backup List"][n]["Last edited"]);
+    o += powershellVars(l["Backup List"][n]["Backup Root Directory"]);
+    o += "Add-Type -As System.IO.Compression.FileSystem\n\n";
+    o += powershellFunctions() + "\n\n";
+    if (l["Backup List"][n]["Message Before"]) o += powershellMsgBefore(l["Backup List"][n]["Message Before"]);
+    o += powershellDestination();
+    let s = l["Backup List"][n]["Backup Root Directory"];
+    var e = new Date();
     if (l["Backup List"][n]["Include Date"]) {
-        s += powershellDirData(l["Backup List"][n]["Backup Root Directory"]);
-        if (t.endsWith("'")) {
-            t = t.substring(0, t.length - 1);
-            if (t.endsWith("'")) t = t.substring(0, t.length - 1);
+        o += powershellDirData(l["Backup List"][n]["Backup Root Directory"]);
+        if (s.endsWith("'")) {
+            s = s.substring(0, s.length - 1);
+            if (s.endsWith("'")) s = s.substring(0, s.length - 1);
         }
-        t += "\\" + dateToYYYYMMDD(i, "");
+        s += "\\" + dateToYYYYMMDD(e, "");
     } else {
-        s += "$BackupToFinal = $BackupTo\n\n";
-        if (t.endsWith("'")) {
-            t = t.substring(0, t.length - 1);
-            if (t.endsWith("'")) t = t.substring(0, t.length - 1);
+        o += "$BackupToFinal = $BackupTo\n\n";
+        if (s.endsWith("'")) {
+            s = s.substring(0, s.length - 1);
+            if (s.endsWith("'")) s = s.substring(0, s.length - 1);
         }
     }
-    let r = l;
+    let i = l;
     for (let r = 0; r < l["Backup List"][n].Files.length; r++) {
         if (!l["Backup List"][n].Files[r].Active) {
             r++;
             if (r >= l["Backup List"][n].Files.length) break;
         }
         let i = l["Backup List"][n].Files[r]["File Or Folder"].split("\\");
-        var o = "";
-        var a;
+        var a = "";
+        var c;
         try {
-            a = await fileFolderType(l["Backup List"][n].Files[r]["File Or Folder"]);
+            c = await fileFolderType(l["Backup List"][n].Files[r]["File Or Folder"]);
         } catch (e) {
-            a = -1;
+            c = -1;
         }
-        s += `$FileName = "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n";
-        if (0 === a) s += `$FileDir = Split-Path "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n"; else if (1 === a) s += `$FileDir = "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n"; else s += `$FileDir = Split-Path "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n";
-        var c = l["Backup List"][n].Files[r]["Sub-Directories"];
-        var p = l["Backup List"][n].Files[r]["Date In File"];
-        var u = l["Backup List"][n].Files[r]["Zip It"];
-        var F;
-        var $ = dateToYYYYMMDD(new Date(), "");
-        if (-1 !== a) if (0 === a) {
-            if (!p && !u) {
+        o += `$FileName = "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n";
+        if (0 === c) o += `$FileDir = Split-Path "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n"; else if (1 === c) o += `$FileDir = "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n"; else o += `$FileDir = Split-Path "${l["Backup List"][n].Files[r]["File Or Folder"]}"` + "\n\n";
+        var p = l["Backup List"][n].Files[r]["Sub-Directories"];
+        var u = l["Backup List"][n].Files[r]["Date In File"];
+        var F = l["Backup List"][n].Files[r]["Zip It"];
+        var $;
+        var h = dateToYYYYMMDD(new Date(), "");
+        if (-1 !== c) if (0 === c) {
+            if (!u && !F) {
                 console.log("File copy");
-                if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + i[j];
-                s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-                s += "}\n";
-                s += 'Copy-Item -Path "' + l["Backup List"][n].Files[r]["File Or Folder"] + '" -Destination "$BackupToFinal\\' + o + '"\n\n';
-            } else if (p && !u) {
+                if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + i[j];
+                o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+                o += "}\n";
+                o += 'Copy-Item -Path "' + l["Backup List"][n].Files[r]["File Or Folder"] + '" -Destination "$BackupToFinal\\' + a + '"\n\n';
+            } else if (u && !F) {
                 console.log("File copy with date");
-                if (0 < i.length) if (1 === i.length) o = ""; else for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
-                o ? o = "\\" + o : o = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += '\tCreateDir -Path "$BackupToFinal' + o + '"\n';
-                s += "}\n";
-                s += 'Copy-Item -Path "' + l["Backup List"][n].Files[r]["File Or Folder"] + '" -Destination "$BackupToFinal' + o + "\\" + $ + "-" + i[i.length - 1] + '"\n\n';
-            } else if (!p && u) {
+                if (0 < i.length) if (1 === i.length) a = ""; else for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
+                a ? a = "\\" + a : a = "";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += '\tCreateDir -Path "$BackupToFinal' + a + '"\n';
+                o += "}\n";
+                o += 'Copy-Item -Path "' + l["Backup List"][n].Files[r]["File Or Folder"] + '" -Destination "$BackupToFinal' + a + "\\" + h + "-" + i[i.length - 1] + '"\n\n';
+            } else if (!u && F) {
                 console.log("File zip copy");
-                o = "";
-                if (2 < i.length) for (j = 1; j < i.length - 1; j++) "" === o ? o += "\\" + i[j] : o += "\\" + i[j];
-                var h = "" === o ? "\\" + i[i.length - 1].replace(".", "-") : o + "\\" + i[i.length - 1].replace(".", "-");
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `Compress-Archive -Update "${l["Backup List"][n].Files[r]["File Or Folder"]}" "$BackupToFinal${h}.zip"` + "\n\n";
-            } else if (p && u) {
+                a = "";
+                if (2 < i.length) for (j = 1; j < i.length - 1; j++) "" === a ? a += "\\" + i[j] : a += "\\" + i[j];
+                var f = "" === a ? "\\" + i[i.length - 1].replace(".", "-") : a + "\\" + i[i.length - 1].replace(".", "-");
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `Compress-Archive -Update "${l["Backup List"][n].Files[r]["File Or Folder"]}" "$BackupToFinal${f}.zip"` + "\n\n";
+            } else if (u && F) {
                 console.log("File zip copy with date");
-                let e = o = "";
+                let e = a = "";
                 if (2 < i.length) {
-                    for (j = 1; j < i.length - 1; j++) if (j === i.length - 1 || j === i.length) ; else o += "\\" + i[j];
-                    e = "\\" + $ + "-" + i[i.length - 1].replace(".", "-");
+                    for (j = 1; j < i.length - 1; j++) if (j === i.length - 1 || j === i.length) ; else a += "\\" + i[j];
+                    e = "\\" + h + "-" + i[i.length - 1].replace(".", "-");
                 } else {
-                    o = "";
-                    e = "\\" + $ + "-" + i[1].replace(".", "-");
+                    a = "";
+                    e = "\\" + h + "-" + i[1].replace(".", "-");
                 }
-                o ? o = "\\" + o : o = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `Compress-Archive -Update "${l["Backup List"][n].Files[r]["File Or Folder"]}" "$BackupToFinal${o}${e}.zip"\n\n`;
+                a ? a = "\\" + a : a = "";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `Compress-Archive -Update "${l["Backup List"][n].Files[r]["File Or Folder"]}" "$BackupToFinal${a}${e}.zip"\n\n`;
             }
-        } else if (1 === a) {
-            if (!c) {
-                if (!p && !u) {
+        } else if (1 === c) {
+            if (!p) {
+                if (!u && !F) {
                     console.log("Directory copy");
-                    if (0 < i.length) for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + i[j];
-                    o ? o = "\\" + o : o = "";
-                    s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                    s += '\tWrite-Output "Directory does not exist"\n';
-                    s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                    s += "}\n";
-                    s += `Get-ChildItem "${l["Backup List"][n].Files[r]["File Or Folder"]}" -file | Copy-Item -Destination "$BackupToFinal${o}" -Force\n\n`;
-                } else if (p && !u) {
+                    if (0 < i.length) for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + i[j];
+                    a ? a = "\\" + a : a = "";
+                    o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                    o += '\tWrite-Output "Directory does not exist"\n';
+                    o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                    o += "}\n";
+                    o += `Get-ChildItem "${l["Backup List"][n].Files[r]["File Or Folder"]}" -file | Copy-Item -Destination "$BackupToFinal${a}" -Force\n\n`;
+                } else if (u && !F) {
                     console.log("Directory copy with date");
-                    if (0 < i.length) if (1 === i.length) o = $ + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
-                    s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-                    s += '\tWrite-Output "Directory does not exist"\n';
-                    s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-                    s += "}\n";
-                    s += `Get-ChildItem "${l["Backup List"][n].Files[r]["File Or Folder"]}" -file | Copy-Item -Destination "$BackupToFinal\\${o}" -Force\n\n`;
-                } else if (!p && u) {
+                    if (0 < i.length) if (1 === i.length) a = h + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
+                    o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+                    o += '\tWrite-Output "Directory does not exist"\n';
+                    o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+                    o += "}\n";
+                    o += `Get-ChildItem "${l["Backup List"][n].Files[r]["File Or Folder"]}" -file | Copy-Item -Destination "$BackupToFinal\\${a}" -Force\n\n`;
+                } else if (!u && F) {
                     console.log("Directory zip copy");
                     let e = "";
                     if (0 < i.length) {
-                        for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + i[j];
+                        for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + i[j];
                         e = i[i.length - 1] + ".zip";
                     } else e = l["Backup List"][n].Files[r]["File Or Folder"] + ".zip";
-                    s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-                    s += '\tWrite-Output "Directory does not exist"\n';
-                    s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-                    s += "}\n";
-                    s += `compressFiles -zipFile "$BackupToFinal\\${e}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $false` + "\n\n";
-                } else if (p && u) {
+                    o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+                    o += '\tWrite-Output "Directory does not exist"\n';
+                    o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+                    o += "}\n";
+                    o += `compressFiles -zipFile "$BackupToFinal\\${e}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $false` + "\n\n";
+                } else if (u && F) {
                     console.log("Directory zip copy with date");
                     let e = "";
-                    o = "";
+                    a = "";
                     if (0 < i.length) {
-                        if (1 === i.length) o = "\\" + $ + "-" + i[1]; else for (j = 1; j < i.length; j++) if (j === i.length - 1 || j === i.length) "" === o ? o = "\\" + $ + "-" + i[j] : o += "\\" + $ + "-" + i[j]; else "" === o ? o = "\\" + i[j] : o += "\\" + i[j];
-                        e = $ + "-" + i[i.length - 1] + ".zip";
+                        if (1 === i.length) a = "\\" + h + "-" + i[1]; else for (j = 1; j < i.length; j++) if (j === i.length - 1 || j === i.length) "" === a ? a = "\\" + h + "-" + i[j] : a += "\\" + h + "-" + i[j]; else "" === a ? a = "\\" + i[j] : a += "\\" + i[j];
+                        e = h + "-" + i[i.length - 1] + ".zip";
                     } else e = l["Backup List"][n].Files[r]["File Or Folder"] + ".zip";
-                    o ? o = "\\" + o : o = "";
-                    s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                    s += '\tWrite-Output "Directory does not exist"\n';
-                    s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                    s += "}\n";
-                    s += `compressFiles -zipFile "$BackupToFinal${o}\\${e}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $false` + "\n\n";
+                    a ? a = "\\" + a : a = "";
+                    o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                    o += '\tWrite-Output "Directory does not exist"\n';
+                    o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                    o += "}\n";
+                    o += `compressFiles -zipFile "$BackupToFinal${a}\\${e}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $false` + "\n\n";
                 }
-            } else if (!p && !u) {
+            } else if (!u && !F) {
                 console.log("Directory copy with sub-directories");
-                if (0 < i.length) for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + i[j];
+                if (0 < i.length) for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + i[j];
                 if (0 === i.length) filename = l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = i[i.length - 1] + ".zip";
-                s += `$FileDirRoot = Split-Path "$BackupToFinal\\${o}"` + "\n\n";
-                s += "If (!(Test-Path $FileDirRoot)) {\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += "\tCreateDir -Path $FileDirRoot\n";
-                s += "}\n";
-                s += `Copy-Item -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Destination $FileDirRoot -Recurse` + "\n\n";
-            } else if (p && !u) {
+                o += `$FileDirRoot = Split-Path "$BackupToFinal\\${a}"` + "\n\n";
+                o += "If (!(Test-Path $FileDirRoot)) {\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += "\tCreateDir -Path $FileDirRoot\n";
+                o += "}\n";
+                o += `Copy-Item -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Destination $FileDirRoot -Recurse` + "\n\n";
+            } else if (u && !F) {
                 console.log("Directory copy with date with sub-directories");
-                if (0 < i.length) if (1 === i.length) o = $ + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
-                if (0 === i.length) filename = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = $ + "-" + i[i.length - 1] + ".zip";
-                s += `$FileDirRoot = Split-Path "$BackupToFinal\\${o}"` + "\n\n";
-                s += "If (!(Test-Path $FileDirRoot)) {\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += "\tCreateDir -Path $FileDirRoot\n";
-                s += "}\n";
-                s += `Copy-Item -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Destination "$BackupToFinal\\${o}" -recurse -Force` + "\n\n";
-            } else if (!p && u) {
+                if (0 < i.length) if (1 === i.length) a = h + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
+                if (0 === i.length) filename = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = h + "-" + i[i.length - 1] + ".zip";
+                o += `$FileDirRoot = Split-Path "$BackupToFinal\\${a}"` + "\n\n";
+                o += "If (!(Test-Path $FileDirRoot)) {\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += "\tCreateDir -Path $FileDirRoot\n";
+                o += "}\n";
+                o += `Copy-Item -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Destination "$BackupToFinal\\${a}" -recurse -Force` + "\n\n";
+            } else if (!u && F) {
                 console.log("Directory zip copy with sub-directories");
-                if (0 < i.length) for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + i[j];
+                if (0 < i.length) for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + i[j];
                 if (0 === i.length) filename = l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = i[i.length - 1] + ".zip";
-                o ? o = "\\" + o : o = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `compressFiles -zipFile "$BackupToFinal${o}\\${filename}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $true` + "\n\n";
-            } else if (p && u) {
+                a ? a = "\\" + a : a = "";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `compressFiles -zipFile "$BackupToFinal${a}\\${filename}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $true` + "\n\n";
+            } else if (u && F) {
                 console.log("Directory zip copy with date with sub-directories");
-                if (0 < i.length) if (1 === i.length) o = $ + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
-                if (0 === i.length) filename = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = $ + "-" + i[i.length - 1] + ".zip";
-                o ? o = "\\" + o : o = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `compressFiles -zipFile "$BackupToFinal${o}\\${filename}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $true` + "\n\n";
+                if (0 < i.length) if (1 === i.length) a = h + "-" + i[1]; else for (j = 1; j < i.length; j++) "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
+                if (0 === i.length) filename = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = h + "-" + i[i.length - 1] + ".zip";
+                a ? a = "\\" + a : a = "";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `compressFiles -zipFile "$BackupToFinal${a}\\${filename}" -RootDir "${l["Backup List"][n].Files[r]["File Or Folder"]}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}\\*" -Recursive $true` + "\n\n";
             }
-        } else if (2 === a) if (!c) {
-            if (!p && !u) {
+        } else if (2 === c) if (!p) {
+            if (!u && !F) {
                 console.log("Filetype copy");
-                if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + i[j];
-                s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-                s += "}\n";
-                s += `Get-ChildItem -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -File | ForEach-Object {` + "\n";
-                s += `\tCopy-Item $_.FullName -Destination $_.DirectoryName.Replace("$FileDir", "${t}\\${o}")` + "\n";
-                s += "}\n\n";
-            } else if (p && !u) {
+                if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + i[j];
+                o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+                o += "}\n";
+                o += `Get-ChildItem -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -File | ForEach-Object {` + "\n";
+                o += `\tCopy-Item $_.FullName -Destination $_.DirectoryName.Replace("$FileDir", "${s}\\${a}")` + "\n";
+                o += "}\n\n";
+            } else if (u && !F) {
                 console.log("Filetype copy with date");
-                if (0 < i.length) if (1 === i.length) o = $ + "-" + i[1]; else for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
-                if (0 === i.length) filename = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = $ + "-" + i[i.length - 1] + ".zip";
-                s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-                s += "}\n";
-                s += `Get-ChildItem -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -File | ForEach-Object {` + "\n";
-                s += `\tCopy-Item $_.FullName -Destination $_.DirectoryName.Replace("$FileDir", "${t}\\${o}")` + "\n";
-                s += "}\n\n";
-            } else if (!p && u) {
+                if (0 < i.length) if (1 === i.length) a = h + "-" + i[1]; else for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
+                if (0 === i.length) filename = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"] + ".zip"; else filename = h + "-" + i[i.length - 1] + ".zip";
+                o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+                o += "}\n";
+                o += `Get-ChildItem -Path "${l["Backup List"][n].Files[r]["File Or Folder"]}" -File | ForEach-Object {` + "\n";
+                o += `\tCopy-Item $_.FullName -Destination $_.DirectoryName.Replace("$FileDir", "${s}\\${a}")` + "\n";
+                o += "}\n\n";
+            } else if (!u && F) {
                 console.log("Filetype zip copy");
                 let e = "";
                 if (2 < i.length) {
-                    for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + i[j];
+                    for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + i[j];
                     e = i[i.length - 2] + i[i.length - 1].replace("*.*", "").replace("*.", "-") + ".zip";
                 } else e = l["Backup List"][n].Files[r]["File Or Folder"].replace(":\\*.*", "").replace(":\\*.", "-") + ".zip";
-                o ? o = "\\" + o : o = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `compressFiles -zipFile "$BackupToFinal${o}\\${e}" -RootDir "${i[0]}${o}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $false` + "\n\n";
-            } else if (p && u) {
+                a ? a = "\\" + a : a = "";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `compressFiles -zipFile "$BackupToFinal${a}\\${e}" -RootDir "${i[0]}${a}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $false` + "\n\n";
+            } else if (u && F) {
                 console.log("Filetype zip copy with date");
                 let e = "";
                 let t = "";
-                o = "";
+                a = "";
                 if (2 < i.length) {
                     for (j = 1; j < i.length - 1; j++) if (j === i.length - 2 || j === i.length - 1) {
-                        "" === o ? o = $ + "-" + i[j] : o += "\\" + $ + "-" + i[j];
+                        "" === a ? a = h + "-" + i[j] : a += "\\" + h + "-" + i[j];
                         "" === t ? t = i[j] : t += "\\" + i[j];
                     } else {
-                        "" === o ? o = i[j] : o += "\\" + i[j];
+                        "" === a ? a = i[j] : a += "\\" + i[j];
                         "" === t ? t = i[j] : t += "\\" + i[j];
                     }
                     e = i[i.length - 2] + i[i.length - 1].replace("*.*", "").replace("*.", "-") + ".zip";
-                } else e = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace("*.*", "").replace(":\\*.", "-") + ".zip";
-                o ? o = "\\" + o : o = "";
+                } else e = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace("*.*", "").replace(":\\*.", "-") + ".zip";
+                a ? a = "\\" + a : a = "";
                 t ? t = "\\" + t : t = "";
-                s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-                s += '\tWrite-Output "Directory does not exist"\n';
-                s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-                s += "}\n";
-                s += `compressFiles -zipFile "$BackupToFinal${o}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $false` + "\n\n";
+                o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+                o += '\tWrite-Output "Directory does not exist"\n';
+                o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+                o += "}\n";
+                o += `compressFiles -zipFile "$BackupToFinal${a}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $false` + "\n\n";
             }
-        } else if (!p && !u) {
+        } else if (!u && !F) {
             console.log("Filetype copy with sub-directories");
-            if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === o ? o = i[j] : o += "\\" + i[j];
-            s += `$FileDirRoot = "$BackupToFinal\\${o}"` + "\n\n";
-            s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-            s += '\tWrite-Output "Directory does not exist"\n';
-            s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-            s += "}\n";
-            s += `robocopy "${i[0]}\\${o}" "$FileDirRoot" ${i[i.length - 1]} /e` + "\n\n";
-        } else if (p && !u) {
+            if (1 < i.length) for (j = 1; j < i.length - 1; j++) "" === a ? a = i[j] : a += "\\" + i[j];
+            o += `$FileDirRoot = "$BackupToFinal\\${a}"` + "\n\n";
+            o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+            o += '\tWrite-Output "Directory does not exist"\n';
+            o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+            o += "}\n";
+            o += `robocopy "${i[0]}\\${a}" "$FileDirRoot" ${i[i.length - 1]} /e` + "\n\n";
+        } else if (u && !F) {
             console.log("Filetype copy with date with sub-directories");
             let e = "";
             if (0 < i.length) if (1 === i.length) {
-                o = "";
+                a = "";
                 e = "";
             } else for (j = 1; j < i.length - 1; j++) {
-                "" === o ? o = i[j] : o += "\\" + $ + "-" + i[j];
+                "" === a ? a = i[j] : a += "\\" + h + "-" + i[j];
                 "" === e ? e = i[j] : e += "\\" + i[j];
             }
-            s += `$FileDirRoot = "$BackupToFinal\\${o}"` + "\n\n";
-            s += `If (!(Test-Path "$BackupToFinal\\${o}")) {` + "\n";
-            s += '\tWrite-Output "Directory does not exist"\n';
-            s += `\tCreateDir -Path "$BackupToFinal\\${o}"` + "\n";
-            s += "}\n";
-            s += `robocopy "${i[0]}\\${e}" "$FileDirRoot" ${i[i.length - 1]} /e` + "\n\n";
-        } else if (!p && u) {
+            o += `$FileDirRoot = "$BackupToFinal\\${a}"` + "\n\n";
+            o += `If (!(Test-Path "$BackupToFinal\\${a}")) {` + "\n";
+            o += '\tWrite-Output "Directory does not exist"\n';
+            o += `\tCreateDir -Path "$BackupToFinal\\${a}"` + "\n";
+            o += "}\n";
+            o += `robocopy "${i[0]}\\${e}" "$FileDirRoot" ${i[i.length - 1]} /e` + "\n\n";
+        } else if (!u && F) {
             console.log("Filetype zip copy with sub-directories");
             let e = "";
             let t = "";
             if (2 < i.length) {
                 for (j = 1; j < i.length - 1; j++) if (j === i.length - 2 || j === i.length - 1) {
-                    "" === o ? o = $ + "-" + i[j] : o += "\\" + $ + "-" + i[j];
+                    "" === a ? a = h + "-" + i[j] : a += "\\" + h + "-" + i[j];
                     "" === t ? t = i[j] : t += "\\" + i[j];
                 } else {
-                    "" === o ? o = i[j] : o += "\\" + i[j];
+                    "" === a ? a = i[j] : a += "\\" + i[j];
                     "" === t ? t = i[j] : t += "\\" + i[j];
                 }
                 e = i[i.length - 2] + i[i.length - 1].replace("*.*", "").replace("*.", "-") + ".zip";
-            } else e = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace("*.*", "").replace(":\\*.", "-") + ".zip";
+            } else e = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace("*.*", "").replace(":\\*.", "-") + ".zip";
             t ? t = "\\" + t : t = "";
-            s += `If (!(Test-Path "$BackupToFinal${t}")) {` + "\n";
-            s += '\tWrite-Output "Directory does not exist"\n';
-            s += `\tCreateDir -Path "$BackupToFinal${t}"` + "\n";
-            s += "}\n";
-            s += `compressFiles -zipFile "$BackupToFinal${t}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $true` + "\n\n";
-        } else if (p && u) {
+            o += `If (!(Test-Path "$BackupToFinal${t}")) {` + "\n";
+            o += '\tWrite-Output "Directory does not exist"\n';
+            o += `\tCreateDir -Path "$BackupToFinal${t}"` + "\n";
+            o += "}\n";
+            o += `compressFiles -zipFile "$BackupToFinal${t}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $true` + "\n\n";
+        } else if (u && F) {
             console.log("Filetype zip copy with date with sub-directories");
             let e = "";
             let t = "";
-            o = "";
+            a = "";
             if (2 < i.length) {
                 for (j = 1; j < i.length - 1; j++) if (j === i.length - 2 || j === i.length - 1) {
-                    "" === o ? o = $ + "-" + i[j] : o += "\\" + $ + "-" + i[j];
+                    "" === a ? a = h + "-" + i[j] : a += "\\" + h + "-" + i[j];
                     "" === t ? t = i[j] : t += "\\" + i[j];
                 } else {
-                    "" === o ? o = i[j] : o += "\\" + i[j];
+                    "" === a ? a = i[j] : a += "\\" + i[j];
                     "" === t ? t = i[j] : t += "\\" + i[j];
                 }
-                e = $ + "-" + i[i.length - 2] + i[i.length - 1].replace(":\\*.*", "").replace("*.", "-") + ".zip";
-            } else e = $ + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace(":\\*.*", "").replace(":\\*.", "-") + ".zip";
-            o ? o = "\\" + o : o = "";
+                e = h + "-" + i[i.length - 2] + i[i.length - 1].replace(":\\*.*", "").replace("*.", "-") + ".zip";
+            } else e = h + "-" + l["Backup List"][n].Files[r]["File Or Folder"].replace(":\\*.*", "").replace(":\\*.", "-") + ".zip";
+            a ? a = "\\" + a : a = "";
             t ? t = "\\" + t : t = "";
-            s += `If (!(Test-Path "$BackupToFinal${o}")) {` + "\n";
-            s += '\tWrite-Output "Directory does not exist"\n';
-            s += `\tCreateDir -Path "$BackupToFinal${o}"` + "\n";
-            s += "}\n";
-            s += `compressFiles -zipFile "$BackupToFinal${o}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $true` + "\n\n";
+            o += `If (!(Test-Path "$BackupToFinal${a}")) {` + "\n";
+            o += '\tWrite-Output "Directory does not exist"\n';
+            o += `\tCreateDir -Path "$BackupToFinal${a}"` + "\n";
+            o += "}\n";
+            o += `compressFiles -zipFile "$BackupToFinal${a}\\${e}" -RootDir "${i[0]}${t}\\" -FilesToZip "${l["Backup List"][n].Files[r]["File Or Folder"]}" -Recursive $true` + "\n\n";
         }
     }
-    powershellFileWrite(e, s);
-    var i = new Date();
-    i = Date.now();
-    r["Backup List"][n]["Script created"] = i;
-    r["Script message"] = `Backup script file created in ${e}. Put this file in a cron job or scheduler to automatically do your backups regularly.`;
-    let f = "";
+    if (l["Backup List"][n]["Message After"]) o += powershellMsgAfter(l["Backup List"][n]["Message After"]);
+    powershellFileWrite(t, o);
+    var e = new Date();
+    e = Date.now();
+    i["Backup List"][n]["Script created"] = e;
+    i["Script message"] = `Backup script file created in ${t}. Put this file in a cron job or scheduler to automatically do your backups regularly.`;
+    let r = "";
     try {
-        f = await buildErrorChecker(r);
+        r = await buildErrorChecker(i);
     } catch (e) {
         throw new Error("Error building ErrorChecker");
     }
-    return f;
+    return r;
 }
 
 function dateDDMMYYYYToDate(e) {

@@ -6,7 +6,7 @@
             "Backup Root Directory": "",
             "Include Date": true,
             "Message Before": "",
-            "Message After": "",
+            "Message After": "Backup complete",
             "Send Email After": false,
             "Email Address": "",
             "Last edited": 1,
