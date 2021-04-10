@@ -41,7 +41,13 @@ app.put("/", async function(s, e) {
 
 app.put("/build", async function(s, e, o) {
     console.log("=====================================================================");
-    var t = await services.putBuild(s.body);
+    let t;
+    try {
+        t = await services.putBuild(s.body);
+    } catch (s) {
+        console.error("putBuild error");
+        t = "";
+    }
     e.send(s.body);
 });
 
