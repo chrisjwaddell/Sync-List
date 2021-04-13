@@ -1,74 +1,42 @@
-const express = require("express");
-
-const app = express();
-
-const fs = require("fs");
-
-const services = require("./services");
-
-const cors = require("cors");
-
-const hostname = "localhost";
-
-const port = 21311;
+const express = require("express"), app = express(), fs = require("fs"), services = require("./services"), cors = require("cors"), hostname = "localhost", port = 21311;
 
 var settings = "";
 
 app.use(express.urlencoded({
-    extended: true
-}));
-
-app.use(express.json());
-
-app.use(cors());
-
-app.get("/", async function(s, e) {
+    extended: !0
+})), app.use(express.json()), app.use(cors()), app.get("/", async function(req, res) {
     console.log("=====================================================================");
     try {
-        var o = await services.getSettings();
-        e.json(o);
-    } catch (s) {
-        console.error(s);
+        let r = await services.getSettings();
+        res.json(r);
+    } catch (err) {
+        console.error(err);
     }
-});
-
-app.put("/", async function(s, e) {
+}), app.put("/", async function(req, res) {
+    console.log("====================================================================="), 
+    settings = req.body;
+    let json = await services.putSettings(settings);
+    res.json(json);
+}), app.put("/build", async function(req, res, next) {
     console.log("=====================================================================");
-    settings = s.body;
-    var s = await services.putSettings(settings);
-    e.json(s);
-});
-
-app.put("/build", async function(s, e, o) {
-    console.log("=====================================================================");
-    let t;
+    let json;
     try {
-        t = await services.putBuild(s.body);
-    } catch (s) {
-        console.error("putBuild error");
-        t = "";
+        json = await services.putBuild(req.body);
+    } catch (err) {
+        console.error("putBuild error"), json = "";
     }
-    e.send(s.body);
-});
-
-app.use((s, e, o) => {
-    const t = new Error("Not found");
-    t.status = 404;
-    o(t);
-});
-
-app.use((s, e, o, t) => {
-    console.log(s);
-    o.status(s.status || 500).send({
+    res.send(req.body);
+}), app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status = 404, next(error);
+}), app.use((error, req, res, next) => {
+    console.log(error), res.status(error.status || 500).send({
         error: {
-            status: s.status || 500,
-            message: s.message || "Internal Server Error"
+            status: error.status || 500,
+            message: error.message || "Internal Server Error"
         }
-    });
-    process.exit(1);
-});
-
-app.listen(port, () => {
-    console.log("=====================================================================");
+    }), process.exit(1);
+}), app.listen(port, () => {
+    console.log("====================================================================="), 
     console.log("Backup app listening on port ", port);
 });
