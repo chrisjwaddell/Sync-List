@@ -39,7 +39,6 @@ function windowsFilenameIllegalCharacters(char) {
 }
 
 function dataSet(backupIndex, property, value, fileIndex, fileField) {
-    //* fileIndex - if this is filled in, it means we are talking about file fields
     void 0 === fileIndex ? jsondata["Backup List"][backupIndex][property] = value : jsondata["Backup List"][backupIndex].Files[fileIndex][fileField] = value, 
     dataSave();
 }
