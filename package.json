@@ -1,5 +1,5 @@
 {
-  "name": "Sync List",
+  "name": "Sync-List",
   "version": "0.5.0",
   "description": "Backup your file lists to cloud backup",
   "main": "app.js",

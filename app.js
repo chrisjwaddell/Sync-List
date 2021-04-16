@@ -5,6 +5,8 @@ var settings = "";
 app.use(express.urlencoded({
     extended: !0
 })), app.use(express.json()), app.use(cors()), app.get("/", (async function(req, res) {
+    //* A get request is submitted from the frontened GUI at the start to get the settings
+    //* We send back settings.json to it since the frontend can't read files on the computer, but Node can
     console.log("=====================================================================");
     try {
         let r = await services.getSettings();
@@ -13,6 +15,8 @@ app.use(express.urlencoded({
         console.error(err);
     }
 })), app.put("/", (async function(req, res) {
+    //* Put requests update json from the frontend and writes to the settings.json file
+    //* It gets the json data from the body of the request
     console.log("====================================================================="), 
     settings = req.body;
     let json = await services.putSettings(settings);
@@ -29,7 +33,9 @@ app.use(express.urlencoded({
 })), app.use(((req, res, next) => {
     const error = new Error("Not found");
     error.status = 404, next(error);
-})), app.use(((error, req, res, next) => {
+})), 
+//* error handler middleware
+app.use(((error, req, res, next) => {
     console.log(error), res.status(error.status || 500).send({
         error: {
             status: error.status || 500,
