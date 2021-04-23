@@ -3,20 +3,20 @@
 Backup your frequently changed computer files to your cloud backup folder.
 
 Sync List works well with OneDrive, Dropbox or other cloud storage systems.
-You can zip up your files, select a specific file or directory or certain file types.
-
-Sync List is for Windows only.
+You can zip up your files, select a specific file, directory or a file type.
 
 ![Sync List File list](https://github.com/chrisjwaddell/Sync-List/blob/main/img/sync-list.jpg)
 
 Sync List automatically backs up a list of files and directories you've selected to your directory synced to the cloud using your preferred cloud storage service.
+
+Sync List is for Windows only.
 
 
 ## How to install
 
 ```bash
 git clone https://github.com/chrisjwaddell/Sync-List.git
-cd "Sync List"
+cd "Sync-List"
 ```
 
 To run it:
