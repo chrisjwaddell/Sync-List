@@ -333,8 +333,6 @@ function Exclude-Directories
 }
 
 
-
-
 }`
 
   return str
@@ -377,7 +375,7 @@ async function putBuild(jsondata) {
      let index = backupIDToIndex(jsondata, backupID)
 
     //  console.log(jsondata["Backup List"][index])
-     var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
+    var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
     //  console.log(jsondata["Backup List"][index]["Last edited"])
      var strFile = ''
      strFile = powershellStart(jsondata["Backup List"][index]["Files"], jsondata["Backup List"][index]["Last edited"])
@@ -453,8 +451,10 @@ async function putBuild(jsondata) {
       } else if (ft === 1) {
         // Folder
         strFile += `$FileDir = "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}"` + '\n\n'
+        strFile += `$ExcludeDirectories = "${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]}"` + '\n\n'
       } else {
         strFile += `$FileDir = Split-Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}"` + '\n\n'
+        strFile += `$ExcludeDirectories = "${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]}"` + '\n\n'
       }
 
 
