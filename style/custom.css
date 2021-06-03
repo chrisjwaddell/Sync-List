@@ -189,11 +189,16 @@ hr {
 }
 
 .filelist__file {
-  width: 700px;
+  width: 600px;
 }
 .filelist__subdir {
   width: 120px;
 }
+
+.filelist__exludedirs, .filelist__exludedirs input {
+  width: 200px;
+}
+
 .filelist__date, .filelist__zip, .filelist__active {
   width: 75px;
 }
