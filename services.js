@@ -451,10 +451,10 @@ async function putBuild(jsondata) {
       } else if (ft === 1) {
         // Folder
         strFile += `$FileDir = "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}"` + '\n\n'
-        strFile += `$ExcludeDirectories = "${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]}"` + '\n\n'
+        strFile += `$ExcludeDirectories = (${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]})\n\n`
       } else {
         strFile += `$FileDir = Split-Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}"` + '\n\n'
-        strFile += `$ExcludeDirectories = "${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]}"` + '\n\n'
+        strFile += `$ExcludeDirectories = (${jsondata["Backup List"][index]["Files"][i]["Exclude-Directories"]})\n\n`
       }
 
 
