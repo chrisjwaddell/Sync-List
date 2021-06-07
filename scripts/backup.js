@@ -426,6 +426,13 @@ function dataLoad(backupIndex) {
     }
     // document.querySelectorAll(".filelist__zip")[i].checked = Boolean(jsondata["Backup List"][backupIndex]["Files"][i]["Zip It"])
     document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Sub-Directories"]
+
+    if (jsondata["Backup List"][backupIndex]["Files"][i]["Sub-Directories"]) {
+      document.querySelectorAll(".filelist__exludedirs input")[i].removeAttribute("disabled")
+    } else {
+      document.querySelectorAll(".filelist__exludedirs input")[i].setAttribute("disabled", "true")
+    }
+
     document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Date In File"]
 
     document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Active"]
@@ -607,7 +614,7 @@ function fileLineAdd(index) {
   elFL.appendChild(document.createTextNode(' '))
 
   let elExclDirsDiv = createElementAtt(elFL, 'div', ['filelist__exludedirs', 'col'], [], '')
-  let elExclDirs = createElementAtt(elExclDirsDiv, 'input', ['e-input--primary'], [['type', 'text'], ['placeholder', 'Directories to exclude-format ("dir1", "dir2")']], '')
+  let elExclDirs = createElementAtt(elExclDirsDiv, 'input', ['e-input--primary'], [['type', 'text'], ['placeholder', 'Format - "dir1", "dir2"'], ['disabled', 'true']], '')
   //* this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
   // createElementAtt(elFL, 'span', [], [], ' ')
   elFL.appendChild(document.createTextNode(' '))
