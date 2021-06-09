@@ -77,6 +77,20 @@ elName.addEventListener("change", function() {
   dataSet(bIndex, "Backup Name", this.value.trim())
 })
 
+elName.addEventListener("focus", () => elName.classList.add('focused'), true)
+elName.addEventListener("blur", () => elName.classList.remove('focused'), true);
+
+// put the handler on capturing phase (last argument true)
+// elName.addEventListener("focus", () => {
+//   console.log("focus")
+//   elName.classList.add('focused')
+// }, true)
+// elName.addEventListener("blur", () => {
+//   console.log("lost focus")
+//   elName.classList.remove('focused')
+// }, true);
+
+
 elName.addEventListener("keypress", function(e) {
   if (!windowsFilenameIllegalCharacters(e.key)) {
     e.preventDefault();
@@ -282,6 +296,16 @@ function active(active) {
     }
   })
 }
+
+function backupSettingsClear() {
+  elName.value = ""
+  elBackupTo.value = ""
+  elDate.checked = false
+  elMsgBefore.value = ""
+  elMsgAfter.value = ""
+  elActive.checked = true
+}
+
 
 function warningsRemove() {
   warningvisible("backupname", false)
@@ -745,14 +769,24 @@ function backupListClear() {
 elAdd.addEventListener("click", function() {
   // debugger
 
+  backupSettingsClear()
+
   fileListClear()
+
   let bID = backupLineIndexNew()
+  bIndex = bID
   jsondata["Backup List"].push( { "ID": bID, "Backup Name": "", "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Exclude-Directories": "", "Date In File": false }]} )
 
-  dataSave()
+  let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', bIndex]], ' ')
+  createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], '')
+  createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
+  createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
+
+  // dataSave()
+
   // debugger
-  bIndex = jsondata["Backup List"].length - 1
-  dataLoad(bIndex)
+  // bIndex = jsondata["Backup List"].length - 1
+  // dataLoad(bIndex)
   elName.focus()
 })
 
