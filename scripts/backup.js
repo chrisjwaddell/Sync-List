@@ -80,17 +80,6 @@ elName.addEventListener("change", function() {
 elName.addEventListener("focus", () => elName.classList.add('focused'), true)
 elName.addEventListener("blur", () => elName.classList.remove('focused'), true);
 
-// put the handler on capturing phase (last argument true)
-// elName.addEventListener("focus", () => {
-//   console.log("focus")
-//   elName.classList.add('focused')
-// }, true)
-// elName.addEventListener("blur", () => {
-//   console.log("lost focus")
-//   elName.classList.remove('focused')
-// }, true);
-
-
 elName.addEventListener("keypress", function(e) {
   if (!windowsFilenameIllegalCharacters(e.key)) {
     e.preventDefault();
