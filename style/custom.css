@@ -188,6 +188,10 @@ hr {
   height: 100%;
 }
 
+
+.focused { outline: 1px solid red; }
+
+
 .filelist__file {
   width: 600px;
 }
