@@ -27,7 +27,7 @@ const elRemove = document.querySelector('.backupnamelist__buttons .remove')
 
 var jsondata = ''
 
-var bIndex = 0
+var bIndex = 0    // array index ID
 
 
 function IsJsonString(str) {
@@ -882,6 +882,7 @@ async function buildBackupScript() {
 }
 
 function backupIDToIndex(ID) {
+// given a backup ID it finds what index ID it is in the json array
   let i = 0
   while (jsondata["Backup List"][i]) {
     if (jsondata["Backup List"][i]["ID"] === ID) {
