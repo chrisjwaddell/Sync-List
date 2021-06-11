@@ -82,8 +82,6 @@ async function putSettings(jsonobj) {
   // console.log("in putSettings")
   // console.log(jsonobj)
 
-  debugger
-
   let json = await buildErrorChecker(jsonobj)
 
   // console.log("in putSettings:")
@@ -351,11 +349,12 @@ function backupIDToIndex(jsondata, ID) {
 }
 
   async function powershellFileWrite(fileName, fileText) {
+    console.log("test  powershellFileWrite")
     try {
       fsp.writeFile(fileName, fileText)
       return fileText
     } catch (err) {
-        // console.log("xxx")
+        console.log("test xxx")
         console.error(err)
     }
     //* File written successfully
@@ -363,7 +362,9 @@ function backupIDToIndex(jsondata, ID) {
 
 
 async function putBuild(jsondata) {
-    // console.log("in putBuild")
+    console.log("in putBuild")
+    console.log(jsondata)
+    // Put needs a "BackupListID"
 
     //* Backup Name
     var backupID
@@ -372,9 +373,15 @@ async function putBuild(jsondata) {
      } else {
       backupID = 0
      }
-     let index = backupIDToIndex(jsondata, backupID)
 
-    //  console.log(jsondata["Backup List"][index])
+     let index = backupIDToIndex(jsondata, backupID)
+     index = 0  // get rid of this
+     console.log("remove this")
+
+
+    console.log("index")
+    console.log(index)
+    console.log(jsondata["Backup List"][index])
     var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
     //  console.log(jsondata["Backup List"][index]["Last edited"])
      var strFile = ''
