@@ -14,6 +14,13 @@ const elFileList = document.querySelector('.filelist')
 
 const elFileAdd = document.querySelector('.filelist__add button')
 
+const elModal = document.querySelector('.modal-overlay')
+const elModalSave = document.querySelector('.modal__save')
+const elModalCancel = document.querySelector('.modal__cancel')
+
+const backupListIDToIndex = id => jsondata["Backup List"].findIndex(i => i.ID === id)
+const backupListFindFirstID = () => jsondata["Backup List"].filter(i => i.Active === true)[0] ? jsondata["Backup List"].filter(i => i.Active === true)[0]["ID"] : jsondata["Backup List"][0]["ID"]
+
 //* date in root dir, it needs to be checked in various places
 var scriptRootDirDate
 
@@ -27,7 +34,9 @@ const elRemove = document.querySelector('.backupnamelist__buttons .remove')
 
 var jsondata = ''
 
-var bIndex = 0    // array index ID
+var bIndex = 0    // array index number
+// elID and bIndex tell us the ID and array index of the backup List
+// ID is known first because user clicks on it and it's an attribute in the DOM, bIndex is found from dataLoad()
 
 
 function IsJsonString(str) {
@@ -56,7 +65,7 @@ window.addEventListener('load', async () => {
         console.log(err)
       }
 
-      bIndex = 0
+      // bIndex = 0
 
       // if (typeof jsondata === "string") {
       //   jsondata = JSON.parse(jsondata)
@@ -69,6 +78,7 @@ window.addEventListener('load', async () => {
         warnings(jsondata)
       }
 
+    bIndex = backupListFindFirstID()
     dataLoad(bIndex)
 })
 
@@ -201,13 +211,17 @@ function dataSet(backupIndex, property, value, fileIndex, fileField) {
     jsondata["Backup List"][backupIndex]["Files"][fileIndex][fileField] = value
   }
 
-  dataSave()
+  dataSave(false, elID.value)
 }
 
 
-async function dataSave() {
+async function dataSave(build, id) {
+// build === true tells express to build a new script
   let today = new Date()
   today = Date.now()
+
+  delete jsondata["BackupListID"]
+  jsondata["BackupListID"] = Number(id)
 
   // debugger
   // jsondata["Backup List"][bIndex]["Last edited"] = dateToDDMMYYYY(today, '/')
@@ -220,7 +234,7 @@ async function dataSave() {
   // fetch()
   // console.log(JSON.stringify(jsondata))
 
-  const url = 'http://localhost:21311/';
+  const url = build ? 'http://localhost:21311/build' : 'http://localhost:21311/';
   const options = {
     method: 'PUT',
     headers: {
@@ -248,6 +262,10 @@ async function dataSave() {
     } else {
       warnings(json)
     }
+    if (json.hasOwnProperty("Script message")) {
+      alert(json['Script message'])
+    }
+
 
   } catch(err) {
     console.log(err)
@@ -383,29 +401,31 @@ function backupLineIndexNew() {
 }
 
 
-function dataLoad(backupIndex) {
+function dataLoad(backupID) {
   // console.log("from dataLoad")
   // console.log(arguments)
   // console.log(arguments[0])
 
   // debugger
   // console.log(typeof jsondata)
-  elID.textContent = jsondata["Backup List"][backupIndex]["ID"]
-  elName.value = jsondata["Backup List"][backupIndex]["Backup Name"]
-  elBackupTo.value = jsondata["Backup List"][backupIndex]["Backup Root Directory"]
-  elDate.checked = jsondata["Backup List"][backupIndex]["Include Date"]
-  elMsgBefore.value = jsondata["Backup List"][backupIndex]["Message Before"]
-  elMsgAfter.value = jsondata["Backup List"][backupIndex]["Message After"]
-  elSendEmail.checked = jsondata["Backup List"][backupIndex]["Send Email After"]
-  elEmail.value = jsondata["Backup List"][backupIndex]["Email Address"]
-  // elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupIndex]["Last edited"]))
-  elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][backupIndex]["Last edited"], '-'))
-  elActive.checked = jsondata["Backup List"][backupIndex]["Active"]
-  // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][backupIndex]["Last edited"]))
+
+  bIndex = backupListIDToIndex(backupID)
+  elID.textContent = jsondata["Backup List"][bIndex]["ID"]
+  elName.value = jsondata["Backup List"][bIndex]["Backup Name"]
+  elBackupTo.value = jsondata["Backup List"][bIndex]["Backup Root Directory"]
+  elDate.checked = jsondata["Backup List"][bIndex]["Include Date"]
+  elMsgBefore.value = jsondata["Backup List"][bIndex]["Message Before"]
+  elMsgAfter.value = jsondata["Backup List"][bIndex]["Message After"]
+  elSendEmail.checked = jsondata["Backup List"][bIndex]["Send Email After"]
+  elEmail.value = jsondata["Backup List"][bIndex]["Email Address"]
+  // elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
+  elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][bIndex]["Last edited"], '-'))
+  elActive.checked = jsondata["Backup List"][bIndex]["Active"]
+  // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
   //* This may change from Create to Regenerate - on name change or edit or create
 
 
-  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][backupIndex]["Last edited"]))
+  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
   var today = new Date()
   elLastEdited.classList.remove("txt-today")
   elLastEdited.classList.remove("txt-soon")
@@ -423,32 +443,32 @@ function dataLoad(backupIndex) {
 
   var dataindex = fileLineIndexNew()
 
-  for (let i = 0; i < jsondata["Backup List"][backupIndex]["Files"].length; i++) {
-    // console.log("i - " + i + "; length - " + jsondata["Backup List"][backupIndex]["Files"].length)
+  for (let i = 0; i < jsondata["Backup List"][bIndex]["Files"].length; i++) {
+    // console.log("i - " + i + "; length - " + jsondata["Backup List"][bIndex]["Files"].length)
 
     fileLineAdd(dataindex - 1)
     dataindex++
-    document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupIndex]["Files"][i]["File Or Folder"]
+    document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Or Folder"]
 
-    // document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][backupIndex]["Files"][i]["File Type"]
+    // document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Type"]
     // debugger
-    if (jsondata["Backup List"][backupIndex]["Files"][i]["Zip It"]) {
+    if (jsondata["Backup List"][bIndex]["Files"][i]["Zip It"]) {
       document.querySelectorAll(".filelist__zip input")[i].setAttribute("checked", "checked")
     } else {
       document.querySelectorAll(".filelist__zip input")[i].removeAttribute("checked")
     }
-    // document.querySelectorAll(".filelist__zip")[i].checked = Boolean(jsondata["Backup List"][backupIndex]["Files"][i]["Zip It"])
-    document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Sub-Directories"]
+    // document.querySelectorAll(".filelist__zip")[i].checked = Boolean(jsondata["Backup List"][bIndex]["Files"][i]["Zip It"])
+    document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]
 
-    if (jsondata["Backup List"][backupIndex]["Files"][i]["Sub-Directories"]) {
+    if (jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]) {
       document.querySelectorAll(".filelist__exludedirs input")[i].removeAttribute("disabled")
     } else {
       document.querySelectorAll(".filelist__exludedirs input")[i].setAttribute("disabled", "true")
     }
 
-    document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Date In File"]
+    document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Date In File"]
 
-    document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][backupIndex]["Files"][i]["Active"]
+    document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Active"]
     let active = document.querySelectorAll(".filelist__active input")[i].checked
     fileLineActive(i, active)
   }
@@ -457,10 +477,10 @@ function dataLoad(backupIndex) {
   backupListClear()
 
   for (let i = 0; i < jsondata["Backup List"].length; i++) {
-    // debugLog(debugGetFuncName(), "5",  { backupIndex })
+    // debugLog(debugGetFuncName(), "5",  { bIndex })
 
     let elTR
-    if (Number(jsondata["Backup List"][i]["ID"])  === Number(jsondata["Backup List"][backupIndex]["ID"]) ) {
+    if (Number(jsondata["Backup List"][i]["ID"])  === Number(jsondata["Backup List"][bIndex]["ID"]) ) {
       elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', jsondata["Backup List"][i]["ID"]]], ' ')
     } else {
       elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', [], [['data-id', jsondata["Backup List"][i]["ID"]]], ' ')
@@ -469,7 +489,7 @@ function dataLoad(backupIndex) {
 
     // debugger
     if (jsondata["Backup List"][i]["Active"]) {
-      if (Number(jsondata["Backup List"][i]["ID"])  === Number(jsondata["Backup List"][backupIndex]["ID"]) ) {
+      if (Number(jsondata["Backup List"][i]["ID"])  === Number(jsondata["Backup List"][bIndex]["ID"]) ) {
           createElementAtt(elTR, 'td', ['backupname', 'selected'], [], jsondata["Backup List"][i]["Backup Name"])
           createElementAtt(elTR, 'td', ['active', 'selected'], [], jsondata["Backup List"][i]["Active"])
           createElementAtt(elTR, 'td', ['lastrun', 'selected'], [], '')
@@ -483,7 +503,7 @@ function dataLoad(backupIndex) {
       createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], String(jsondata["Backup List"][i]["Active"]))
       createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
     }
-
+    // debugger
 
   elTR.addEventListener("click", function () {
     // debugger
@@ -491,14 +511,15 @@ function dataLoad(backupIndex) {
       let id = Number(this.getAttribute('data-id'))
 
       if (id != 200) {
-        bIndex = backupIDToIndex(id)
-        // alert(bIndex)
+        if (bIndex !== -1) {
+          // alert(bIndex)
 
-        fileListClear()
+          fileListClear()
 
-        // sleep(5000)
-        // debugger
-        dataLoad(bIndex)
+          // sleep(5000)
+          // debugger
+          dataLoad(id)
+        }
     }
   })
 }
@@ -702,7 +723,7 @@ function fileLineAdd(index) {
         }
       }
 
-      dataSave()
+      dataSave(false, elID.value)
     }
   })
 
@@ -715,7 +736,7 @@ elFileAdd.addEventListener("click", function() {
   // debugger
   jsondata["Backup List"][bIndex]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false,  "Exclude-Directories": "", "Date In File": false, "Active": true })
 
-  dataSave()
+  dataSave(false, elID.value)
 })
 
 
@@ -757,39 +778,78 @@ function backupListClear() {
 
 elAdd.addEventListener("click", function() {
   // debugger
+  elModal.classList.add('isvisible')
+  // document.querySelector('#backupname--modal').focus()
+  // elName.focus()
+  document.querySelector('#backupname--modal').focus()
+})
 
-  backupSettingsClear()
 
-  fileListClear()
+elModalSave.addEventListener("click", function() {
+  const elName = document.querySelector('#backupname--modal')
 
-  let bID = backupLineIndexNew()
-  bIndex = bID
-  jsondata["Backup List"].push( { "ID": bID, "Backup Name": "", "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Exclude-Directories": "", "Date In File": false }]} )
+  if (elName.value) {
+    backupSettingsClear()
 
-  let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', bIndex]], ' ')
-  createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], '')
-  createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
-  createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
+    fileListClear()
 
-  // dataSave()
+    let bID = backupLineIndexNew()
+    debugger
+    jsondata["Backup List"].push( { "ID": bID, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Exclude-Directories": "", "Date In File": false }]} )
 
-  // debugger
-  // bIndex = jsondata["Backup List"].length - 1
-  // dataLoad(bIndex)
-  elName.focus()
+    // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
+    jsondata["BackupListID"] = bID
+
+    let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', bID]], ' ')
+    createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], elName.value)
+    createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
+    createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
+
+    debugger
+    dataSave(true, bID)
+    // buildBackupScript(bID)
+    debugger
+    alert("bID - " + bID)
+    dataLoad(bID)
+
+    debugger
+    elName.value = ''
+
+  } else {
+    alert("Nothing in")
+
+  }
+})
+
+
+elModalCancel.addEventListener("click", function() {
+  elModal.classList.remove('isvisible')
+  document.querySelector('#backupname--modal').value = ''
 })
 
 
 elRemove.addEventListener("click", function() {
-  let bID = Number(document.querySelector('.backupnamelist tr.selected').getAttribute('data-id'))
-  let bIndex = backupIDToIndex(bID)
-  var r = confirm(`Are you sure you want to make this Backup Profile - ${elName.value} inactive?`)
-  if (r == true) {
-    // debugger
-    jsondata["Backup List"].splice(bIndex, 1)
-    bIndex = 0
-    dataSave()
-    dataLoad(0)
+  let removebID = Number(document.querySelector('.backupnamelist tr.selected').getAttribute('data-id'))
+  let removebIndex = backupListIDToIndex(removebID)
+  let bID
+
+  if (removebIndex !== -1) {
+     var r = confirm(`Are you sure you want to remove this Backup List - ${elName.value}`)
+     if (r == true) {
+       // debugger
+       jsondata["Backup List"].splice(removebIndex, 1)
+       // After removing, find the first active backup List, if not, just the first backup list, there needs to be at least one
+       try {
+         bID = jsondata["Backup List"].filter(i => i.Active === true)[0]["ID"]
+       }
+       catch (err) {
+         bID = jsondata["Backup List"][0]["ID"]
+       }
+       dataSave(false, elID.value)
+       dataLoad(bID)
+    } else {
+      alert("Something went wrong, it can't remove this Backup List. It can't find it in the JSON data.")
+    }
   }
 })
 
@@ -821,16 +881,16 @@ function fileLineActive(index, value) {
 
 
 elCreateScript.addEventListener("click", function() {
-  buildBackupScript()
+  buildBackupScript(elID.textContent)
 })
 
 
-async function buildBackupScript() {
+async function buildBackupScript(id) {
     // console.log(jsondata)
     // debugger
 
     delete jsondata["BackupListID"]
-    jsondata["BackupListID"] = Number(elID.textContent)
+    jsondata["BackupListID"] = Number(id)
 
     const url = 'http://localhost:21311/build'
     const options = {
@@ -839,20 +899,56 @@ async function buildBackupScript() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(jsondata)
-    };
+    }
 
 
-    let r = await fetch(url, options).catch(err => {
-      console.log(err)
-      alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
-    })
+    debugger
+    // let r3 = await fetch(url, options)
+    let r3 = fetch(url, options)
+        // .then(res => res.text())
+        .then(res => res.text())
+        .catch(err => console.log(err))
+
+    debugger
+
+    let r4 = await r3
+    console.log("r4")
+    console.log(r4)
+
+
     // debugger
-    let txt = await r.text()
+    // let r2 = fetch(url, options)
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     console.log("then")
+    //     console.log(res)
+    //   })
+    //   .catch(err => console.log(err))
 
     // debugger
+
+    // let r = fetch(url, options).catch(err => {
+    //   console.log(err)
+    //   alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+    // })
+
+    debugger
+
+    // let r = await fetch(url, options).catch(err => {
+    //   console.log(err)
+    //   alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+    // })
+    // console.log("r")
+    // console.log(r)
+    debugger
+    // let txt = await r.text()
+    // let txt = await r.json()
+
+    debugger
 
     try {
-      json = JSON.parse(txt)
+      json = JSON.parse(r3)
+      // json = r3
       // json = IsJsonString(txt)
       if (json.hasOwnProperty("Script message")) {
         alert(json['Script message'])
@@ -881,22 +977,85 @@ async function buildBackupScript() {
 
 }
 
-function backupIDToIndex(ID) {
-// given a backup ID it finds what index ID it is in the json array
-  let i = 0
-  while (jsondata["Backup List"][i]) {
-    if (jsondata["Backup List"][i]["ID"] === ID) {
-      return i
-    }
-    i++
-  }
-  return 200
-}
-
 
 function sleep(miliseconds) {
     var currentTime = new Date().getTime();
 
     while (currentTime + miliseconds >= new Date().getTime()) {
     }
+}
+
+
+async function testFetch() {
+  const url = 'http://localhost:21311/build'
+
+  const jj = { "Backup List": [ { "ID": 1, "Backup Name": "one", "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive" }], "Error List": [] }
+
+  const str = JSON.stringify(jsondata)
+  console.log(str)
+
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'text/plain'
+    },
+    body: JSON.stringify(jsondata)
+  }
+  // body: jj
+
+  debugger
+  // let r3 = await fetch(url, options)
+  let r3 = fetch(url, options)
+      // .then(res => res.text())
+      // .then(txt => txt.json())
+      // .catch(err => console.log(err))
+
+      debugger
+  console.log(r3)
+  let a = await fetch(url, options)
+  let t = await a.text()
+  console.log(t)
+
+}
+
+
+async function testFetch1() {
+  const url = 'http://localhost:21311/testjsonjson'
+
+  // const jj = { "Backup List": [ { "ID": 1, "Backup Name": "one", "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive" }], "Error List": [] }
+  const jj = { A: 1 }
+
+  const str = JSON.stringify(jj)
+  console.log(str)
+
+  console.log(JSON.stringify(jsondata))
+  return
+
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'text/plain'
+    },
+    // body: str
+    body: JSON.stringify(jsondata)
+  }
+  // body: jj
+
+
+  debugger
+  // let r3 = await fetch(url, options)
+  let r3 = fetch(url, options)
+      // .then(res => res.text())
+      // .then(res => res.text())
+      .then(txt => txt.json())
+      // .catch(err => console.log(err))
+
+      debugger
+  console.log(await r3)
+  // let a = await fetch(url, options)
+  // let t = await r3.text()
+  // console.log(t)
+
 }
