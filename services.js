@@ -362,8 +362,8 @@ function backupIDToIndex(jsondata, ID) {
 
 
 async function putBuild(jsondata) {
-    console.log("in putBuild")
-    console.log(jsondata)
+    // console.log("in putBuild")
+    // console.log(jsondata)
     // Put needs a "BackupListID"
 
     //* Backup Name
@@ -375,13 +375,9 @@ async function putBuild(jsondata) {
      }
 
      let index = backupIDToIndex(jsondata, backupID)
-     index = 0  // get rid of this
-     console.log("remove this")
+    //  index = 0  // get rid of this
+    //  console.log("remove this")
 
-
-    console.log("index")
-    console.log(index)
-    console.log(jsondata["Backup List"][index])
     var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
     //  console.log(jsondata["Backup List"][index]["Last edited"])
      var strFile = ''

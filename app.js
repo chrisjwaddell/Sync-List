@@ -59,16 +59,12 @@ res.json(json)
 
 
 app.put('/build', async function(req, res, next) {
-  console.log("Build")
   console.log("=====================================================================")
-  console.log(req.body)
-
-  let j = await JSON.parse(req.body)
-
+  console.log(typeof(req.body))
   let json
 
   try {
-    json = await services.putBuild(j)
+    json = await services.putBuild(req.body)
   } catch(err) {
     console.error("putBuild error")
     console.error(err)
@@ -76,17 +72,34 @@ app.put('/build', async function(req, res, next) {
   }
 
   // console.log(json)
-  let s = await JSON.stringify(json)
+  // let s = await JSON.stringify(json)
   // console.log(typeof json)
   // console.log(s)
-  console.log(typeof s)
+  // console.log(typeof s)
 
   // console.log(req.body)
   // res.send(req.body)
   // res.send(json)
   // res.json(req.body)
   // res.json(json)
-  res.send(s)
+  res.json(json)
+})
+
+app.put('/testjsonjson', async function(req, res, next) {
+  let json = req.body
+  console.log("req.body - ")
+  console.log(req.body)
+
+  res.json(json)
+})
+
+
+app.put('/testjsontext', async function(req, res, next) {
+  let json = req.body
+  console.log("req.body - ")
+  console.log(req.body)
+
+  res.send("Hello")
 })
 
 
