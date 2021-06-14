@@ -337,28 +337,49 @@ function Exclude-Directories
   }
 
 
-function backupIDToIndex(jsondata, ID) {
-    let i = 0
-    while (jsondata["Backup List"][i]) {
-      if (jsondata["Backup List"][i]["ID"] === ID) {
-        return i
-      }
-      i++
-    }
-    return 200
-}
 
   async function powershellFileWrite(fileName, fileText) {
     console.log("test  powershellFileWrite")
+
     try {
       fsp.writeFile(fileName, fileText)
-      return fileText
+      // return fileText
     } catch (err) {
         console.log("test xxx")
         console.error(err)
     }
     //* File written successfully
   }
+
+
+async function powershellFileWrite2(fileName, fileText) {
+    return new Promise((resolve, reject) =>
+      fsp.writeFile(fileName, fileText)
+    );
+}
+
+
+async function powershellFileWrite3(fileName, fileText) {
+    let ws = await fsp.writeFile(fileName, fileText).then(r => console.log(r))
+    console.log("ws")
+    console.log(ws)
+    return ws
+}
+
+async function powershellFileWrite4(fileName, fileText) {
+  let p4 = await fsp.writeFile(fileName, fileText). then(r => console.log(r))
+  console.log("p4")
+  console.log(p4)
+  return p4
+}
+
+async function powershellFileWrite5(fileName, fileText) {
+    fsp.writeFile(fileName, fileText)
+      .then(function(result) {
+        return result;
+      })
+      .catch(err => console.log(err))
+}
 
 
 async function putBuild(jsondata) {
@@ -374,9 +395,13 @@ async function putBuild(jsondata) {
       backupID = 0
      }
 
-     let index = backupIDToIndex(jsondata, backupID)
+     const backupListIDToIndex = id => jsondata["Backup List"].findIndex(i => i.ID === id)
+
+     let index = backupListIDToIndex(backupID)
     //  index = 0  // get rid of this
     //  console.log("remove this")
+
+    if (index !== -1) {
 
     var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
     //  console.log(jsondata["Backup List"][index]["Last edited"])
@@ -395,6 +420,7 @@ async function putBuild(jsondata) {
 
     let rd = jsondata["Backup List"][index]["Backup Root Directory"]
     let todayDir = new Date()
+
 
      if (jsondata["Backup List"][index]["Include Date"]) {
         strFile += powershellDirData(jsondata["Backup List"][index]["Backup Root Directory"])
@@ -418,7 +444,6 @@ async function putBuild(jsondata) {
     //  console.log(strFile)
 
     let json = jsondata
-
 
     for (let i = 0; i < jsondata["Backup List"][index]["Files"].length; i++) {
       // console.log(jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
@@ -1117,23 +1142,53 @@ async function putBuild(jsondata) {
 
     strFile += powershellEnd()
 
+    // return ""
 
-    powershellFileWrite(batchFileName, strFile)
+    await fsp.writeFile("E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\Backup-scripts\\test.ps1", "test")
+    // .then( r => {
+      console.log("f")
+      console.log("result")
+
+      let today = new Date()
+      today = Date.now()
+      json["Backup List"][index]["Script created"] = today
+      json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
+
+      let fileContentPlusErrors = ''
+      try {
+        fileContentPlusErrors = await buildErrorChecker(json)
+      } catch(err) {
+        throw new Error("Error building ErrorChecker")
+        process.exit(1)
+      }
+
+      return fileContentPlusErrors
+      // return result;
+    // })
+    // .catch(err => console.log(json))
+
+    let w = await powershellFileWrite2(batchFileName, strFile)
 
 
-    let today = new Date()
-    today = Date.now()
-    json["Backup List"][index]["Script created"] = today
-    json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
+  } else {    // Backup List Index not found
+    return json
+  }
+}
 
-    let fileContentPlusErrors = ''
-    try {
-      fileContentPlusErrors = await buildErrorChecker(json)
-    } catch(err) {
-      throw new Error("Error building ErrorChecker")
-      process.exit(1)
-    }
-    return fileContentPlusErrors
+
+async function test(jsondata) {
+
+  let json = jsondata
+
+  try {
+      await fsp.access("E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\zicons.json")
+  // console.log("Check script file - after await")
+} catch (error){
+  // console.log(error)
+  console.log("error")
+  // json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
+  // console.log(json)
+}
 
 }
 
@@ -1235,5 +1290,10 @@ function dateToDDMMYYYY(dt, seperator) {
 module.exports = {
   getSettings,
   putSettings,
-  putBuild
+  putBuild,
+  powershellFileWrite2,
+  powershellFileWrite3,
+  powershellFileWrite4,
+  powershellFileWrite5,
+  test
 }
