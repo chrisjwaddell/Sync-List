@@ -65,8 +65,6 @@ window.addEventListener('load', async () => {
         console.log(err)
       }
 
-      // bIndex = 0
-
       // if (typeof jsondata === "string") {
       //   jsondata = JSON.parse(jsondata)
       // }
@@ -80,6 +78,8 @@ window.addEventListener('load', async () => {
 
     bIndex = backupListFindFirstID()
     dataLoad(bIndex)
+
+    debugToolInitialAfter()
 })
 
 
@@ -243,35 +243,41 @@ async function dataSave(build, id) {
     body: JSON.stringify(jsondata)
   };
 
-  let r = await fetch(url, options).catch(err => {
-    console.log(err)
-    alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
-  })
 
-  // debugger
-  let txt = await r.text()
-  // console.log(txt)
+  let rr3 = fetch(url, options)
+  .then(t => t.json())
 
-  try {
-    json = JSON.parse(txt)
-    // json = IsJsonString(txt)
-    // debugger
-    if (json.hasOwnProperty("Important Error Message")) {
-      alert(json['Important Error Message'])
-      warnings(json)
-    } else {
-      warnings(json)
-    }
-    if (json.hasOwnProperty("Script message")) {
-      alert(json['Script message'])
-    }
+  let g2 = fetch(url, options)
+  .then(j => j.json())
+  // .then(j => j["a"]= 4)
+  .catch(err => console.log(err))
 
-
-  } catch(err) {
-    console.log(err)
-  }
 
 }
+
+//   let g = fetch(url, options)
+//   let j = g.then(j => j.json())
+//   console.log(j)
+//   let j2 = await j
+
+//   try {
+//     json = JSON.parse(j2)
+//     if (json.hasOwnProperty("Important Error Message")) {
+//       alert(json['Important Error Message'])
+//       warnings(json)
+//     } else {
+//       warnings(json)
+//     }
+//     if (json.hasOwnProperty("Script message")) {
+//       alert(json['Script message'])
+//     }
+
+
+//   } catch(err) {
+//     console.log(err)
+//   }
+
+// }
 
 
 function active(active) {
@@ -794,8 +800,8 @@ elModalSave.addEventListener("click", function() {
     fileListClear()
 
     let bID = backupLineIndexNew()
-    debugger
-    jsondata["Backup List"].push( { "ID": bID, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": [ { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false, "Exclude-Directories": "", "Date In File": false }]} )
+    // debugger
+    jsondata["Backup List"].push( { "ID": bID, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": []} )
 
     // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
     jsondata["BackupListID"] = bID
@@ -805,15 +811,14 @@ elModalSave.addEventListener("click", function() {
     createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
     createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
 
-    debugger
     dataSave(true, bID)
+
     // buildBackupScript(bID)
-    debugger
-    alert("bID - " + bID)
     dataLoad(bID)
 
-    debugger
     elName.value = ''
+
+    elModal.classList.remove('isvisible')
 
   } else {
     alert("Nothing in")
@@ -1020,42 +1025,37 @@ async function testFetch() {
 }
 
 
-async function testFetch1() {
-  const url = 'http://localhost:21311/testjsonjson'
-
+async function testFetch1(endurl) {
   // const jj = { "Backup List": [ { "ID": 1, "Backup Name": "one", "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive" }], "Error List": [] }
   const jj = { A: 1 }
 
   const str = JSON.stringify(jj)
-  console.log(str)
+  // console.log(str)
 
-  console.log(JSON.stringify(jsondata))
-  return
+  // console.log(JSON.stringify(jsondata))
+  // return
 
+  delete jsondata["BackupListID"]
+  jsondata["BackupListID"] = 1
+
+  // const url = 'http://localhost:21311/testjsonjson'
+  const url = 'http://localhost:21311/' + endurl;
   const options = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
-      // 'Content-Type': 'text/plain'
     },
-    // body: str
     body: JSON.stringify(jsondata)
-  }
-  // body: jj
+  };
+
+  // let rr = fetch(url, options)
 
 
   debugger
   // let r3 = await fetch(url, options)
-  let r3 = fetch(url, options)
-      // .then(res => res.text())
-      // .then(res => res.text())
+  let r3 = await fetch(url, options)
       .then(txt => txt.json())
       // .catch(err => console.log(err))
 
-      debugger
-  console.log(await r3)
-  // let a = await fetch(url, options)
-  // let t = await r3.text()
-  // console.log(t)
-
+  console.log(r3)
 }
