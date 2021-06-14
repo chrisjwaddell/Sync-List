@@ -352,36 +352,6 @@ function Exclude-Directories
   }
 
 
-async function powershellFileWrite2(fileName, fileText) {
-    return new Promise((resolve, reject) =>
-      fsp.writeFile(fileName, fileText)
-    );
-}
-
-
-async function powershellFileWrite3(fileName, fileText) {
-    let ws = await fsp.writeFile(fileName, fileText).then(r => console.log(r))
-    console.log("ws")
-    console.log(ws)
-    return ws
-}
-
-async function powershellFileWrite4(fileName, fileText) {
-  let p4 = await fsp.writeFile(fileName, fileText). then(r => console.log(r))
-  console.log("p4")
-  console.log(p4)
-  return p4
-}
-
-async function powershellFileWrite5(fileName, fileText) {
-    fsp.writeFile(fileName, fileText)
-      .then(function(result) {
-        return result;
-      })
-      .catch(err => console.log(err))
-}
-
-
 async function putBuild(jsondata) {
     // console.log("in putBuild")
     // console.log(jsondata)
@@ -1144,11 +1114,6 @@ async function putBuild(jsondata) {
 
     // return ""
 
-    await fsp.writeFile("E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\Backup-scripts\\test.ps1", "test")
-    // .then( r => {
-      console.log("f")
-      console.log("result")
-
       let today = new Date()
       today = Date.now()
       json["Backup List"][index]["Script created"] = today
@@ -1177,7 +1142,6 @@ async function putBuild(jsondata) {
 
 
 async function test(jsondata) {
-
   let json = jsondata
 
   try {
