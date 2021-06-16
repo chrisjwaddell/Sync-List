@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 // const fs = require('fs');
-const fsp = require('fs/promises');
+// const fsp = require('fs/promises');
 
 const services = require('./services');
 
@@ -29,7 +29,6 @@ app.get('/', async function(req, res) {
 //* We send back settings.json to it since the frontend can't read files on the computer, but Node can
 
   console.log("=====================================================================")
-  console.log("remove fsp")
 
   // services.scriptsFolder3()
 
@@ -47,14 +46,18 @@ app.get('/', async function(req, res) {
 app.put('/', async function(req, res) {
 //* Put requests update json from the frontend and writes to the settings.json file
 //* It gets the json data from the body of the request
-
+console.log("putsettings")
 console.log("=====================================================================")
 
 settings = req.body
 
-let json = await services.putSettings(settings)
-
-res.json(json)
+try {
+  let json = services.putSettings(settings)
+  res.json(json)
+} catch(err) {
+  console.log(err)
+  res.json("")
+}
 
 })
 

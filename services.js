@@ -1,5 +1,5 @@
 const fsp = require('fs/promises');
-// const fs = require('fs');
+const fs = require('fs');
 // const fsp = fs.promises;
 
 const templateSettings = (ID) => '{"Backup List":[{ "ID": ID, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup complete", "Send Email After": false, "Email Address": "", "Last edited": 123, "Script created": 123, "Active": true, "Files": [] } ] }'
@@ -22,10 +22,10 @@ async function getSettings() {
 
   //* See if scripts Directory exists
   let scriptsDir = __dirname + '\\' + 'Backup-scripts'
-  try {
-    await fsp.access(scriptsDir)
-    // console.log("Batch scripts dir exists")
-  } catch (error){
+
+  await fsp.access(scriptsDir)
+  .then(i => console.log("Batch scripts dir exists"))
+  .catch (err => {
     // console.log("Batch scripts dir DOESNT exist")
     await fsp.mkdir(scriptsDir)
       .then(m => {
@@ -33,7 +33,7 @@ async function getSettings() {
           // settingsFile()
       })
       .catch(err => console.error("Error: In making Backup-scripts directory"))
- }
+    })
 
 
    //* Settings file
@@ -44,8 +44,8 @@ async function getSettings() {
         var strFileContent = await fsp.readFile(settingsFile,'utf8')
         // console.log(strFileContent)
         let objJSON = IsJsonString(strFileContent)
-        // console.log(objJSON)
-        let fileContentPlusErrors = await buildErrorChecker(objJSON)
+        console.log(objJSON)
+        let fileContentPlusErrors = buildErrorChecker(objJSON)
         return fileContentPlusErrors
 
 
@@ -82,10 +82,12 @@ async function putSettings(jsonobj) {
   // console.log("in putSettings")
   // console.log(jsonobj)
 
-  let json = await buildErrorChecker(jsonobj)
+  let json = ""
+
+  json = buildErrorChecker(jsonobj)
 
   // console.log("in putSettings:")
-  // console.log(json)
+  console.log(json)
 
   let strjson = JSON.stringify(json, null, 4)
   // console.log(strjson)
@@ -98,15 +100,16 @@ async function putSettings(jsonobj) {
   //   console.log("file written to")
   // })
 
-  try {
-    await fsp.writeFile(settingsFile, strjson)
-    return json
-  } catch (err) {
-      // console.log("xxx")
-      console.error(err)
-  }
-  //* file written successfully
-  // console.log("file written to")
+  fs.writeFile(settingsFile, strjson, function(err) {
+    if (err) {
+        console.log(err);
+        throw new Error(err)
+    } else {
+        console.log("JSON saved");
+        return json
+    }
+  })
+
 }
 
 
@@ -117,16 +120,6 @@ async function buildErrorChecker(jsonobj) {
   // console.log("in buildErrorChecker")
 
   json = jsonobj
-
-  try {
-    // console.log("buildErrorChecker - try")
-    // console.log(jsonobj)
-    // console.log(json)
-    // let objJSON = JSON.parse(json)
-  } catch (err) {
-    console.error(err)
-  }
-
 
   delete json["Important Error Message"]
 
@@ -339,13 +332,12 @@ function Exclude-Directories
 
 
   async function powershellFileWrite(fileName, fileText) {
-    console.log("test  powershellFileWrite")
+    // console.log("test  powershellFileWrite")
 
     try {
       fsp.writeFile(fileName, fileText)
       // return fileText
     } catch (err) {
-        console.log("test xxx")
         console.error(err)
     }
     //* File written successfully
@@ -1120,19 +1112,14 @@ async function putBuild(jsondata) {
       json["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
 
       let fileContentPlusErrors = ''
-      try {
-        fileContentPlusErrors = await buildErrorChecker(json)
-      } catch(err) {
-        throw new Error("Error building ErrorChecker")
-        process.exit(1)
-      }
+      fileContentPlusErrors = buildErrorChecker(json)
 
       return fileContentPlusErrors
       // return result;
     // })
     // .catch(err => console.log(json))
 
-    let w = await powershellFileWrite2(batchFileName, strFile)
+    let w = await powershellFileWrite(batchFileName, strFile)
 
 
   } else {    // Backup List Index not found
@@ -1254,10 +1241,5 @@ function dateToDDMMYYYY(dt, seperator) {
 module.exports = {
   getSettings,
   putSettings,
-  putBuild,
-  powershellFileWrite2,
-  powershellFileWrite3,
-  powershellFileWrite4,
-  powershellFileWrite5,
-  test
+  putBuild
 }
