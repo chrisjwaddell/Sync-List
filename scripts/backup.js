@@ -1,3 +1,4 @@
+var jsondata = ''
 const elID = document.querySelector('.backupid');
 const elName = document.querySelector('#backupname');
 const elBackupTo = document.querySelector('#backupto');
@@ -32,7 +33,6 @@ const elBackupNameListTB = document.querySelector('.backupnamelist tbody')
 const elAdd = document.querySelector('.backupnamelist__buttons .add')
 const elRemove = document.querySelector('.backupnamelist__buttons .remove')
 
-var jsondata = ''
 
 var bIndex = 0    // array index number
 // elID and bIndex tell us the ID and array index of the backup List
@@ -49,37 +49,27 @@ function IsJsonString(str) {
 }
 
 
-window.addEventListener('load', async () => {
-      let a = await fetch("http://localhost:21311").then(r => r.text()).catch(err => {
-        console.log(err)
-        alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
+window.addEventListener('load', () => {
+      var b = fetch("http://localhost:21311")
+      .then(r => r.json())
+      .then(function(str) {
+          debugger
+          console.log(str)
+          jsondata = str;
+
+          if (jsondata.hasOwnProperty("Important Error Message")) {
+              alert(jsondata['Important Error Message'])
+              warnings(jsondata)
+            } else {
+              warnings(jsondata)
+            }
+
+            bIndex = backupListFindFirstID()
+            dataLoad(bIndex)
+
+            debugToolInitialAfter()
       })
-
-      // let txt = await a.text()
-      // . catch(err => console.log(err))
-
-      try {
-        jsondata = await JSON.parse(a)
-      }
-      catch(err) {
-        console.log(err)
-      }
-
-      // if (typeof jsondata === "string") {
-      //   jsondata = JSON.parse(jsondata)
-      // }
-
-      if (jsondata.hasOwnProperty("Important Error Message")) {
-        alert(jsondata['Important Error Message'])
-        warnings(jsondata)
-      } else {
-        warnings(jsondata)
-      }
-
-    bIndex = backupListFindFirstID()
-    dataLoad(bIndex)
-
-    debugToolInitialAfter()
+      .catch(err => console.log(err))
 })
 
 
@@ -244,40 +234,29 @@ async function dataSave(build, id) {
   };
 
 
-  let rr3 = fetch(url, options)
-  .then(t => t.json())
+  // let rr3 = fetch(url, options)
+  // .then(t => t.json())
 
   let g2 = fetch(url, options)
   .then(j => j.json())
   // .then(j => j["a"]= 4)
   .catch(err => console.log(err))
 
+  try {
+    json = JSON.parse(g2)
+    // json = r3
+    // json = IsJsonString(txt)
+    if (json.hasOwnProperty("Script message")) {
+      alert(json['Script message'])
+      warrnings(json)
+    } else {
+      warnings(json)
+    }
+  } catch(err) {
+    console.log(err)
+  }
 
 }
-
-//   let g = fetch(url, options)
-//   let j = g.then(j => j.json())
-//   console.log(j)
-//   let j2 = await j
-
-//   try {
-//     json = JSON.parse(j2)
-//     if (json.hasOwnProperty("Important Error Message")) {
-//       alert(json['Important Error Message'])
-//       warnings(json)
-//     } else {
-//       warnings(json)
-//     }
-//     if (json.hasOwnProperty("Script message")) {
-//       alert(json['Script message'])
-//     }
-
-
-//   } catch(err) {
-//     console.log(err)
-//   }
-
-// }
 
 
 function active(active) {
@@ -907,49 +886,15 @@ async function buildBackupScript(id) {
     }
 
 
-    debugger
     // let r3 = await fetch(url, options)
     let r3 = fetch(url, options)
         // .then(res => res.text())
         .then(res => res.text())
         .catch(err => console.log(err))
 
-    debugger
-
     let r4 = await r3
     console.log("r4")
     console.log(r4)
-
-
-    // debugger
-    // let r2 = fetch(url, options)
-    //   .then(res => res.json())
-    //   .then(res => {
-    //     console.log("then")
-    //     console.log(res)
-    //   })
-    //   .catch(err => console.log(err))
-
-    // debugger
-
-    // let r = fetch(url, options).catch(err => {
-    //   console.log(err)
-    //   alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
-    // })
-
-    debugger
-
-    // let r = await fetch(url, options).catch(err => {
-    //   console.log(err)
-    //   alert("Check if Node is running. To start it, type 'node app.js' in the command prompt.")
-    // })
-    // console.log("r")
-    // console.log(r)
-    debugger
-    // let txt = await r.text()
-    // let txt = await r.json()
-
-    debugger
 
     try {
       json = JSON.parse(r3)
