@@ -39,6 +39,7 @@ var bIndex = 0    // array index number
 // ID is known first because user clicks on it and it's an attribute in the DOM, bIndex is found from dataLoad()
 
 
+// Remove this
 function IsJsonString(str) {
   try {
       return JSON.parse(str);
@@ -50,26 +51,40 @@ function IsJsonString(str) {
 
 
 window.addEventListener('load', () => {
-      var b = fetch("http://localhost:21311")
+  // debugger;
+      fetch("http://localhost:21311")
       .then(r => r.json())
       .then(function(str) {
-          debugger
           console.log(str)
           jsondata = str;
 
           if (jsondata.hasOwnProperty("Important Error Message")) {
               alert(jsondata['Important Error Message'])
               warnings(jsondata)
-            } else {
+          } else if (jsondata.hasOwnProperty("Script message")) {
+                alert(jsondata['Script message'])
+                warrnings(jsondata)
+          } else {
               warnings(jsondata)
-            }
+          }
 
-            bIndex = backupListFindFirstID()
-            dataLoad(bIndex)
+          bIndex = backupListFindFirstID()
+          dataLoad(bIndex)
 
-            debugToolInitialAfter()
+          debugToolInitialAfter()
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        if (err instanceof TypeError) {
+          // This happens if we throw TypeError above
+          alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
+        }
+        else {
+          // This must be some kind of unanticipated error
+            console.error(err);
+            alert(err);
+          }
+          jsondata = err
+        })
 })
 
 
@@ -236,25 +251,36 @@ async function dataSave(build, id) {
 
   // let rr3 = fetch(url, options)
   // .then(t => t.json())
+  debugger
 
-  let g2 = fetch(url, options)
+  fetch(url, options)
   .then(j => j.json())
-  // .then(j => j["a"]= 4)
-  .catch(err => console.log(err))
+  .then(function(str) {
+    console.log(str)
+    jsondata = str;
 
-  try {
-    json = JSON.parse(g2)
-    // json = r3
-    // json = IsJsonString(txt)
-    if (json.hasOwnProperty("Script message")) {
-      alert(json['Script message'])
-      warrnings(json)
+    if (jsondata.hasOwnProperty("Important Error Message")) {
+        alert(jsondata['Important Error Message'])
+        warnings(jsondata)
+    } else if (jsondata.hasOwnProperty("Script message")) {
+          alert(jsondata['Script message'])
+          warrnings(jsondata)
     } else {
-      warnings(json)
+        warnings(jsondata)
     }
-  } catch(err) {
-    console.log(err)
-  }
+  })
+  .catch(err => {
+      if (err instanceof TypeError) {
+        // This happens if we throw TypeError above
+        alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
+      }
+      else {
+        // This must be some kind of unanticipated error
+          console.error(err);
+          alert(err);
+        }
+        jsondata = err
+  })
 
 }
 
@@ -315,30 +341,31 @@ function warnings(json) {
   warningvisible("createscript", false)
   // debugger
 
-
-  if (Boolean(json["Error List"][bIndex])) {
-      if (elActive.checked) {
-      // console.log(json["Error List"][bIndex])
-          for (let i = 0; i < Object.keys(json["Error List"][bIndex]).length; i++) {
-            switch (Object.keys(json["Error List"][bIndex])[i]) {
-              case "Backup Name":
-                warningvisible("backupname", true)
-                bName = true
-                break
-              case "Backup Root Directory":
-                warningvisible("backupto", true)
-                break
-              case "Last edited":
-                // warningvisible("lastedited", true)
-                // debugger
-                warningvisible("createscript", true)
-                bEdited = true
-                break
-              default:
-                break
+if (json.hasOwnProperty("Error List")) {
+    if (Boolean(json["Error List"][bIndex])) {
+        if (elActive.checked) {
+        // console.log(json["Error List"][bIndex])
+            for (let i = 0; i < Object.keys(json["Error List"][bIndex]).length; i++) {
+              switch (Object.keys(json["Error List"][bIndex])[i]) {
+                case "Backup Name":
+                  warningvisible("backupname", true)
+                  bName = true
+                  break
+                case "Backup Root Directory":
+                  warningvisible("backupto", true)
+                  break
+                case "Last edited":
+                  // warningvisible("lastedited", true)
+                  // debugger
+                  warningvisible("createscript", true)
+                  bEdited = true
+                  break
+                default:
+                  break
+              }
             }
-          }
-      }
+        }
+    }
   }
 
   // debugger
@@ -395,7 +422,8 @@ function dataLoad(backupID) {
   // console.log(typeof jsondata)
 
   bIndex = backupListIDToIndex(backupID)
-  elID.textContent = jsondata["Backup List"][bIndex]["ID"]
+  // elID.textContent = jsondata["Backup List"][bIndex]["ID"]
+  elID.value = jsondata["Backup List"][bIndex]["ID"]
   elName.value = jsondata["Backup List"][bIndex]["Backup Name"]
   elBackupTo.value = jsondata["Backup List"][bIndex]["Backup Root Directory"]
   elDate.checked = jsondata["Backup List"][bIndex]["Include Date"]
