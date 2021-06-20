@@ -1,9 +1,20 @@
 const fsp = require('fs/promises');
 const fs = require('fs');
+const { settings } = require('cluster');
+const { resolve } = require('path');
 // const fsp = fs.promises;
 
-const templateSettings = (ID) => '{"Backup List":[{ "ID": ID, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup complete", "Send Email After": false, "Email Address": "", "Last edited": 123, "Script created": 123, "Active": true, "Files": [] } ] }'
-//take the date out
+const templateSettings = (id, date) => `{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup complete", "Send Email After": false, "Email Address": "", "Last edited": "${date}", "Script created": "${date}", "Active": true, "Files": [] } ] }`
+const backupListFindFirstID = (backuplistarray) => backuplistarray["Backup List"].filter(i => i.Active === true)[0] ? backuplistarray["Backup List"].filter(i => i.Active === true)[0]["ID"] : backuplistarray["Backup List"][0]["ID"]
+
+
+const parseJsonAsync = (jsonString) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(JSON.parse(jsonString))
+    })
+  })
+}
 
 var settingsFile = __dirname + '\\' + 'settings.json'
 
@@ -16,99 +27,200 @@ function IsJsonString(str) {
   return false;
 }
 
-async function getSettings() {
+
+function getSettings() {
 //* buildErrorChecker is run to get the updated information of the filesystem
 //*  But it is not saved to the file, it's not necesary to save the error array
 
+return new Promise((resolve, reject) => {
+
   //* See if scripts Directory exists
   let scriptsDir = __dirname + '\\' + 'Backup-scripts'
-
-  await fsp.access(scriptsDir)
-  .then(i => console.log("Batch scripts dir exists"))
-  .catch (err => {
-    // console.log("Batch scripts dir DOESNT exist")
-    await fsp.mkdir(scriptsDir)
-      .then(m => {
-          console.warn("Making Backup-scripts directory")
-          // settingsFile()
-      })
-      .catch(err => console.error("Error: In making Backup-scripts directory"))
-    })
+  let dirExists = false
+  let fileExists = false
 
 
-   //* Settings file
-  //  console.log("start of Settings")
-   try {
-      // console.log("Before try - settings.json read")
+  // remove these comments
+  try {
+    if (fs.existsSync(scriptsDir)) dirExists = true
+  } catch(err) {
+    console.log("1st catch")
+    console.error(err)
+    dirExists = false
+  }
 
-        var strFileContent = await fsp.readFile(settingsFile,'utf8')
-        // console.log(strFileContent)
-        let objJSON = IsJsonString(strFileContent)
-        console.log(objJSON)
-        let fileContentPlusErrors = buildErrorChecker(objJSON)
-        return fileContentPlusErrors
-
-
-    } catch (err){
-        console.error(err)
-        console.error("Settings file DOESN'T exists...... Making settings.json")
-
-        //* save the file before overwritting settings.json
-        let today = new Date()
-        // today = Date.now()
-        // console.log("today - " + today)
-        // console.log(dateToYYYYMMDD(today, ''))
-        let settingsFileError = __dirname + '\\' + 'settings-' + dateToYYYYMMDD(today, '') + '-' + dateToHHMM(today, '') + '.json'
-        await fsp.writeFile(settingsFileError, strFileContent).catch(err => console.error("Error: Couldn't create settings Error json file"))
-
-
-        let jsontemplate = IsJsonString(templateSettings)
-        jsontemplate["Important Error Message"] = "The settings.json isn't in the correct format. A new, blank settings.json file has been created and the previous settings file was save to " + settingsFileError
-
-
-        let strjson = JSON.stringify(jsontemplate, null, 4)
-        // console.log(jsontemplate)
-
-
-        await fsp.writeFile(settingsFile, strjson).catch(err => console.error("Error: Couldn't create settings.json"))
-
-        return jsontemplate
+  if (!dirExists) {
+    try {
+      fs.mkdirSync(scriptsDir);
+      console.log("make dir")
+    } catch(err) {
+      dirExists = false
+      // return "No directory"
+      reject("Scripts directory doesn't exist and couldn't be created.")
     }
+  }
+
+  console.log(dirExists)
+  console.log("settingsFile  - " + settingsFile)
+
+  try {
+    if (fs.existsSync(settingsFile)) fileExists = true
+  } catch(err) {
+    fileExists = false
+  }
+
+  if (!fileExists) {
+    reject("Settings file not found")
+  }
+  else {
+
+      fs.readFile(settingsFile, 'utf8' , (err, data) => {
+        let newFile = ""
+        console.log("read file")
+
+        if (err) {
+          console.error("Settings file DOESN'T exists...... Making settings.json")
+          reject("Couldn't read settings file.")
+        }
+        else {
+            // settings.json file read successfully
+            console.log("successfully read settings file")
+            // console.log(data)
+            var strFileContent = data
+            console.log("data")
+            // console.log(data)
+            // console.log(strFileContent)
+            // console.log(typeof data)
+            // let objJSON = IsJsonString(strFileContent)
+            parseJsonAsync(strFileContent).then(objJSON => {
+                // console.log("backupListID")
+                let backupListID = backupListFindFirstID(objJSON)
+                console.log(backupListID)
+                delete objJSON["BackupListID"]
+                objJSON["BackupListID"] = Number(backupListID)
+                let fileContentPlusErrors = buildErrorChecker(objJSON).then(f => {
+                    console.log("buildErrorChecker")
+                    console.log(f)
+                    resolve(f)
+                })
+            })
+        }       //else
+
+      })
+
+    }
+
+  })
 
 }
 
 
+function gg() {
+  console.log("gg-1")
+  console.log("gg-2")
+  console.log("gg-3")
+}
+
+async function gg() {
+  return new Promise((resolve, reject) => {
+    console.log("gg-1")
+    console.log("gg-2")
+    let strNew = templateSettings(1, "1/1/2021")
+    // let jsontemplate = await parseJsonAsync(strNew)
+    parseJsonAsync(strNew).then(jsontemplate => {
+      console.log("gg-3")
+      // console.log(jsontemplate)
+      // return jsontemplate
+      resolve(jsontemplate)
+    })
+  })
+}
+
+
+function newSettings() {
+  return new Promise((resolve, reject) => {
+      let today = new Date()
+      let strNew = templateSettings(1, dateToDDMMYYYY(today, "/"))
+      console.log("newSettings")
+
+      console.log("strNew")
+      console.log(strNew)
+
+      parseJsonAsync(strNew).then(jsontemplate => {
+          // .then(jsontemplate => {
+          console.log("jsontemplate")
+          console.log(jsontemplate)
+
+          jsontemplate["Important Error Message"] = "The settings.json wasn't able to be read so a new blank settings.json file was created."
+
+          let strjson = JSON.stringify(jsontemplate, null, 4)
+
+          fs.writeFile(settingsFile, strjson, function(err) {
+              if (err) {
+                  console.log(err);
+                  // throw new Error(err)
+                  reject("Error writing to settings file")
+              } else {
+                  // return strNew
+                  resolve(strjson)
+              }
+          })
+
+        })
+        console.log("newSettings end")
+    })
+}
+
+
 async function putSettings(jsonobj) {
-  // console.log("in putSettings")
+// putSettings writes updates to the the settings.json file
+
+// console.log("in putSettings")
   // console.log(jsonobj)
 
-  let json = ""
+  return new Promise((resolve, reject) => {
 
-  json = buildErrorChecker(jsonobj)
+      let fileExists = false
+      let json = ""
 
-  // console.log("in putSettings:")
-  console.log(json)
+      try {
+        if (fs.existsSync(settingsFile)) fileExists = true
+      } catch(err) {
+        fileExists = false
+      }
 
-  let strjson = JSON.stringify(json, null, 4)
-  // console.log(strjson)
-  // fsp.writeFile(__dirname + '\\' + 'settings.json', strjson, (err) => {
-  //   if (err) {
-  //     console.log("xxx")
-  //     console.error(err)
-  //     return
-  //   }
-  //   console.log("file written to")
-  // })
+      if (!fileExists) {
+        reject("Settings file not found")
+      }
+      else {
 
-  fs.writeFile(settingsFile, strjson, function(err) {
-    if (err) {
-        console.log(err);
-        throw new Error(err)
-    } else {
-        console.log("JSON saved");
-        return json
-    }
-  })
+          console.log("putSettings - jsonobj - ")
+          console.log(jsonobj)
+          buildErrorChecker(jsonobj).then(json => {
+
+            console.log("putSettings - after buildErrorChecker - ")
+            console.log(json)
+
+            // console.log("in putSettings:")
+            console.log(json)
+
+            let strjson = JSON.stringify(json, null, 4)
+
+            fs.writeFile(settingsFile, strjson, function(err) {
+              if (err) {
+                console.log(err);
+                // throw new Error(err)
+                reject("Error writing to settings file")
+              } else {
+                // return json
+                    resolve(strjson)
+                  }
+            })
+
+          })
+      }   // else
+
+    })      // return new Promise
 
 }
 
@@ -128,7 +240,7 @@ async function buildErrorChecker(jsonobj) {
   delete json["Error List"]
   json["Error List"] = []
 
-  delete json["BackupListID"]
+  // delete json["BackupListID"]
 
   for(let i = 0; i < json["Backup List"].length; i++){
 
@@ -161,7 +273,10 @@ async function buildErrorChecker(jsonobj) {
 
 }  // for
 
-return json
+
+  return new Promise((resolve, reject) => {
+    resolve(json)
+  })
 
 }  // buildErrorChecker
 
@@ -1241,5 +1356,7 @@ function dateToDDMMYYYY(dt, seperator) {
 module.exports = {
   getSettings,
   putSettings,
-  putBuild
+  putBuild,
+  newSettings,
+  gg
 }
