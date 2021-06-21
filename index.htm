@@ -27,7 +27,7 @@
           <p class="warning backupname">A Script file doesn't exist that matches this Backup Name. You need to regenerate it.</p>
       </div>
 
-      <div class="field" data-description="The root backup directory that takes all the backup files that are in the list below">
+      <div class="field" data-description="The root backup directory that synchronizes to your cloud storage service. Your files in this backup will be copied to here so they can by saved to cloud storage.">
       <label for="backupto">Backup To: <span class="red">*</span></label>
       <input type="text" id="backupto" class="path e-input--primary" placeholder="Backup To">
       <p class="warning backupto">This Backup Root Directory is not found.</p>
@@ -174,6 +174,9 @@
 		<h2>New Backup List</h2>
     <label for="backupname">Backup Name: <span class="red">*</span></label>
     <input type="text" id="backupname--modal" class="e-input--primary" placeholder="Backup Name">
+    <div class="modal__suggestions">
+      <p>Suggestions for a Backup List name - Weekly, Monthly, Work files, Work files, Photos.</p>
+    </div>
     <div class="">
         <button class="modal__save">Save</button>
         <button class="modal__cancel">Cancel</button>
@@ -184,8 +187,10 @@
 </body>
 
 
+<script src="./scripts/debug-stage-before.js"></script>
 <script src="./scripts/tools.js"></script>
 <script src="./scripts/backup.js"></script>
+<script src="./scripts/debug-stage-after.js"></script>
 <script>
 
 </script>
