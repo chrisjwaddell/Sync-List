@@ -31,17 +31,17 @@ app.get('/test2', function(req, res) {
 })
 
 
-app.get('/', async function(req, res) {
+app.get('/', function(req, res) {
   //* A get request is submitted from the frontened GUI at the start to get the settings
   //* We send back settings.json to it since the frontend can't read files on the computer, but Node can
 
     console.log("=====================================================================")
 
-    await services.getSettings()
+    services.getSettings()
       .then(i => {
         // settings file read successfully, return the data
-        console.log("app.js - i - ")
         console.log(i)
+        console.log(typeof i)
         res.send(i)
       })
       .catch(err => {
@@ -99,13 +99,21 @@ console.log("putsettings")
 
 settings = req.body
 
-try {
-  let json = services.putSettings(settings)
-  res.json(json)
-} catch(err) {
+// console.log("typeof settings")
+// console.log(typeof settings)
+// res.send(settings)
+
+services.putSettings(settings)
+.then(j => {
+  console.log("j")
+  console.log(j)
+  console.log(typeof j)
+  res.send(j)
+})
+.catch(err => {
   console.log(err)
-  res.json("")
-}
+  res.send("")
+})
 
 })
 
@@ -128,19 +136,34 @@ app.put('/test2', async function(req, res) {
 
 app.put('/build', async function(req, res) {
   console.log("=====================================================================");
+  console.log("/build")
   let json;
 
-  try {
-    json = await services.putBuild(req.body)
-    // console.log("app.js after putBuild")
-  } catch(err) {
-    // console.error("putBuild error")
-    console.error(err)
-    json = {}
-  }
+  // let w = services.putBuild(req.body).then(v => {
+  //   console.log(v)
+  //   console.log("v")
+  // })
 
-  res.json(req.body);
+  await services.putBuild(req.body)
+    // .then(j => j.json())
+    // .then(s => console.log(s))
+  // .then(r => console.log("xxx" + r))
+  .then(j => {
+
+    console.log("jj")
+    console.log(j)
+  //   console.log(typeof j)
+    res.send(j)
+ })
+  .catch(err => {
+    console.log(err)
+    console.error(err)
+    res.send("")
+    //   res.sendStatus(500).send(json);
+  })
+
 })
+
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
