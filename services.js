@@ -6,6 +6,7 @@ const { resolve } = require('path');
 
 const templateSettings = (id, date, dateInt) => `{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": "${dateInt}", "Last Saved": "${dateInt}", "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) => backuplistarray["Backup List"].filter(i => i.Active === true)[0] ? backuplistarray["Backup List"].filter(i => i.Active === true)[0]["ID"] : backuplistarray["Backup List"][0]["ID"]
+const backupListIDToIndex = (backuplistarray, id) => jsondata["Backup List"].findIndex(i => i.ID === id)
 
 
 const parseJsonAsync = (jsonString) => {
@@ -60,9 +61,6 @@ return new Promise((resolve, reject) => {
     }
   }
 
-  console.log(dirExists)
-  console.log("settingsFile  - " + settingsFile)
-
   try {
     if (fs.existsSync(settingsFile)) fileExists = true
   } catch(err) {
@@ -76,7 +74,6 @@ return new Promise((resolve, reject) => {
 
       fs.readFile(settingsFile, 'utf8' , (err, data) => {
         let newFile = ""
-        console.log("read file")
 
         if (err) {
           console.error("Settings file DOESN'T exists...... Making settings.json")
@@ -84,11 +81,8 @@ return new Promise((resolve, reject) => {
         }
         else {
             // settings.json file read successfully
-            console.log("successfully read settings file")
             // console.log(data)
             var strFileContent = data
-            console.log("data")
-            // console.log(data)
             // console.log(strFileContent)
             // console.log(typeof data)
             // let objJSON = IsJsonString(strFileContent)
@@ -99,8 +93,6 @@ return new Promise((resolve, reject) => {
                 delete objJSON["BackupListID"]
                 objJSON["BackupListID"] = Number(backupListID)
                 let fileContentPlusErrors = buildErrorChecker(objJSON).then(f => {
-                    console.log("buildErrorChecker")
-                    console.log(f)
                     resolve(f)
                 })
             })
@@ -487,8 +479,8 @@ async function putBuild(jsondata) {
     let index = backupListIDToIndex(backupID)
     //  index = 0  // get rid of this
     //  console.log("remove this")
-    // console.log("backupID - " + backupID)
-    // console.log("index - " + index)
+    console.log("backupID - " + backupID)
+    console.log("index - " + index)
 
     let json = jsondata
 
@@ -497,7 +489,9 @@ async function putBuild(jsondata) {
       let strFile = await putBuildText(json, index)
 
       var batchFileName = __dirname + '\\' + 'Backup-scripts' + '\\' + jsondata["Backup List"][index]["Backup Name"] + '.ps1'
-    //  console.log(jsondata["Backup List"][index]["Last Edited"])
+      //  console.log(jsondata["Backup List"][index]["Last Edited"])
+      console.log("batchFileName - " + batchFileName)
+      console.log("strFile.length - " + strFile.length)
 
       let result
 
