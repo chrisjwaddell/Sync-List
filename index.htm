@@ -24,7 +24,7 @@
       <div class="field" data-description="A name to describe this backup list eg Weekly, Monthly, Website, Finances">
           <label for="backupname">Backup Name: <span class="red">*</span></label>
           <input type="text" id="backupname" class="e-input--primary" placeholder="Backup Name">
-          <p class="warning backupname">A Script file doesn't exist that matches this Backup Name. You need to regenerate it.</p>
+          <p class="warning backupname">A Script file doesn't exist that matches this Backup Name. You need to regenerate it. Click the button below the 'Active' field. </p>
       </div>
 
       <div class="field" data-description="The root backup directory that synchronizes to your cloud storage service. Your files in this backup will be copied to here so they can by saved to cloud storage.">
@@ -171,12 +171,23 @@
 
 <div class="modal-overlay">
 	<div class="modal">
-		<h2>New Backup List</h2>
-    <label for="backupname">Backup Name: <span class="red">*</span></label>
+	  <h2>New Backup List</h2>
+    <div class="field" data-description="A name to describe this backup list eg Weekly, Monthly, Website, Finances">
+      <label for="backupname--modal">Backup Name: <span class="red">*</span></label>
+      <input type="text" id="backupname--modal" class="e-input--primary" placeholder="Backup Name">
+  </div>
+
+  <div class="field" data-description="The root backup directory that synchronizes to your cloud storage service. Your files in this backup will be copied to here so they can by saved to cloud storage.">
+  <label for="backupto--modal">Backup To: <span class="red">*</span></label>
+  <input type="text" id="backupto--modal" class="path e-input--primary" placeholder="Backup To">
+  </div>
+
+
+  <!-- <label for="backupname">Backup Name: <span class="red">*</span></label>
     <input type="text" id="backupname--modal" class="e-input--primary" placeholder="Backup Name">
     <div class="modal__suggestions">
       <p>Suggestions for a Backup List name - Weekly, Monthly, Work files, Work files, Photos.</p>
-    </div>
+    </div> -->
     <div class="">
         <button class="modal__save">Save</button>
         <button class="modal__cancel">Cancel</button>
