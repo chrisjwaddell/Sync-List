@@ -9,7 +9,8 @@ const elSendEmail = document.querySelector('#sendemail');
 const elEmail = document.querySelector('#email');
 const elLastEdited = document.querySelector('.lastedited');
 const elActive = document.querySelector('#active');
-const elCreateScript = document.querySelector('.createscript')
+const elCreateScriptBtn = document.querySelector('button.createscript')
+const elCreateScriptP = document.querySelector('p.createscript')
 
 const elFileList = document.querySelector('.filelist')
 
@@ -51,22 +52,13 @@ function IsJsonString(str) {
 
 
 window.addEventListener('load', () => {
+  debugToolRunOnceBefore()
   // debugger;
       fetch("http://localhost:21311")
       .then(r => r.json())
       .then(function(str) {
           console.log(str)
           jsondata = str;
-
-          if (jsondata.hasOwnProperty("Important Error Message")) {
-              alert(jsondata['Important Error Message'])
-              warnings(jsondata)
-          } else if (jsondata.hasOwnProperty("Script message")) {
-                alert(jsondata['Script message'])
-                warrnings(jsondata)
-          } else {
-              warnings(jsondata)
-          }
 
           bIndex = backupListFindFirstID()
           dataLoad(bIndex)
@@ -156,8 +148,8 @@ elActive.addEventListener("click", function(e) {
     var r = confirm("Are you sure you want to make it inactive?")
     if (r == true) {
       // txt = "You pressed OK!";
-      active(false)
       dataSet(bIndex, "Active", this.checked)
+      active(false)
 
     } else {
       active(true)
@@ -165,8 +157,8 @@ elActive.addEventListener("click", function(e) {
     }
   } else {
     debugger
-    active(true)
     dataSet(bIndex, "Active", this.checked)
+    active(true)
   }
 })
 
@@ -208,30 +200,33 @@ elEmail.addEventListener("change", function() {
 function dataSet(backupIndex, property, value, fileIndex, fileField) {
   let json
   // fileIndex - if this is filled in, it means we are talking about file fields
-  // debugger
-
   if (fileIndex === undefined) {
     jsondata["Backup List"][backupIndex][property] = value
   } else {
     jsondata["Backup List"][backupIndex]["Files"][fileIndex][fileField] = value
   }
 
-  dataSave(false, elID.value)
+  dataSave(false)
 }
 
 
-async function dataSave(build, id) {
+async function dataSave(build) {
 // build === true tells express to build a new script
+// build === false just saves the changes to settings.json, putSettings() in Node.js
   let today = new Date()
   today = Date.now()
 
-  delete jsondata["BackupListID"]
-  jsondata["BackupListID"] = Number(id)
+  var bLIndex
+  if (jsondata["Backup List"].hasOwnProperty("BackupListID")) {
+  } else {
+    jsondata["BackupListID"] = elID.value
+  }
+  bLIndex = backupListIDToIndex(jsondata, Number(jsondata["Backup List"]["BackupListID"]))
 
-  // debugger
+
   // jsondata["Backup List"][bIndex]["Last edited"] = dateToDDMMYYYY(today, '/')
 
-  if (jsondata["Backup List"][bIndex])   jsondata["Backup List"][bIndex]["Last edited"] = today
+  if (jsondata["Backup List"][bLIndex])   jsondata["Backup List"][bLIndex]["Last Edited"] = today
 
   elLastEdited.innerText = "Today"
   elLastEdited.classList.add("txt-today")
@@ -251,41 +246,51 @@ async function dataSave(build, id) {
 
   // let rr3 = fetch(url, options)
   // .then(t => t.json())
-  debugger
+
+  // let s = await fetch(url, options)
+  // console.log(s)
+  // console.log(JSON.stringify(s))
+  // console.log(JSON.parse(s))
 
   fetch(url, options)
-  .then(j => j.json())
-  .then(function(str) {
-    console.log(str)
-    jsondata = str;
+    // .then(txt => txt.text())
+    // .then(resp => console.log(resp))
+    .then(j => j.json())
+    // .then(r => console.log(r))
+    .then(function(str) {
+      // console.log(str)
+      jsondata = str;
 
-    if (jsondata.hasOwnProperty("Important Error Message")) {
-        alert(jsondata['Important Error Message'])
-        warnings(jsondata)
-    } else if (jsondata.hasOwnProperty("Script message")) {
-          alert(jsondata['Script message'])
-          warrnings(jsondata)
-    } else {
-        warnings(jsondata)
-    }
-  })
-  .catch(err => {
-      if (err instanceof TypeError) {
-        // This happens if we throw TypeError above
-        alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
+      if (jsondata.hasOwnProperty("Important Error Message")) {
+          alert(jsondata['Important Error Message'])
+          warnings(jsondata)
+      } else if (jsondata.hasOwnProperty("Script message")) {
+            alert(jsondata['Script message'])
+            warnings(jsondata)
+      } else {
+          warnings(jsondata)
       }
-      else {
-        // This must be some kind of unanticipated error
-          console.error(err);
-          alert(err);
+      console.log("Finished fetch")
+    })
+    .catch(err => {
+      console.error("Fetch error - err");
+        if (err instanceof TypeError) {
+          // This happens if we throw TypeError above
+          alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
         }
-        jsondata = err
-  })
+        else {
+          // This must be some kind of unanticipated error
+            console.error(err);
+            alert(err);
+          }
+          jsondata = err
+    })
 
 }
 
 
 function active(active) {
+// Run after dataLoad()
   // debugger
   fields.forEach(fld => {
     if  (fld !== elActive) {
@@ -334,12 +339,12 @@ function warningsRemove() {
 
 
 function warnings(json) {
+// run active() after it to disable any messages when backup list is inactive
   warningsRemove()
   var bName = false
   var bEdited = false
 
   warningvisible("createscript", false)
-  // debugger
 
 if (json.hasOwnProperty("Error List")) {
     if (Boolean(json["Error List"][bIndex])) {
@@ -354,7 +359,7 @@ if (json.hasOwnProperty("Error List")) {
                 case "Backup Root Directory":
                   warningvisible("backupto", true)
                   break
-                case "Last edited":
+                case "Last Edited":
                   // warningvisible("lastedited", true)
                   // debugger
                   warningvisible("createscript", true)
@@ -370,14 +375,25 @@ if (json.hasOwnProperty("Error List")) {
 
   // debugger
   if (!bName && !bEdited) {
-    elCreateScript.classList.remove('isvisible')
+    elCreateScriptBtn.classList.remove('isvisible')
+    elCreateScriptP.classList.remove('isvisible')
   } else if (bName) {
-    elCreateScript.classList.add('isvisible')
-    elCreateScript.innerText = "Create Backup Script"
+    elCreateScriptBtn.classList.add('isvisible')
+    elCreateScriptP.classList.add('isvisible')
+    elCreateScriptBtn.innerText = "Create Backup Script"
   } else if (bEdited) {
-    elCreateScript.classList.add('isvisible')
-    elCreateScript.innerText = "Regenerate Backup Script"
+    elCreateScriptBtn.classList.add('isvisible')
+    elCreateScriptP.classList.add('isvisible')
+    elCreateScriptBtn.innerText = "Regenerate Backup Script"
   }
+
+  if ((!json["Backup List"][bIndex].Files.length) || (!elActive.checked)) {
+  // If there are no files in the backup list, don't tell them to click the "Create Backup Script" button
+
+      elCreateScriptBtn.classList.remove('isvisible')
+      elCreateScriptP.classList.remove('isvisible')
+  }
+
 }
 
 
@@ -404,7 +420,7 @@ function fileLineIndexToLineNumber(index) {
 }
 
 
-function backupLineIndexNew() {
+function backupLineIDNew() {
   let elTemp = document.querySelectorAll('.backupnamelist tbody tr')
   let arrIndexes = []
   elTemp.forEach(item => arrIndexes.push(Number(item.getAttribute('data-id'))))
@@ -414,7 +430,11 @@ function backupLineIndexNew() {
 
 
 function dataLoad(backupID) {
-  // console.log("from dataLoad")
+// warnings() run at the end. Before that, it checks if any files entered, if none,
+// it puts a message in jsondata["Scrip message"] saying to click + to add files.
+//
+
+// console.log("from dataLoad")
   // console.log(arguments)
   // console.log(arguments[0])
 
@@ -432,13 +452,13 @@ function dataLoad(backupID) {
   elSendEmail.checked = jsondata["Backup List"][bIndex]["Send Email After"]
   elEmail.value = jsondata["Backup List"][bIndex]["Email Address"]
   // elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
-  elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][bIndex]["Last edited"], '-'))
+  elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][bIndex]["Last Edited"], '-'))
   elActive.checked = jsondata["Backup List"][bIndex]["Active"]
   // elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
   //* This may change from Create to Regenerate - on name change or edit or create
 
 
-  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
+  var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last Edited"]))
   var today = new Date()
   elLastEdited.classList.remove("txt-today")
   elLastEdited.classList.remove("txt-soon")
@@ -446,13 +466,6 @@ function dataLoad(backupID) {
   if (datecolor) {
     elLastEdited.classList.add(datecolor)
   }
-
-  if (jsondata.hasOwnProperty("Error List")) {
-    warnings(jsondata)
-  }
-
-  active(elActive.checked)
-  scriptRootDirDate = elActive.checked
 
   var dataindex = fileLineIndexNew()
 
@@ -485,6 +498,14 @@ function dataLoad(backupID) {
     let active = document.querySelectorAll(".filelist__active input")[i].checked
     fileLineActive(i, active)
   }
+
+
+  // if (jsondata.hasOwnProperty("Error List")) {
+  //   warnings(jsondata)
+  // }
+
+  active(elActive.checked)
+  scriptRootDirDate = elActive.checked
 
 
   backupListClear()
@@ -536,6 +557,33 @@ function dataLoad(backupID) {
     }
   })
 }
+
+
+    delete jsondata['Script message']
+
+
+    if ((!jsondata["Backup List"][bIndex].Files.length) && (elName.value) && (elBackupTo.value)) {
+      // Backup List name entered and Backup root dir entered but no Files entered
+          if (jsondata.hasOwnProperty("Script message")) {
+            if (jsondata["Script message"] !== "Add some files to backup by clicking the + button.") {
+              jsondata["Script message"] += " Add some files to backup by clicking the + button."
+            }
+          } else {
+            jsondata["Script message"] = "Add some files to backup by clicking the + button."
+          }
+    }
+
+
+    if (jsondata.hasOwnProperty("Important Error Message")) {
+      alert(jsondata['Important Error Message'])
+      warnings(jsondata)
+    } else if (jsondata.hasOwnProperty("Script message")) {
+      alert(jsondata['Script message'])
+      warnings(jsondata)
+    } else {
+      warnings(jsondata)
+    }
+
 }
 
 
@@ -736,7 +784,7 @@ function fileLineAdd(index) {
         }
       }
 
-      dataSave(false, elID.value)
+      dataSave(false)
     }
   })
 
@@ -791,7 +839,7 @@ function backupListClear() {
 
 elAdd.addEventListener("click", function() {
   // debugger
-  elModal.classList.add('isvisible')
+  elModal.classList.add('db')
   // document.querySelector('#backupname--modal').focus()
   // elName.focus()
   document.querySelector('#backupname--modal').focus()
@@ -800,15 +848,23 @@ elAdd.addEventListener("click", function() {
 
 elModalSave.addEventListener("click", function() {
   const elName = document.querySelector('#backupname--modal')
+  const elBackupTo = document.querySelector('#backupto--modal')
 
-  if (elName.value) {
+  if ((elName.value) && (elBackupTo.value)) {
     backupSettingsClear()
 
     fileListClear()
 
-    let bID = backupLineIndexNew()
+    let bID = backupLineIDNew();
     // debugger
-    jsondata["Backup List"].push( { "ID": bID, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": false, "Message Before": "", "Message After": "", "Send Email After": false, "Email Address": "", "Last edited": "", "Script created": "", "Active": true, "Files": []} )
+
+    const templateSettings = (id, date, dateInt) => ({ "ID": id, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": dateInt, "Last Saved": dateInt, "Script Created": date, "Active": true, "Files": [] })
+    // const templateSettings = (id, date, dateInt) => {  }
+    let today = new Date()
+    let strNew = templateSettings(bID, dateToDDMMYYYY(today, "/"), today.valueOf())
+    strNew["Backup Root Directory"] = elBackupTo.value
+
+    jsondata["Backup List"].push( strNew )
 
     // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
     jsondata["BackupListID"] = bID
@@ -818,24 +874,29 @@ elModalSave.addEventListener("click", function() {
     createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
     createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
 
-    dataSave(true, bID)
+    // The user can only create a script when the name is in, the backup root dir and some file lines are in, otherwise it just saves the data
+    dataSave(false)
 
     // buildBackupScript(bID)
     dataLoad(bID)
 
+
     elName.value = ''
 
-    elModal.classList.remove('isvisible')
+    elModal.classList.remove('db')
+    document.querySelector('#backupname--modal').value = ''
+    document.querySelector('#backupto--modal').value = ''
+
 
   } else {
-    alert("Nothing in")
+    alert("Enter a name or cancel.")
 
   }
 })
 
 
 elModalCancel.addEventListener("click", function() {
-  elModal.classList.remove('isvisible')
+  elModal.classList.remove('db')
   document.querySelector('#backupname--modal').value = ''
 })
 
@@ -857,7 +918,7 @@ elRemove.addEventListener("click", function() {
        catch (err) {
          bID = jsondata["Backup List"][0]["ID"]
        }
-       dataSave(false, elID.value)
+       dataSave(false)
        dataLoad(bID)
     } else {
       alert("Something went wrong, it can't remove this Backup List. It can't find it in the JSON data.")
@@ -892,17 +953,14 @@ function fileLineActive(index, value) {
 }
 
 
-elCreateScript.addEventListener("click", function() {
-  buildBackupScript(elID.textContent)
+elCreateScriptBtn.addEventListener("click", function() {
+  buildBackupScript()
 })
 
 
-async function buildBackupScript(id) {
+async function buildBackupScript() {
     // console.log(jsondata)
     // debugger
-
-    delete jsondata["BackupListID"]
-    jsondata["BackupListID"] = Number(id)
 
     const url = 'http://localhost:21311/build'
     const options = {
@@ -915,30 +973,31 @@ async function buildBackupScript(id) {
 
 
     // let r3 = await fetch(url, options)
-    let r3 = fetch(url, options)
-        // .then(res => res.text())
-        .then(res => res.text())
+    fetch(url, options)
+        // .then(r => console.log(r))
+        // .then(t => t.text())
+        .then(res => res.json())
+        // // .then(j => {
+        // //   debugger
+        // //   console.log(j)
+        // //   return j
+        // // })
+        .then(json => {
+          jsondata = json
+          debugger
+          if (json.hasOwnProperty("Important Error Message")) {
+            alert(json['Important Error Message'])
+            warnings(json)
+          } else if (json.hasOwnProperty("Script message")) {
+            alert(json['Script message'])
+            warnings(json)
+          } else {
+            warnings(json)
+          }
+        })
         .catch(err => console.log(err))
 
-    let r4 = await r3
-    console.log("r4")
-    console.log(r4)
-
-    try {
-      json = JSON.parse(r3)
-      // json = r3
-      // json = IsJsonString(txt)
-      if (json.hasOwnProperty("Script message")) {
-        alert(json['Script message'])
-        warrnings(json)
-      } else {
-        warnings(json)
-      }
-    } catch(err) {
-      console.log(err)
-    }
-
-  }
+}
 
 
   function dirFromPath(path) {
