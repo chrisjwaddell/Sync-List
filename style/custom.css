@@ -149,6 +149,10 @@ input {
   visibility: hidden;
 }
 
+p.createscript {
+  margin: 5px auto 0px;
+}
+
 .filelist {
   width: 1400px;
   border: 3px solid #ffffff;
@@ -334,7 +338,7 @@ hr {
 
 
 .modal-overlay {
-	/* display: none; */
+	display: none;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -351,8 +355,8 @@ hr {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	min-width: 350px;
-	width: 350px;
-	height: 200px;
+	width: 500px;
+	height: 340px;
 	background-color: #cdf;
 	z-index: 10000;
 	/* overflow: auto; */
@@ -373,18 +377,26 @@ hr {
 
 .modal label {
   margin-top: 20px;
+  margin-bottom: 6px;
   color: #000000;
 }
 
+.modal__suggestions {
+  margin: 5px 5px;
+}
+
 .modal p {
-	font-size: 24px;
+	/* font-size: 24px; */
+  font-size: 15px;
+  color: #000000;
+  font-style: italic;
 }
 
 .modal button {
 	width: 80px;
 	height: 30px;
 	margin: 15px 20px 10px;
-	border: 2px solid transparent;
+	border: 2px solid #ffffff;
 	font-size: 18px;
 	font-weight: 500;
 	color: #111111;
@@ -419,6 +431,3 @@ hr {
 }
 
 
-.isvisible {
-	display: block;
-}
