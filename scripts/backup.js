@@ -60,7 +60,11 @@ window.addEventListener('load', () => {
           console.log(str)
           jsondata = str;
 
-          bIndex = backupListFindFirstID()
+          var bIndex = backupListFindFirstID()
+          if (jsondata.hasOwnProperty("BackupListID")) {
+            delete jsondata["BackupListID"]
+          }
+          jsondata["BackupListID"] = bIndex
           dataLoad(bIndex)
 
           debugToolInitialAfter()
@@ -216,11 +220,12 @@ async function dataSave(build) {
   let today = new Date()
   today = Date.now()
 
-  var bLIndex
+  // If no BackupListID in jsondata, add it in
   if (jsondata["Backup List"].hasOwnProperty("BackupListID")) {
   } else {
     jsondata["BackupListID"] = elID.value
   }
+  var bLIndex
   bLIndex = backupListIDToIndex(jsondata, Number(jsondata["Backup List"]["BackupListID"]))
 
 
@@ -405,6 +410,7 @@ function fileLineIndexNew() {
   return a + 1
 }
 
+
 function fileLineIndexToLineNumber(index) {
   elTemp = document.querySelectorAll(".filelist__line")
 
@@ -552,7 +558,12 @@ function dataLoad(backupID) {
 
           // sleep(5000)
           // debugger
+          if (jsondata.hasOwnProperty("BackupListID")) {
+            delete jsondata["BackupListID"]
+          }
+          jsondata["BackupListID"] = id
           dataLoad(id)
+
         }
     }
   })
@@ -904,7 +915,7 @@ elModalCancel.addEventListener("click", function() {
 elRemove.addEventListener("click", function() {
   let removebID = Number(document.querySelector('.backupnamelist tr.selected').getAttribute('data-id'))
   let removebIndex = backupListIDToIndex(removebID)
-  let bID
+  let bIndex
 
   if (removebIndex !== -1) {
      var r = confirm(`Are you sure you want to remove this Backup List - ${elName.value}`)
@@ -913,13 +924,18 @@ elRemove.addEventListener("click", function() {
        jsondata["Backup List"].splice(removebIndex, 1)
        // After removing, find the first active backup List, if not, just the first backup list, there needs to be at least one
        try {
-         bID = jsondata["Backup List"].filter(i => i.Active === true)[0]["ID"]
+         bIndex = backupListFindFirstID()
+         if (jsondata.hasOwnProperty("BackupListID")) {
+           delete jsondata["BackupListID"]
+         }
+         jsondata["BackupListID"] = bIndex
+
        }
        catch (err) {
-         bID = jsondata["Backup List"][0]["ID"]
+        bIndex = jsondata["Backup List"][0]["ID"]
        }
        dataSave(false)
-       dataLoad(bID)
+       dataLoad(bIndex)
     } else {
       alert("Something went wrong, it can't remove this Backup List. It can't find it in the JSON data.")
     }

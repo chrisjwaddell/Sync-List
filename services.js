@@ -19,6 +19,8 @@ const parseJsonAsync = (jsonString) => {
 
 var settingsFile = __dirname + '\\' + 'settings.json'
 
+
+// get rid of this, it's not used anymore
 function IsJsonString(str) {
   try {
       return JSON.parse(str);
@@ -437,7 +439,7 @@ function Exclude-Directories
 
 
 async function powershellFileWrite(fileName, fileText) {
-    console.log("test  powershellFileWrite")
+    // console.log("test  powershellFileWrite")
 
     fs.writeFile(fileName, fileText, function(err) {
       if (err) {
@@ -446,6 +448,7 @@ async function powershellFileWrite(fileName, fileText) {
         reject("Error writing to Powershell backup script file")
       } else {
         // return json
+        console.log("Backup Powershell script " + fileName + " written to")
         resolve(fileText)
       }
     })
