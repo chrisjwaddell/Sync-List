@@ -59,15 +59,20 @@ window.addEventListener('load', () => {
       .then(function(str) {
           console.log(str)
           jsondata = str;
+          var bIndex
 
-          var bIndex = backupListFindFirstID()
-          if (jsondata.hasOwnProperty("BackupListID")) {
-            delete jsondata["BackupListID"]
+          if (jsondata["Backup List"].length !== 0) {
+              bIndex = backupListFindFirstID()
+              if (jsondata.hasOwnProperty("BackupListID")) {
+                delete jsondata["BackupListID"]
+              }
+              jsondata["BackupListID"] = bIndex
+              dataLoad(bIndex)
+          } else {
+            bIndex = -1
           }
-          jsondata["BackupListID"] = bIndex
-          dataLoad(bIndex)
 
-          debugToolInitialAfter()
+            debugToolInitialAfter()
       })
       .catch(err => {
         if (err instanceof TypeError) {
@@ -160,7 +165,7 @@ elActive.addEventListener("click", function(e) {
       elActive.checked = true
     }
   } else {
-    debugger
+    // debugger
     dataSet(bIndex, "Active", this.checked)
     active(true)
   }
@@ -210,11 +215,11 @@ function dataSet(backupIndex, property, value, fileIndex, fileField) {
     jsondata["Backup List"][backupIndex]["Files"][fileIndex][fileField] = value
   }
 
-  dataSave(false)
+  dataSave(false, elID.value)
 }
 
 
-async function dataSave(build) {
+async function dataSave(build, id) {
 // build === true tells express to build a new script
 // build === false just saves the changes to settings.json, putSettings() in Node.js
   let today = new Date()
@@ -223,7 +228,7 @@ async function dataSave(build) {
   // If no BackupListID in jsondata, add it in
   if (jsondata["Backup List"].hasOwnProperty("BackupListID")) {
   } else {
-    jsondata["BackupListID"] = elID.value
+    jsondata["BackupListID"] = id
   }
   var bLIndex
   bLIndex = backupListIDToIndex(jsondata, Number(jsondata["Backup List"]["BackupListID"]))
@@ -781,7 +786,7 @@ function fileLineAdd(index) {
     // debugger
     var r = confirm("Are you sure you want to remove this line?")
     if (r == true) {
-      debugger
+      // debugger
       let lineNumber = Number(this.getAttribute('data-index'))
       let line = fileLineIndexToLineNumber(lineNumber)
       document.querySelectorAll("hr")[line -1].remove()
@@ -795,7 +800,7 @@ function fileLineAdd(index) {
         }
       }
 
-      dataSave(false)
+      dataSave(false, elID.value)
     }
   })
 
@@ -875,6 +880,7 @@ elModalSave.addEventListener("click", function() {
     let strNew = templateSettings(bID, dateToDDMMYYYY(today, "/"), today.valueOf())
     strNew["Backup Root Directory"] = elBackupTo.value
 
+    // debugger
     jsondata["Backup List"].push( strNew )
 
     // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
@@ -886,7 +892,7 @@ elModalSave.addEventListener("click", function() {
     createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
 
     // The user can only create a script when the name is in, the backup root dir and some file lines are in, otherwise it just saves the data
-    dataSave(false)
+    dataSave(false, bID)
 
     // buildBackupScript(bID)
     dataLoad(bID)
@@ -924,17 +930,20 @@ elRemove.addEventListener("click", function() {
        jsondata["Backup List"].splice(removebIndex, 1)
        // After removing, find the first active backup List, if not, just the first backup list, there needs to be at least one
        try {
-         bIndex = backupListFindFirstID()
-         if (jsondata.hasOwnProperty("BackupListID")) {
-           delete jsondata["BackupListID"]
-         }
-         jsondata["BackupListID"] = bIndex
-
+          if (jsondata["Backup List"].length !== 0) {
+              bIndex = backupListFindFirstID()
+          } else {
+              bIndex = -1
+          }
+          if (jsondata.hasOwnProperty("BackupListID")) {
+              delete jsondata["BackupListID"]
+          }
+          jsondata["BackupListID"] = bIndex
        }
        catch (err) {
         bIndex = jsondata["Backup List"][0]["ID"]
        }
-       dataSave(false)
+       dataSave(false, elID.value)
        dataLoad(bIndex)
     } else {
       alert("Something went wrong, it can't remove this Backup List. It can't find it in the JSON data.")
@@ -1000,7 +1009,7 @@ async function buildBackupScript() {
         // // })
         .then(json => {
           jsondata = json
-          debugger
+          // debugger
           if (json.hasOwnProperty("Important Error Message")) {
             alert(json['Important Error Message'])
             warnings(json)
@@ -1057,14 +1066,14 @@ async function testFetch() {
   }
   // body: jj
 
-  debugger
+  // debugger
   // let r3 = await fetch(url, options)
   let r3 = fetch(url, options)
       // .then(res => res.text())
       // .then(txt => txt.json())
       // .catch(err => console.log(err))
 
-      debugger
+      // debugger
   console.log(r3)
   let a = await fetch(url, options)
   let t = await a.text()
@@ -1099,7 +1108,7 @@ async function testFetch1(endurl) {
   // let rr = fetch(url, options)
 
 
-  debugger
+  // debugger
   // let r3 = await fetch(url, options)
   let r3 = await fetch(url, options)
       .then(txt => txt.json())

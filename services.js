@@ -90,13 +90,19 @@ return new Promise((resolve, reject) => {
             // let objJSON = IsJsonString(strFileContent)
             parseJsonAsync(strFileContent).then(objJSON => {
                 // console.log("backupListID")
-                let backupListID = backupListFindFirstID(objJSON)
-                console.log(backupListID)
-                delete objJSON["BackupListID"]
-                objJSON["BackupListID"] = Number(backupListID)
-                let fileContentPlusErrors = buildErrorChecker(objJSON).then(f => {
-                    resolve(f)
-                })
+                if (objJSON["Backup List"].length !== 0) {
+                    let backupListID = backupListFindFirstID(objJSON)
+                    console.log(backupListID)
+                    delete objJSON["BackupListID"]
+                    objJSON["BackupListID"] = Number(backupListID)
+                    let fileContentPlusErrors = buildErrorChecker(objJSON).then(f => {
+                        resolve(f)
+                    })
+                } else {
+                    backupListID = -1
+                    objJSON["BackupListID"] = Number(backupListID)
+                    resolve(objJSON)
+                }
             })
         }       //else
 
