@@ -77,6 +77,9 @@ window.addEventListener('load', () => {
       .catch(err => {
         if (err instanceof TypeError) {
           // This happens if we throw TypeError above
+          if (jsondata.hasOwnProperty("Important Error Message")) {
+            alert(jsondata["Important Error Message"])
+          }
           alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
         }
         else {
