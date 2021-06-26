@@ -55,7 +55,7 @@ return new Promise((resolve, reject) => {
   if (!dirExists) {
     try {
       fs.mkdirSync(scriptsDir);
-      console.log("make dir")
+      console.log("Creating scripts directory")
     } catch(err) {
       dirExists = false
       // return "No directory"
@@ -141,15 +141,15 @@ function newSettings() {
   return new Promise((resolve, reject) => {
       let today = new Date()
       let strNew = templateSettings(1, dateToDDMMYYYY(today, "/"), today.valueOf())
-      console.log("newSettings")
+      // console.log("newSettings")
 
-      console.log("strNew")
-      console.log(strNew)
+      // console.log("strNew")
+      // console.log(strNew)
 
       parseJsonAsync(strNew).then(jsontemplate => {
           // .then(jsontemplate => {
-          console.log("jsontemplate")
-          console.log(jsontemplate)
+          // console.log("jsontemplate")
+          // console.log(jsontemplate)
 
           jsontemplate["BackupListID"] = 1
           jsontemplate["Important Error Message"] = "The settings.json wasn't able to be read so a new blank settings.json file was created."
@@ -168,7 +168,7 @@ function newSettings() {
           })
 
         })
-        console.log("newSettings end")
+        // console.log("newSettings end")
     })
 }
 
