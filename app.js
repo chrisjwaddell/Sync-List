@@ -40,13 +40,13 @@ app.get('/', function(req, res) {
     services.getSettings()
       .then(i => {
         // settings file read successfully, return the data
-        console.log(i)
-        console.log(typeof i)
+        // console.log(i)
+        // console.log(typeof i)
         res.send(i)
       })
       .catch(err => {
-        console.log("app.js - catch - err - ")
-        console.log(err)
+        // console.log("app.js - catch - err - ")
+        console.error("ERROR:  " + err)
         if (err === "Settings file not found") {
           console.log("Settings          not found")
           services.newSettings().then(v => {
@@ -56,7 +56,6 @@ app.get('/', function(req, res) {
 
           // console.log(g)
           // services.newSettings()
-          console.log("end of catch")
 
         } else {
           res.send( {"Important Error Message": err })
@@ -67,7 +66,6 @@ app.get('/', function(req, res) {
         // newFile = await newSettings()
       })
 
-      console.log("end")
 })
 
 app.get('/x', async function(req, res) {
