@@ -79,6 +79,7 @@ window.addEventListener('load', () => {
           // This happens if we throw TypeError above
           if (jsondata.hasOwnProperty("Important Error Message")) {
             alert(jsondata["Important Error Message"])
+            delete jsondata["Important Error Message"]
           }
           alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
         }
@@ -271,15 +272,16 @@ async function dataSave(build, id) {
     .then(j => j.json())
     // .then(r => console.log(r))
     .then(function(str) {
-      // console.log(str)
+      console.log(str)
       jsondata = str;
 
       if (jsondata.hasOwnProperty("Important Error Message")) {
           alert(jsondata['Important Error Message'])
+          delete jsondata["Important Error Message"]
           warnings(jsondata)
       } else if (jsondata.hasOwnProperty("Script message")) {
-            alert(jsondata['Script message'])
-            warnings(jsondata)
+          alert(jsondata['Script message'])
+          warnings(jsondata)
       } else {
           warnings(jsondata)
       }
@@ -595,6 +597,7 @@ function dataLoad(backupID) {
 
     if (jsondata.hasOwnProperty("Important Error Message")) {
       alert(jsondata['Important Error Message'])
+      delete jsondata["Important Error Message"]
       warnings(jsondata)
     } else if (jsondata.hasOwnProperty("Script message")) {
       alert(jsondata['Script message'])
@@ -1015,6 +1018,7 @@ async function buildBackupScript() {
           // debugger
           if (json.hasOwnProperty("Important Error Message")) {
             alert(json['Important Error Message'])
+            delete jsondata["Important Error Message"]
             warnings(json)
           } else if (json.hasOwnProperty("Script message")) {
             alert(json['Script message'])

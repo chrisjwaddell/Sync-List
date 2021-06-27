@@ -4,7 +4,7 @@ const { settings } = require('cluster');
 const { resolve } = require('path');
 // const fsp = fs.promises;
 
-const templateSettings = (id, date, dateInt) => `{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": "${dateInt}", "Last Saved": "${dateInt}", "Script Created": "${date}", "Active": true, "Files": [] } ] }`
+const templateSettings = (id, date, dateInt) => `{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) => backuplistarray["Backup List"].filter(i => i.Active === true)[0] ? backuplistarray["Backup List"].filter(i => i.Active === true)[0]["ID"] : backuplistarray["Backup List"][0]["ID"]
 const backupListIDToIndex = (backuplistarray, id) => jsondata["Backup List"].findIndex(i => i.ID === id)
 
@@ -143,8 +143,8 @@ function newSettings() {
       let strNew = templateSettings(1, dateToDDMMYYYY(today, "/"), today.valueOf())
       // console.log("newSettings")
 
-      // console.log("strNew")
-      // console.log(strNew)
+      console.log("strNew")
+      console.log(strNew)
 
       parseJsonAsync(strNew).then(jsontemplate => {
           // .then(jsontemplate => {
