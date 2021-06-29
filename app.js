@@ -48,9 +48,9 @@ app.get('/', function(req, res) {
         // console.log("app.js - catch - err - ")
         console.error("ERROR:  " + err)
         if (err === "Settings file not found") {
-          console.log("Settings          not found")
+          console.log("Settings not found")
           services.newSettings().then(v => {
-            console.log(v);
+            // console.log(v);
             res.send(v)
           })
 
