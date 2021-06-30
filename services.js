@@ -10,9 +10,15 @@ const backupListIDToIndex = (backuplistarray, id) => jsondata["Backup List"].fin
 
 
 const parseJsonAsync = (jsonString) => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(JSON.parse(jsonString))
+      try {
+        let r = JSON.parse(jsonString)
+        resolve(r)
+      } catch(err) {
+        console.error("ERROR: Settings.json not in valid JSON format")
+        reject("Settings.json not in valid JSON format")
+      }
     })
   })
 }
@@ -104,6 +110,9 @@ return new Promise((resolve, reject) => {
                     resolve(objJSON)
                 }
             })
+            .catch(err => {
+              reject(err)
+            })
         }       //else
 
       })
@@ -143,9 +152,8 @@ function newSettings() {
       let strNew = templateSettings(1, dateToDDMMYYYY(today, "/"), today.valueOf())
       // console.log("newSettings")
 
-      console.log("strNew")
-      console.log(strNew)
-
+      // console.log("strNew")
+      // console.log(strNew)
       parseJsonAsync(strNew).then(jsontemplate => {
           // .then(jsontemplate => {
           // console.log("jsontemplate")
@@ -168,6 +176,7 @@ function newSettings() {
           })
 
         })
+        .catch(err => reject(err))
         // console.log("newSettings end")
     })
 }
@@ -1301,7 +1310,7 @@ async function putBuildText(jsondata,index) {
 
    strFile += powershellEnd()
 
-   console.log("putBuildText End")
+  //  console.log("putBuildText End")
 
    return strFile
 }
