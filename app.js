@@ -58,9 +58,28 @@ app.get('/', function(req, res) {
           // services.newSettings()
 
         } else {
-          res.send( {"Important Error Message": err })
-          // Scripts directory doesn't exist and couldn't be created.
-          // Couldn't read settings file.
+          let sr = services.settingsBackup()
+            .then(r => {
+              console.log("after settingsBackup - then")
+              services.newSettings()
+                .then(v => {
+                  console.log("after settingsBackup & newSettings - then")
+                  console.log(v)
+                  // console.log(v);
+                  res.send(v)
+                })
+                .catch(err => {
+                  console.log("after settingsBackup & newSettings - catch")
+                  res.send( { "Backup List":[], "Script message": err, "Important Error Message": err })
+                })
+            })
+            .catch(err => {
+              console.log("after settingsBackup - catch")
+              console.log(err)
+              res.send( { "Backup List":[], "Script message": err, "Important Error Message": err })
+            })
+            // Scripts directory doesn't exist and couldn't be created.
+            // Couldn't read settings file.
         }
 
         // newFile = await newSettings()

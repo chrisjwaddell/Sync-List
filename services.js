@@ -233,6 +233,22 @@ console.log("in putSettings")
 }
 
 
+function settingsBackup() {
+  let d = new Date()
+  let strDate = dateToYYYYMMDD(d, "");
+  console.log("strDate", strDate)
+
+  return new Promise((resolve, reject) => {
+    fs.rename(__dirname + '\\' + 'settings.json', __dirname + '\\' +  'settings-' + strDate + '.json', (err) => {
+      if (err) reject(err);
+      resolve('Rename complete!');
+    });
+
+  })
+
+}
+
+
 async function buildErrorChecker(jsonobj) {
   var errorlist = ""
   var json = ""
@@ -1432,5 +1448,6 @@ module.exports = {
   putBuild,
   putBuild2,
   newSettings,
+  settingsBackup,
   gg
 }
