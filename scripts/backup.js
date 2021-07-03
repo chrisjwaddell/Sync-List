@@ -872,49 +872,58 @@ elModalSave.addEventListener("click", function() {
   const elName = document.querySelector('#backupname--modal')
   const elBackupTo = document.querySelector('#backupto--modal')
 
+  let nameExists = jsondata["Backup List"].findIndex(item => item["Backup Name"] === elName.value)
+
+
   if ((elName.value) && (elBackupTo.value)) {
-    backupSettingsClear()
 
-    fileListClear()
+    if (nameExists !== -1) { alert("Backup name already exists. Choose another name") }
+    else {
 
-    let bID = backupLineIDNew();
-    // debugger
+      backupSettingsClear()
 
-    const templateSettings = (id, date, dateInt) => ({ "ID": id, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": dateInt, "Last Saved": dateInt, "Script Created": date, "Active": true, "Files": [] })
-    // const templateSettings = (id, date, dateInt) => {  }
-    let today = new Date()
-    let strNew = templateSettings(bID, dateToDDMMYYYY(today, "/"), today.valueOf())
-    strNew["Backup Root Directory"] = elBackupTo.value
+      fileListClear()
 
-    // debugger
-    jsondata["Backup List"].push( strNew )
+      let bID = backupLineIDNew();
+      // debugger
 
-    // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
-    jsondata["BackupListID"] = bID
+      const templateSettings = (id, date, dateInt) => ({ "ID": id, "Backup Name": elName.value, "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": dateInt, "Last Saved": dateInt, "Script Created": date, "Active": true, "Files": [] })
+      // const templateSettings = (id, date, dateInt) => {  }
+      let today = new Date()
+      let strNew = templateSettings(bID, dateToDDMMYYYY(today, "/"), today.valueOf())
+      strNew["Backup Root Directory"] = elBackupTo.value
 
-    let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', bID]], ' ')
-    createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], elName.value)
-    createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
-    createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
+      // debugger
+      jsondata["Backup List"].push( strNew )
 
-    // The user can only create a script when the name is in, the backup root dir and some file lines are in, otherwise it just saves the data
-    dataSave(false, bID)
+      // PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
+      jsondata["BackupListID"] = bID
 
-    // buildBackupScript(bID)
-    dataLoad(bID)
+      let elTR = createElementAtt(document.querySelector('.backupnamelist tbody'), 'tr', ['selected'], [['data-id', bID]], ' ')
+      createElementAtt(elTR, 'td', ['backupname', 'u-text-line-through'], [], elName.value)
+      createElementAtt(elTR, 'td', ['active', 'u-text-line-through'], [], 'true')
+      createElementAtt(elTR, 'td', ['lastrun', 'u-text-line-through'], [], '')
 
+      // The user can only create a script when the name is in, the backup root dir and some file lines are in, otherwise it just saves the data
+      dataSave(false, bID)
 
-    elName.value = ''
-
-    elModal.classList.remove('db')
-    document.querySelector('#backupname--modal').value = ''
-    document.querySelector('#backupto--modal').value = ''
+      // buildBackupScript(bID)
+      dataLoad(bID)
 
 
-  } else {
-    alert("Enter a name or cancel.")
+      elName.value = ''
 
-  }
+      elModal.classList.remove('db')
+      document.querySelector('#backupname--modal').value = ''
+      document.querySelector('#backupto--modal').value = ''
+
+
+    }
+    } else {
+      alert("Enter a name or cancel.")
+    }
+
+
 })
 
 
