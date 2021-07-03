@@ -159,7 +159,7 @@ function newSettings() {
           // console.log("jsontemplate")
           // console.log(jsontemplate)
 
-          jsontemplate["BackupListID"] = 1
+          jsontemplate["BackupListID"] = 0
           jsontemplate["Important Error Message"] = "The settings.json wasn't able to be read so a new blank settings.json file was created."
 
           let strjson = JSON.stringify(jsontemplate, null, 4)
