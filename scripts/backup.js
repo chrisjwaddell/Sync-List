@@ -1100,7 +1100,7 @@ async function testFetch1(endurl) {
   // return
 
   delete jsondata["BackupListID"]
-  jsondata["BackupListID"] = 1
+  jsondata["BackupListID"] = 0
 
   // const url = 'http://localhost:21311/testjsonjson'
   const url = 'http://localhost:21311/' + endurl;
