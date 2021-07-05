@@ -546,12 +546,10 @@ async function putBuild(jsondata) {
         //buildErrorChecker removes ["Script message"], add it after
         fileContentPlusErrors["Script message"] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
 
-        console.log("fileContentPlusErrors")
-        console.log(fileContentPlusErrors)
+        // console.log("fileContentPlusErrors")
+        // console.log(fileContentPlusErrors)
 
         result = fileContentPlusErrors
-        console.log("result")
-        console.log(result)
 
         return new Promise((resolve, reject) => {
           resolve(fileContentPlusErrors)
