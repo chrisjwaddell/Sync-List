@@ -31,6 +31,7 @@ body {
 
 .selected {
   background-color: #c0c5ff !important;
+  font-weight: 700;
 }
 
 h1 {
@@ -52,6 +53,71 @@ label {
 }
 input {
   width: 350px;
+}
+
+.backupnamelist-container {
+  width: 850px;
+  border: 6px solid #ffffff;
+  background-color: #c0c5ff;
+  margin: 20px auto 50px;
+}
+
+.backupnamelist {
+  margin: 25px auto 15px;
+  overflow:hidden;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.backupnamelist th, .backupnamelist td {
+  padding:.25em .5em;
+  text-align:left;
+  vertical-align:top;
+}
+
+.backupnamelist .backupname {
+    width: 500px;
+}
+
+.backupnamelist .active {
+  width: 75px;
+}
+
+.backupnamelist .lastrun {
+  width: 100px;
+}
+
+.backupnamelist tbody {
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+.backupnamelist th {
+  background-color:#557ff1;
+  border: 1px solid #000000;
+  color:#fff;
+}
+
+.backupnamelist td {
+  background-color:#fff;
+  border: 1px solid #000000;
+}
+
+.backupnamelist__buttons button {
+  margin-right: 25px;
+  color: #ffffff;
+}
+
+.backupnamelist__buttons .add {
+  background-color: #22ee66;
+}
+
+.backupnamelist__buttons .remove {
+  background-color: #ee7777;
+}
+
+.backupnamelist__buttons {
+  margin-bottom: 15px;
 }
 
 .field input[disabled] {
@@ -277,64 +343,10 @@ hr {
   /* text-align: right; */
 }
 
-.backupnamelist {
-  margin: 70px auto 10px;
-  overflow:hidden;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.backupnamelist th, .backupnamelist td {
-  padding:.25em .5em;
-  text-align:left;
-  vertical-align:top;
-}
-
-.backupnamelist .backupname {
-    width: 500px;
-}
 
 .modal .e-input--primary {
   width: 300px;
 }
-
-.backupnamelist .active {
-  width: 75px;
-}
-
-.backupnamelist .lastrun {
-  width: 100px;
-}
-
-.backupnamelist tbody {
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
-}
-
-.backupnamelist th {
-  background-color:#557ff1;
-  border: 1px solid #000000;
-  color:#fff;
-}
-
-.backupnamelist td {
-  background-color:#fff;
-  border: 1px solid #000000;
-}
-
-.backupnamelist__buttons button {
-  margin-right: 25px;
-  color: #ffffff;
-}
-
-.backupnamelist__buttons .add {
-  background-color: #22ee66;
-}
-
-.backupnamelist__buttons .remove {
-  background-color: #ee7777;
-}
-
 
 
 
