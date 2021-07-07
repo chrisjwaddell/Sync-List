@@ -67,6 +67,7 @@ app.get('/', function(req, res) {
                   res.send(v)
                 })
                 .catch(err => {
+                  console.log(err)
                   res.send( { "Backup List":[], "Script message": err, "Important Error Message": err })
                 })
             })
