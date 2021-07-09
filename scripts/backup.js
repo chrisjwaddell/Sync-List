@@ -237,7 +237,6 @@ async function dataSave(build, id) {
   var bLIndex
   bLIndex = backupListIDToIndex(jsondata, Number(jsondata["Backup List"]["BackupListID"]))
 
-
   // jsondata["Backup List"][bIndex]["Last edited"] = dateToDDMMYYYY(today, '/')
 
   if (jsondata["Backup List"][bLIndex])   jsondata["Backup List"][bLIndex]["Last Edited"] = today
@@ -285,10 +284,9 @@ async function dataSave(build, id) {
       } else {
           warnings(jsondata)
       }
-      console.log("Finished fetch")
+      // console.log("Finished fetch")
     })
     .catch(err => {
-      console.error("Fetch error - err");
         if (err instanceof TypeError) {
           // This happens if we throw TypeError above
           alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
@@ -501,6 +499,7 @@ function dataLoad(backupID) {
     }
     // document.querySelectorAll(".filelist__zip")[i].checked = Boolean(jsondata["Backup List"][bIndex]["Files"][i]["Zip It"])
     document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]
+
 
     if (jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]) {
       document.querySelectorAll(".filelist__exludedirs input")[i].removeAttribute("disabled")
@@ -765,6 +764,11 @@ function fileLineAdd(index) {
   })
 
   elSDChk.addEventListener("change", function() {
+    if (this.checked) {
+      document.querySelectorAll(".filelist__exludedirs input")[index].removeAttribute("disabled")
+    } else {
+      document.querySelectorAll(".filelist__exludedirs input")[index].setAttribute("disabled", "true")
+    }
     dataSet(bIndex, "Files", this.checked, index, "Sub-Directories")
   })
 
