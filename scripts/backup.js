@@ -235,7 +235,7 @@ async function dataSave(build, id) {
     jsondata["BackupListID"] = id
   }
   var bLIndex
-  bLIndex = backupListIDToIndex(jsondata, Number(jsondata["Backup List"]["BackupListID"]))
+  bLIndex = backupListIDToIndex(Number(jsondata["BackupListID"]))
 
   // jsondata["Backup List"][bIndex]["Last edited"] = dateToDDMMYYYY(today, '/')
 
@@ -264,14 +264,29 @@ async function dataSave(build, id) {
   // console.log(s)
   // console.log(JSON.stringify(s))
   // console.log(JSON.parse(s))
+  let r3 = await fetch(url, options)
+  .then(txt => txt.json())
+  // .catch(err => console.log(err))
+
+  debugger
+console.log(r3)
+
 
   fetch(url, options)
     // .then(txt => txt.text())
     // .then(resp => console.log(resp))
     .then(j => j.json())
     // .then(r => console.log(r))
+    // .then(function(t) {
+    //   console.log(t)
+    //   return t
+    // })
+    // .then(s => {
+    //   console.log("s")
+    //   console.log(s)
+    // })
     .then(function(str) {
-      console.log(str)
+      // console.log(str)
       jsondata = str;
 
       if (jsondata.hasOwnProperty("Important Error Message")) {
@@ -287,6 +302,9 @@ async function dataSave(build, id) {
       // console.log("Finished fetch")
     })
     .catch(err => {
+      // console.error("catch");
+      console.error(err);
+      debugger
         if (err instanceof TypeError) {
           // This happens if we throw TypeError above
           alert('Make sure you start the Node.js server. Type in "node app.js" in a command prompt.You need to install Node.js obviously.');
@@ -1112,8 +1130,8 @@ async function testFetch1(endurl) {
   // console.log(JSON.stringify(jsondata))
   // return
 
-  delete jsondata["BackupListID"]
-  jsondata["BackupListID"] = 0
+  // delete jsondata["BackupListID"]
+  // jsondata["BackupListID"] = 0
 
   // const url = 'http://localhost:21311/testjsonjson'
   const url = 'http://localhost:21311/' + endurl;
@@ -1134,5 +1152,6 @@ async function testFetch1(endurl) {
       .then(txt => txt.json())
       // .catch(err => console.log(err))
 
+      debugger
   console.log(r3)
 }

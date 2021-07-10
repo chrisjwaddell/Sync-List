@@ -122,7 +122,7 @@ services.putSettings(settings)
   console.log("j")
   console.log(j)
   console.log(typeof j)
-  res.send(j)
+  res.json(j)
 })
 .catch(err => {
   console.log(err)
@@ -149,6 +149,8 @@ app.put('/test2', async function(req, res) {
 
 
 app.put('/build', async function(req, res) {
+// build === true tells express to build a new script
+// build === false just saves the changes to settings.json, putSettings() in Node.js
   console.log("=====================================================================");
   console.log("/build")
   let json;
