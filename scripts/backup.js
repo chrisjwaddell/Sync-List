@@ -257,34 +257,8 @@ async function dataSave(build, id) {
   };
 
 
-  // let rr3 = fetch(url, options)
-  // .then(t => t.json())
-
-  // let s = await fetch(url, options)
-  // console.log(s)
-  // console.log(JSON.stringify(s))
-  // console.log(JSON.parse(s))
-  let r3 = await fetch(url, options)
-  .then(txt => txt.json())
-  // .catch(err => console.log(err))
-
-  debugger
-console.log(r3)
-
-
   fetch(url, options)
-    // .then(txt => txt.text())
-    // .then(resp => console.log(resp))
     .then(j => j.json())
-    // .then(r => console.log(r))
-    // .then(function(t) {
-    //   console.log(t)
-    //   return t
-    // })
-    // .then(s => {
-    //   console.log("s")
-    //   console.log(s)
-    // })
     .then(function(str) {
       // console.log(str)
       jsondata = str;
@@ -744,7 +718,7 @@ function fileLineAdd(index) {
 
   let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir', 'col'], [], '')
 
-  let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox']], [], '')
+  let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox'], ["data-index", index]], [], '')
   elFL.appendChild(document.createTextNode(' '))
 
   let elExclDirsDiv = createElementAtt(elFL, 'div', ['filelist__exludedirs', 'col'], [], '')
@@ -783,9 +757,9 @@ function fileLineAdd(index) {
 
   elSDChk.addEventListener("change", function() {
     if (this.checked) {
-      document.querySelectorAll(".filelist__exludedirs input")[index].removeAttribute("disabled")
+      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).setAttribute("disabled", "false")
     } else {
-      document.querySelectorAll(".filelist__exludedirs input")[index].setAttribute("disabled", "true")
+      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).setAttribute("disabled", "true")
     }
     dataSet(bIndex, "Files", this.checked, index, "Sub-Directories")
   })
