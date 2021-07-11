@@ -53,7 +53,7 @@ function IsJsonString(str) {
 
 window.addEventListener('load', () => {
   debugToolRunOnceBefore()
-  debugger;
+  // debugger;
       fetch("http://localhost:21311")
       .then(r => r.json())
       .then(function(str) {
