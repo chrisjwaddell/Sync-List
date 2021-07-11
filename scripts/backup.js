@@ -53,7 +53,7 @@ function IsJsonString(str) {
 
 window.addEventListener('load', () => {
   debugToolRunOnceBefore()
-  // debugger;
+  debugger;
       fetch("http://localhost:21311")
       .then(r => r.json())
       .then(function(str) {
@@ -75,6 +75,7 @@ window.addEventListener('load', () => {
             debugToolInitialAfter()
       })
       .catch(err => {
+        console.log(err)
         if (err instanceof TypeError) {
           // This happens if we throw TypeError above
           if (jsondata.hasOwnProperty("Important Error Message")) {
@@ -85,7 +86,6 @@ window.addEventListener('load', () => {
         }
         else {
           // This must be some kind of unanticipated error
-            console.error(err);
             alert(err);
           }
           jsondata = err
@@ -405,9 +405,11 @@ if (json.hasOwnProperty("Error List")) {
 function fileLineIndexNew() {
   let elTemp = document.querySelectorAll('.filelist__line')
   let arrIndexes = []
-  elTemp.forEach(item => arrIndexes.push(Number(item.getAttribute('data-id'))))
+  elTemp.forEach(item => arrIndexes.push(Number(item.getAttribute('data-index'))))
+  console.log(arrIndexes)
   let a = arrIndexes.reduce((acc, cv) => cv > acc ? cv : acc, 0)
-  return a + 1
+  console.log(a)
+  return a
 }
 
 
@@ -478,7 +480,8 @@ function dataLoad(backupID) {
   for (let i = 0; i < jsondata["Backup List"][bIndex]["Files"].length; i++) {
     // console.log("i - " + i + "; length - " + jsondata["Backup List"][bIndex]["Files"].length)
 
-    fileLineAdd(dataindex - 1)
+    console.log("elFileAdd.addEventListener - dataindex - " + dataindex + " - i - " + i)
+    fileLineAdd(dataindex)
     dataindex++
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Or Folder"]
 
@@ -811,7 +814,8 @@ function fileLineAdd(index) {
 
 elFileAdd.addEventListener("click", function() {
   let dataindex = fileLineIndexNew()
-  fileLineAdd(dataindex - 1)
+  console.log("elFileAdd.addEventListener - " + dataindex)
+  fileLineAdd(dataindex + 1)
   // debugger
   jsondata["Backup List"][bIndex]["Files"].push( { "File Or Folder": "", "File Type": "", "Zip It": false, "Sub-Directories": false,  "Exclude-Directories": "", "Date In File": false, "Active": true })
 
