@@ -36,7 +36,6 @@ function dateDDMMYYYYToDate(string) {
 function dateToDDMMYYYY(dt, seperator) {
   let da = new Date(dt)
 
-
   let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
   let m = da.getMonth() < 9 ? "0" + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
   let y = da.getFullYear()
@@ -45,6 +44,7 @@ function dateToDDMMYYYY(dt, seperator) {
 
 
 function dateToYYYYMMDD(dt, seperator) {
+  // dt is date in milliseconds since 1970
   let da = new Date(dt)
 
   let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
