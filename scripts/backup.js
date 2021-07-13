@@ -406,9 +406,7 @@ function fileLineIndexNew() {
   let elTemp = document.querySelectorAll('.filelist__line')
   let arrIndexes = []
   elTemp.forEach(item => arrIndexes.push(Number(item.getAttribute('data-index'))))
-  console.log(arrIndexes)
   let a = arrIndexes.reduce((acc, cv) => cv > acc ? cv : acc, 0)
-  console.log(a)
   return a
 }
 
@@ -480,7 +478,6 @@ function dataLoad(backupID) {
   for (let i = 0; i < jsondata["Backup List"][bIndex]["Files"].length; i++) {
     // console.log("i - " + i + "; length - " + jsondata["Backup List"][bIndex]["Files"].length)
 
-    console.log("elFileAdd.addEventListener - dataindex - " + dataindex + " - i - " + i)
     fileLineAdd(dataindex)
     dataindex++
     document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Or Folder"]
@@ -721,7 +718,8 @@ function fileLineAdd(index) {
 
   let elSubDirDiv = createElementAtt(elFL, 'div', ['filelist__subdir', 'col'], [], '')
 
-  let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox'], ["data-index", index]], [], '')
+  let elSDChk = createElementAtt(elSubDirDiv, 'input', [], [['type', 'checkbox']], '')
+
   elFL.appendChild(document.createTextNode(' '))
 
   let elExclDirsDiv = createElementAtt(elFL, 'div', ['filelist__exludedirs', 'col'], [], '')
@@ -760,7 +758,7 @@ function fileLineAdd(index) {
 
   elSDChk.addEventListener("change", function() {
     if (this.checked) {
-      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).setAttribute("disabled", "false")
+      document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).removeAttribute("disabled")
     } else {
       document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).setAttribute("disabled", "true")
     }
