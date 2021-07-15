@@ -1,23 +1,31 @@
 {
-  "name": "Sync-List",
-  "version": "0.5.0",
-  "description": "Backup your file lists to cloud backup",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "start-dev": "nodemon -e js,css,htm app.js",
-    "watch-css": "onchange 'style/scss/*.scss' -- npm run build-css",
-    "build-css": "sass --watch style/scss/style.scss:style/style.css"
-  },
-  "keywords": [ "sync", "backup", "files", "node", "express", "javascript", "powershell" ],
-  "author": "Chris Waddell",
-  "license": "MIT",
-  "repository": "https://github.com/chrisjwaddell/Sync-List",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1"
-  },
-  "devDependencies": {
-    "onchange": "^7.1.0"
-  }
+	"name": "synclist",
+	"version": "0.80",
+	"description": "Backup your file lists to cloud backup",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js",
+		"start-dev": "nodemon -e js,css,htm app.js",
+		"watch-css": "onchange 'style/scss/*.scss' -- npm run build-css",
+		"build-css": "sass --watch style/scss/style.scss:style/style.css"
+	},
+	"keywords": [
+		"sync",
+		"backup",
+		"files",
+		"node",
+		"express",
+		"javascript",
+		"powershell"
+	],
+	"author": "Chris Waddell",
+	"license": "MIT",
+	"repository": "https://github.com/chrisjwaddell/Sync-List",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1"
+	},
+	"devDependencies": {
+		"onchange": "^7.1.0"
+	}
 }
