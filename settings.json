@@ -2,190 +2,24 @@
     "Backup List": [
         {
             "ID": 1,
-            "Backup Name": "Weekly",
-            "Backup Root Directory": "C:\\Users\\Chris\\Google-Drive",
-            "Include Date": true,
-            "Message Before": "Close mdb files, budget.xls etc",
-            "Message After": "Backup complete. Remove .history files from zip file",
+            "Backup Name": "Main",
+            "Backup Root Directory": "",
+            "Include Date": false,
+            "Message Before": "",
+            "Message After": "Backup Completed",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": 1623205572608,
-            "Script created": 1,
+            "Last Edited": 1626396403400,
+            "Last Saved": 1625145313112,
+            "Script Created": "01/07/2021",
             "Active": true,
             "Files": [
                 {
-                    "File Or Folder": "E:\\wamp64\\www\\LESSONS\\*.*",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": false
-                },
-                {
-                    "File Or Folder": "E:\\*.txt",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\*.txtm",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\Bookmarks*.*",
+                    "File Or Folder": "E:\\PROGRAMMING\\*.txt",
                     "File Type": "",
                     "Zip It": false,
                     "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\everything.knt",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\investment\\budget.xls",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\investment\\Investment\\*.one",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\PROJECTS\\*.*",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\PROJECTS\\Ideas.mdb",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\REMOTE\\ALL\\investment\\floats USB.txt",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\REMOTE\\ALL\\investment\\INDICATORS USB.xls",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\REMOTE\\ALL\\investment\\M&As USB.xls",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\REMOTE\\ALL\\investment\\Ratios USB.xls",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\REMOTE\\ALL\\schedule usb.mdb",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\to do.knt",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.css",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.htm",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.html",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.js",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.scss",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Websites-I-Did\\*.txt",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\wamp64\\www\\Codepen\\*.*",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": true,
+                    "Exclude-Directories": "",
                     "Date In File": false,
                     "Active": true
                 }
@@ -193,198 +27,85 @@
         },
         {
             "ID": 2,
-            "Backup Name": "Monthly",
-            "Backup Root Directory": "C:\\Users\\Chris\\Dropbox",
+            "Backup Name": "Maina",
+            "Backup Root Directory": "e:\\",
             "Include Date": true,
-            "Message Before": "Close mdb files and Book notes",
-            "Message After": "Backup complete. Remove .history files from zip file",
+            "Message Before": "",
+            "Message After": "Backup Completed",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": 1618566137629,
-            "Script created": "",
+            "Last Edited": 1626390841975,
+            "Last Saved": 1625321601425,
+            "Script Created": "04/07/2021",
             "Active": true,
             "Files": [
                 {
-                    "File Or Folder": "C:\\Users\\Chris\\AppData\\Roaming\\Code\\User\\keybindings.json",
+                    "File Or Folder": "E:\\PROGRAMMING\\CSS\\*.txt",
                     "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
+                    "Zip It": false,
+                    "Sub-Directories": true,
+                    "Exclude-Directories": "",
                     "Date In File": false,
                     "Active": true
                 },
                 {
-                    "File Or Folder": "C:\\Users\\Chris\\AppData\\Roaming\\Code\\User\\settings.json",
+                    "File Or Folder": "E:\\PROGRAMMING\\HTML\\*.txt",
                     "File Type": "",
                     "Zip It": false,
                     "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\Desktop backup\\AutoHotKey scripts\\current\\*.ahk",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "C:\\Users\\Chris\\AppData\\Roaming\\Sublime Text 3\\Packages\\User\\*.*",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\BOOKS READ\\*.*",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\BOOKS READ\\Books Ideas.mdb",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "E:\\BOOKS READ\\podcasts\\*.one",
-                    "File Type": "",
-                    "Zip It": true,
-                    "Sub-Directories": false,
-                    "Date In File": false,
-                    "Active": true
-                },
-                {
-                    "File Or Folder": "C:\\Users\\Chris\\AppData\\Roaming\\Code\\User\\keybindings.json",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Date In File": false,
+                    "Exclude-Directories": "",
+                    "Date In File": true,
                     "Active": true
                 }
             ]
         },
         {
             "ID": 3,
-            "Backup Name": "",
-            "Backup Root Directory": "",
-            "Include Date": false,
+            "Backup Name": "test",
+            "Backup Root Directory": "C:\\temp",
+            "Include Date": true,
             "Message Before": "",
-            "Message After": "",
+            "Message After": "Backup Complete",
             "Send Email After": false,
             "Email Address": "",
-            "Last edited": "",
-            "Script created": "",
+            "Last Edited": 1626396591911,
+            "Last Saved": 1626389885928,
+            "Script Created": "16/07/2021",
             "Active": true,
             "Files": [
                 {
-                    "File Or Folder": "",
+                    "File Or Folder": "c:\\temp\\*.txt",
                     "File Type": "",
                     "Zip It": false,
                     "Sub-Directories": false,
                     "Exclude-Directories": "",
-                    "Date In File": false
-                }
-            ]
-        },
-        {
-            "ID": 4,
-            "Backup Name": "",
-            "Backup Root Directory": "",
-            "Include Date": false,
-            "Message Before": "",
-            "Message After": "",
-            "Send Email After": false,
-            "Email Address": "",
-            "Last edited": "",
-            "Script created": "",
-            "Active": true,
-            "Files": [
+                    "Date In File": false,
+                    "Active": true
+                },
                 {
-                    "File Or Folder": "",
+                    "File Or Folder": "c:\\temp\\*.htm",
                     "File Type": "",
                     "Zip It": false,
                     "Sub-Directories": false,
                     "Exclude-Directories": "",
-                    "Date In File": false
-                }
-            ]
-        },
-        {
-            "ID": 5,
-            "Backup Name": "",
-            "Backup Root Directory": "",
-            "Include Date": false,
-            "Message Before": "",
-            "Message After": "",
-            "Send Email After": false,
-            "Email Address": "",
-            "Last edited": "",
-            "Script created": "",
-            "Active": true,
-            "Files": [
-                {
-                    "File Or Folder": "",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Exclude-Directories": "",
-                    "Date In File": false
-                }
-            ]
-        },
-        {
-            "ID": 6,
-            "Backup Name": "",
-            "Backup Root Directory": "",
-            "Include Date": false,
-            "Message Before": "",
-            "Message After": "",
-            "Send Email After": false,
-            "Email Address": "",
-            "Last edited": "",
-            "Script created": "",
-            "Active": true,
-            "Files": [
-                {
-                    "File Or Folder": "",
-                    "File Type": "",
-                    "Zip It": false,
-                    "Sub-Directories": false,
-                    "Exclude-Directories": "",
-                    "Date In File": false
+                    "Date In File": false,
+                    "Active": true
                 }
             ]
         }
     ],
+    "BackupListID": 3,
     "Error List": [
         {
-            "Last edited": "Changes have been made since the Backup Script was generated last."
-        },
-        {
-            "Last edited": "Changes have been made since the Backup Script was generated last."
-        },
-        {
-            "Backup Name": "Script file doesn't exist.",
-            "Backup Root Directory": "Backup Root Directory not found."
+            "Backup Root Directory": "Backup Root Directory not found.",
+            "Last Edited": "Changes have been made since the Backup Script was generated last."
         },
         {
             "Backup Name": "Script file doesn't exist.",
-            "Backup Root Directory": "Backup Root Directory not found."
+            "Last Edited": "Changes have been made since the Backup Script was generated last."
         },
         {
-            "Backup Name": "Script file doesn't exist.",
-            "Backup Root Directory": "Backup Root Directory not found."
-        },
-        {
-            "Backup Name": "Script file doesn't exist.",
-            "Backup Root Directory": "Backup Root Directory not found."
+            "Last Edited": "Changes have been made since the Backup Script was generated last."
         }
     ]
 }

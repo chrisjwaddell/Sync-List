@@ -1,6 +1,6 @@
 {
 	"name": "synclist",
-	"version": "0.80",
+	"version": "0.8.0",
 	"description": "Backup your file lists to cloud backup",
 	"main": "app.js",
 	"scripts": {
