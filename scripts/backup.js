@@ -58,11 +58,9 @@ var bIndex = 0 // array index number
 
 window.addEventListener("load", () => {
 	debugToolRunOnceBefore()
-	// debugger;
 	fetch("http://localhost:21311")
 		.then((r) => r.json())
 		.then(function (str) {
-			console.log(str)
 			jsondata = str
 			var bIndex
 			let bID
@@ -124,7 +122,6 @@ elBackupTo.addEventListener("change", function () {
 elDate.addEventListener("change", function () {
 	scriptRootDirDate = this.checked
 	dataSet(bIndex, "Include Date", Boolean(this.checked))
-	// debugger
 	for (
 		let i = 0;
 		i < document.querySelectorAll(".filelist__date input").length;
