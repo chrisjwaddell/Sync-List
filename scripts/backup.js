@@ -56,16 +56,6 @@ var bIndex = 0 // array index number
 // elID and bIndex tell us the ID and array index of the backup List
 // ID is known first because user clicks on it and it's an attribute in the DOM, bIndex is found from dataLoad()
 
-// Remove this
-function IsJsonString(str) {
-	try {
-		return JSON.parse(str)
-	} catch (e) {
-		return {File: "File isn't in JSON format"}
-	}
-	return false
-}
-
 window.addEventListener("load", () => {
 	debugToolRunOnceBefore()
 	// debugger;
