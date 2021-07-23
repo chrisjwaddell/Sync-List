@@ -1286,9 +1286,6 @@ elCreateScriptBtn.addEventListener("click", function () {
 })
 
 async function buildBackupScript() {
-	// console.log(jsondata)
-	// debugger
-
 	const url = "http://localhost:21311/build"
 	const options = {
 		method: "PUT",
@@ -1327,13 +1324,9 @@ async function buildBackupScript() {
 
 function dirFromPath(path) {
 	let p = path
-	// console.log("path - " + path)
 	if (p.indexOf("\\") !== -1) {
-		// console.log("1")
-		// return p.substring(0, p.indexOf('\\')) + dirFromPath(p.substring(p.indexOf('\\'), p.length))
 		return dirFromPath(p.substring(p.indexOf("\\"), p.length))
 	} else {
-		// console.log("2")
 		return p
 	}
 }
