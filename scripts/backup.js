@@ -988,15 +988,12 @@ function fileLineAdd(index) {
 
 	elDeleteBtn.addEventListener("click", function () {
 		// dataSet(bIndex, "Files", this.value, index, "File Or Folder")
-		// debugger
 		var r = confirm("Are you sure you want to remove this line?")
 		if (r == true) {
-			// debugger
 			let lineNumber = Number(this.getAttribute("data-index"))
 			let line = fileLineIndexToLineNumber(lineNumber)
 			document.querySelectorAll("hr")[line - 1].remove()
 			let strLine = `.filelist__line[data-index="${lineNumber}"]`
-			// debugger
 			let index
 			for (
 				let i = 0;
@@ -1025,7 +1022,6 @@ elFileAdd.addEventListener("click", function () {
 	let dataindex = fileLineIndexNew()
 	console.log("elFileAdd.addEventListener - " + dataindex)
 	fileLineAdd(dataindex)
-	// debugger
 	jsondata["Backup List"][bIndex]["Files"].push({
 		"File Or Folder": "",
 		"File Type": "",
@@ -1040,11 +1036,6 @@ elFileAdd.addEventListener("click", function () {
 })
 
 function fileListClear() {
-	// debugStart(debugGetFuncName(), arguments)
-	// debugLog(debugGetFuncName(), "1", { bIndex } )
-
-	// console.count("fileListClear")
-
 	if (document.querySelectorAll(".filelist__line")[1] !== undefined) {
 		if (document.querySelectorAll("hr")[0] !== undefined) {
 			document.querySelectorAll("hr")[0].remove()
@@ -1058,15 +1049,11 @@ function fileListClear() {
 }
 
 function backupListClear() {
-	// debugStart(debugGetFuncName(), arguments)
-	// debugLog(debugGetFuncName(), "2", { bIndex } )
 	if (document.querySelectorAll(".backupnamelist tbody tr")[0] !== undefined) {
 		document.querySelectorAll(".backupnamelist tbody tr")[0].remove()
 		backupListClear()
-		// sleep(5000)
 		return true
 	} else {
-		// sleep(5000)
 		return false
 	}
 }
@@ -1122,7 +1109,6 @@ elModalSave.addEventListener("click", function () {
 			)
 			strNew["Backup Root Directory"] = elBackupTo.value
 
-			// debugger
 			jsondata["Backup List"].push(strNew)
 
 			// PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
