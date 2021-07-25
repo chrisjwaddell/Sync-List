@@ -7,7 +7,6 @@ const app = express()
 const services = require("./services")
 
 const cors = require("cors")
-// const { exit, send } = require('process');
 
 const hostname = "localhost"
 const port = 21311
@@ -22,13 +21,6 @@ app.use(
 app.use(express.json())
 
 app.use(cors())
-
-app.get("/test2", function (req, res) {
-	console.log("test2")
-	services.test2()
-	console.log("after test2()")
-	console.log("after test2() 2")
-})
 
 app.get("/", function (req, res) {
 	//* A get request is submitted from the frontened GUI at the start to get the settings
