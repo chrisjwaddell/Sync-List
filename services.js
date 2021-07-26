@@ -49,11 +49,9 @@ function getSettings() {
 		let dirExists = false
 		let fileExists = false
 
-		// remove these comments
 		try {
 			if (fs.existsSync(scriptsDir)) dirExists = true
 		} catch (err) {
-			console.log("1st catch")
 			console.error(err)
 			dirExists = false
 		}
@@ -88,14 +86,9 @@ function getSettings() {
 					reject("Couldn't read settings file.")
 				} else {
 					// settings.json file read successfully
-					// console.log(data)
 					var strFileContent = data
-					// console.log(strFileContent)
-					// console.log(typeof data)
-					// let objJSON = IsJsonString(strFileContent)
 					parseJsonAsync(strFileContent)
 						.then((objJSON) => {
-							// console.log("backupListID")
 							if (objJSON["Backup List"].length !== 0) {
 								let backupListID = backupListFindFirstID(objJSON)
 								console.log(backupListID)
@@ -315,8 +308,6 @@ function powershellStart(filesArray, edited) {
 
 	strFileList += "Last Edited - " + edited + "\n" + "#>" + "\n" + "\n"
 
-	// console.log("powershellStart")
-	// console.log(strFileList)
 	return strFileList
 }
 
