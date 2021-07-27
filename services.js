@@ -91,7 +91,6 @@ function getSettings() {
 						.then((objJSON) => {
 							if (objJSON["Backup List"].length !== 0) {
 								let backupListID = backupListFindFirstID(objJSON)
-								console.log(backupListID)
 								delete objJSON["BackupListID"]
 								objJSON["BackupListID"] = Number(backupListID)
 								let fileContentPlusErrors = buildErrorChecker(objJSON).then(
@@ -111,27 +110,6 @@ function getSettings() {
 				} //else
 			})
 		}
-	})
-}
-
-function gg() {
-	console.log("gg-1")
-	console.log("gg-2")
-	console.log("gg-3")
-}
-
-async function gg() {
-	return new Promise((resolve, reject) => {
-		console.log("gg-1")
-		console.log("gg-2")
-		let strNew = templateSettings(1, "1/1/2021")
-		// let jsontemplate = await parseJsonAsync(strNew)
-		parseJsonAsync(strNew).then((jsontemplate) => {
-			console.log("gg-3")
-			// console.log(jsontemplate)
-			// return jsontemplate
-			resolve(jsontemplate)
-		})
 	})
 }
 
