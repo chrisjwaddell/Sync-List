@@ -121,16 +121,8 @@ function newSettings() {
 			dateToDDMMYYYY(today, "/"),
 			today.valueOf()
 		)
-		// console.log("newSettings")
-
-		// console.log("strNew")
-		// console.log(strNew)
 		parseJsonAsync(strNew)
 			.then((jsontemplate) => {
-				// .then(jsontemplate => {
-				// console.log("jsontemplate")
-				// console.log(jsontemplate)
-
 				jsontemplate["BackupListID"] = 0
 				jsontemplate["Important Error Message"] =
 					"The settings.json wasn't able to be read so a new blank settings.json file was created."
@@ -140,24 +132,18 @@ function newSettings() {
 				fs.writeFile(settingsFile, strjson, function (err) {
 					if (err) {
 						console.log(err)
-						// throw new Error(err)
 						reject("Error writing to settings file")
 					} else {
-						// return strNew
 						resolve(strjson)
 					}
 				})
 			})
 			.catch((err) => reject(err))
-		// console.log("newSettings end")
 	})
 }
 
 async function putSettings(jsonobj) {
 	// putSettings writes updates to the the settings.json file
-
-	console.log("in putSettings")
-	// console.log(jsonobj)
 
 	return new Promise((resolve, reject) => {
 		let fileExists = false
