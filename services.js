@@ -158,13 +158,7 @@ async function putSettings(jsonobj) {
 		if (!fileExists) {
 			reject("Settings file not found")
 		} else {
-			console.log("putSettings - jsonobj - ")
-			console.log(jsonobj)
-
 			buildErrorChecker(jsonobj).then((json) => {
-				console.log("putSettings - after buildErrorChecker - ")
-				console.log(json)
-
 				let strjson = JSON.stringify(json, null, 4)
 
 				fs.writeFile(settingsFile, strjson, function (err) {
@@ -174,8 +168,6 @@ async function putSettings(jsonobj) {
 						reject("Error writing to settings file")
 					} else {
 						// return json
-						console.log("putSettings - about to resolve - json - ")
-						console.log(json)
 						resolve(json)
 					}
 				})
@@ -187,7 +179,6 @@ async function putSettings(jsonobj) {
 function settingsBackup() {
 	let d = new Date()
 	let strDate = dateToYYYYMMDD(d, "")
-	console.log("strDate", strDate)
 
 	return new Promise((resolve, reject) => {
 		fs.rename(
