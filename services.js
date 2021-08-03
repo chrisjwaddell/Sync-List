@@ -196,8 +196,6 @@ async function buildErrorChecker(jsonobj) {
 	var errorlist = ""
 	var json = ""
 
-	// console.log("in buildErrorChecker")
-
 	json = jsonobj
 
 	delete json["Important Error Message"]
@@ -206,8 +204,6 @@ async function buildErrorChecker(jsonobj) {
 
 	delete json["Error List"]
 	json["Error List"] = []
-
-	// delete json["BackupListID"]
 
 	for (let i = 0; i < json["Backup List"].length; i++) {
 		json["Error List"].push({})
@@ -300,15 +296,10 @@ function powershellDirData(rootdir) {
 }
 
 async function fileFolderType(fileLine) {
-	// console.log("fileFolderType - fileLine - " + fileLine)
-	// console.log(fileLine.indexOf('*'))
 	if (fileLine.indexOf("*") === -1) {
 		var stats = await fsp.stat(fileLine)
-		// console.log("no *")
 		stats.isFile() ? (filetype = 0) : (filetype = 1)
-		// console.log('is directory ? ' + stats.isDirectory());
 	} else {
-		// console.log("* in file")
 		filetype = 2
 	}
 	return filetype
@@ -436,8 +427,6 @@ async function putBuild2(jsondata) {
 
 async function putBuild(jsondata) {
 	// Updates the powershell batch script
-	// console.log("in putBuild")
-	// console.log(jsondata)
 	// Put needs a "BackupListID"
 
 	//* Backup Name
@@ -452,10 +441,6 @@ async function putBuild(jsondata) {
 		jsondata["Backup List"].findIndex((i) => i.ID === id)
 
 	let index = backupListIDToIndex(backupID)
-	//  index = 0  // get rid of this
-	//  console.log("remove this")
-	console.log("backupID - " + backupID)
-	console.log("index - " + index)
 
 	let json = jsondata
 
@@ -469,10 +454,6 @@ async function putBuild(jsondata) {
 			"\\" +
 			jsondata["Backup List"][index]["Backup Name"] +
 			".ps1"
-		//  console.log(jsondata["Backup List"][index]["Last Edited"])
-		console.log("batchFileName - " + batchFileName)
-		console.log("strFile.length - " + strFile.length)
-
 		let result
 
 		var successfulWrite
