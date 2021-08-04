@@ -457,7 +457,6 @@ async function putBuild(jsondata) {
 		let result
 
 		var successfulWrite
-		// let w = await powershellFileWrite(batchFileName, strFile)
 		await powershellFileWrite(batchFileName, strFile)
 			.then((w) => (successfulWrite = true))
 			.catch((c) => (successfulWrite = false))
@@ -475,9 +474,6 @@ async function putBuild(jsondata) {
 				"Script message"
 			] = `Backup script file created in ${batchFileName}. Put this file in a cron job or scheduler to automatically do your backups regularly.`
 
-			// console.log("fileContentPlusErrors")
-			// console.log(fileContentPlusErrors)
-
 			result = fileContentPlusErrors
 
 			return new Promise((resolve, reject) => {
@@ -490,20 +486,9 @@ async function putBuild(jsondata) {
 		}
 	} else {
 		// Backup List Index not found
-		// return Promise.resolve(json)
-		// return json
-		// console.log("returning a promise 2")
-		// return new Promise(resolve => {
-		//   setTimeout(() => {
-		//     resolve(json)
-		//   })
-		// })
 		result = json
 		console.log("result")
 		console.log(result)
-		// return new Promise(resolve => {
-		//       resolve(result)
-		// })
 		return new Promise((resolve, reject) => {
 			resolve(result)
 		})
