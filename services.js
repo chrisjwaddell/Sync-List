@@ -515,9 +515,7 @@ async function putBuildText(jsondata, index) {
 		strFile += powershellMsgBefore(
 			jsondata["Backup List"][index]["Message Before"]
 		)
-	//  console.log(strFile)
 	strFile += powershellDestination()
-	//  console.log(strFile)
 
 	let rd = jsondata["Backup List"][index]["Backup Root Directory"]
 	let todayDir = new Date()
@@ -543,12 +541,7 @@ async function putBuildText(jsondata, index) {
 		}
 	}
 
-	//  console.log(strFile)
-
 	for (let i = 0; i < jsondata["Backup List"][index]["Files"].length; i++) {
-		// console.log(jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
-		// console.log(jsondata["Backup List"][index]["Files"][i]["File Or Folder"].substring(3, jsondata["Backup List"][index]["Files"][i]["File Or Folder"].length))
-
 		//* if file line is disabled don't look at it
 		// console.log(jsondata["Backup List"][index]["Files"][i]["Active"])
 		if (!jsondata["Backup List"][index]["Files"][i]["Active"]) {
