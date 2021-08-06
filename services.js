@@ -543,7 +543,6 @@ async function putBuildText(jsondata, index) {
 
 	for (let i = 0; i < jsondata["Backup List"][index]["Files"].length; i++) {
 		//* if file line is disabled don't look at it
-		// console.log(jsondata["Backup List"][index]["Files"][i]["Active"])
 		if (!jsondata["Backup List"][index]["Files"][i]["Active"]) {
 			i++
 			if (i >= jsondata["Backup List"][index]["Files"].length) break
@@ -551,11 +550,7 @@ async function putBuildText(jsondata, index) {
 
 		let s =
 			jsondata["Backup List"][index]["Files"][i]["File Or Folder"].split("\\")
-		// console.log(s)
-		// console.log(jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
 		var dir = ""
-		// console.log(s)
-		// console.log(s.length)
 
 		var ft
 		try {
@@ -564,8 +559,6 @@ async function putBuildText(jsondata, index) {
 			)
 		} catch (err) {
 			ft = -1
-			// throw new Error("Error in filetype")
-			// process.exit(1)
 		}
 
 		strFile +=
