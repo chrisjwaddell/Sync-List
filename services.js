@@ -587,12 +587,7 @@ async function putBuildText(jsondata, index) {
 		let zip = jsondata["Backup List"][index]["Files"][i]["Zip It"]
 
 		let toda = new Date()
-		// toda = Date.now()
-		// console.log(toda)
 		var td = dateToYYYYMMDD(toda, "")
-		// console.log("td - " + td)
-
-		// console.log(ft + ' ' + sd + ' ' + dateinfile + ' ' + zip)
 
 		if (ft !== -1) {
 			if (ft === 0) {
@@ -604,9 +599,6 @@ async function putBuildText(jsondata, index) {
 							dir === "" ? (dir = s[j]) : (dir += "\\" + s[j])
 						}
 					}
-
-					// console.log("dir - " + dir)
-					// console.log(rd + '\\' + dir)
 
 					strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 					strFile += '\tWrite-Output "Directory does not exist"' + "\n"
