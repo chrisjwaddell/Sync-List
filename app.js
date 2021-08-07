@@ -86,28 +86,6 @@ app.get("/", function (req, res) {
 		})
 })
 
-app.get("/x", async function (req, res) {
-	//* A get request is submitted from the frontened GUI at the start to get the settings
-	//* We send back settings.json to it since the frontend can't read files on the computer, but Node can
-
-	console.log(
-		"====================================================================="
-	)
-
-	// services.scriptsFolder3()
-
-	try {
-		let r = await services.getSettings()
-		// console.log(JSON.parse(r))
-		res.json(r)
-		// res.send(JSON.stringify(r))
-	} catch (err) {
-		console.error(err)
-		// send different things depending on message
-		res.json({})
-	}
-})
-
 app.put("/", async function (req, res) {
 	//* Put requests update json from the frontend and writes to the settings.json file
 	//* It gets the json data from the body of the request
