@@ -114,52 +114,21 @@ app.put("/", async function (req, res) {
 		})
 })
 
-app.put("/test2", async function (req, res) {
-	console.log(
-		"====================================================================="
-	)
-	console.log(typeof req.body)
-	let json
-
-	try {
-		// json = await services.test(req.body)
-		json = await services.test(req.body)
-	} catch (err) {
-		console.log(err)
-	}
-	res.json(req.body)
-})
 
 app.put("/build", async function (req, res) {
 	// build === true tells express to build a new script
 	// build === false just saves the changes to settings.json, putSettings() in Node.js
-	console.log(
-		"====================================================================="
-	)
+	console.log("=====================================================================")
 	console.log("/build")
 	let json
 
-	// let w = services.putBuild(req.body).then(v => {
-	//   console.log(v)
-	//   console.log("v")
-	// })
-
 	await services
 		.putBuild(req.body)
-		// .then(j => j.json())
-		// .then(s => console.log(s))
-		// .then(r => console.log("xxx" + r))
 		.then((j) => {
-			console.log("jj")
-			console.log(j)
-			//   console.log(typeof j)
 			res.send(j)
 		})
 		.catch((err) => {
-			console.log(err)
-			console.error(err)
 			res.send("")
-			//   res.sendStatus(500).send(json);
 		})
 })
 
