@@ -34,8 +34,6 @@ app.get("/", function (req, res) {
 		.getSettings()
 		.then((i) => {
 			// settings file read successfully, return the data
-			// console.log(i)
-			// console.log(typeof i)
 			res.send(i)
 		})
 		.catch((err) => {
@@ -44,55 +42,35 @@ app.get("/", function (req, res) {
 			if (err === "Settings file not found") {
 				console.log("Settings not found")
 				services.newSettings().then((v) => {
-					// console.log(v);
 					res.send(v)
 				})
 
-				// console.log(g)
-				// services.newSettings()
 			} else {
 				let sr = services
 					.settingsBackup()
 					.then((r) => {
-						services
-							.newSettings()
-							.then((v) => {
-								console.log(v)
-								// console.log(v);
-								res.send(v)
-							})
+						services.newSettings()
+							.then((v) => { res.send(v)})
 							.catch((err) => {
 								console.log(err)
-								res.send({
-									"Backup List": [],
-									"Script message": err,
-									"Important Error Message": err,
-								})
+								res.send({ "Backup List": [], "Script message": err, "Important Error Message": err })
 							})
 					})
 					.catch((err) => {
 						console.log(err)
-						res.send({
-							"Backup List": [],
-							"Script message": err,
-							"Important Error Message": err,
-						})
+						res.send({"Backup List": [], "Script message": err, "Important Error Message": err})
 					})
 				// Scripts directory doesn't exist and couldn't be created.
 				// Couldn't read settings file.
 			}
 
-			// newFile = await newSettings()
 		})
 })
 
 app.put("/", async function (req, res) {
 	//* Put requests update json from the frontend and writes to the settings.json file
 	//* It gets the json data from the body of the request
-	console.log(
-		"====================================================================="
-	)
-	console.log("putsettings")
+	console.log("=====================================================================")
 
 	settings = req.body
 
@@ -151,8 +129,6 @@ app.use((error, req, res, next) => {
 })
 
 app.listen(port, () => {
-	console.log(
-		"====================================================================="
-	)
+	console.log("====================================================================="	)
 	console.log("Backup app listening on port ", port)
 })
