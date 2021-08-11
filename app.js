@@ -74,16 +74,9 @@ app.put("/", async function (req, res) {
 
 	settings = req.body
 
-	// console.log("typeof settings")
-	// console.log(typeof settings)
-	// res.send(settings)
-
 	services
 		.putSettings(settings)
 		.then((j) => {
-			console.log("j")
-			console.log(j)
-			console.log(typeof j)
 			res.json(j)
 		})
 		.catch((err) => {
@@ -97,7 +90,6 @@ app.put("/build", async function (req, res) {
 	// build === true tells express to build a new script
 	// build === false just saves the changes to settings.json, putSettings() in Node.js
 	console.log("=====================================================================")
-	console.log("/build")
 	let json
 
 	await services
