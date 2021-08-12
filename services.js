@@ -1432,8 +1432,6 @@ module.exports = {
 	getSettings,
 	putSettings,
 	putBuild,
-	putBuild2,
 	newSettings,
 	settingsBackup,
-	gg,
 }
