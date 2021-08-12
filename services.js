@@ -4,6 +4,7 @@ const {settings} = require("cluster")
 const {resolve} = require("path")
 // const fsp = fs.promises;
 
+
 const templateSettings = (id, date, dateInt) =>
 	`{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) =>
@@ -36,7 +37,6 @@ function IsJsonString(str) {
 	} catch (e) {
 		return {File: "File isn't in JSON format"}
 	}
-	return false
 }
 
 function getSettings() {
@@ -403,7 +403,6 @@ function Exclude-Directories
 }
 
 async function powershellFileWrite(fileName, fileText) {
-	// console.log("test  powershellFileWrite")
 
 	fs.writeFile(fileName, fileText, function (err) {
 		if (err) {
@@ -411,18 +410,11 @@ async function powershellFileWrite(fileName, fileText) {
 			// throw new Error(err)
 			reject("Error writing to Powershell backup script file")
 		} else {
-			// return json
 			console.log("Backup Powershell script " + fileName + " written to")
 			resolve(fileText)
 		}
 	})
 	//* File written successfully
-}
-
-async function putBuild2(jsondata) {
-	return new Promise((resolve) => {
-		resolve("{ A: 1}")
-	})
 }
 
 async function putBuild(jsondata) {
