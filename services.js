@@ -1280,12 +1280,8 @@ async function putBuildText(jsondata, index) {
 
 						dir ? (dir = "\\" + dir) : (dir = "")
 						origdir ? (origdir = "\\" + origdir) : (origdir = "")
-						// console.log("origdir - " + origdir)
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
-						// console.log("filename = " + filename)
 
-						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
+                        strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal${dir}"` + "\n"
 						strFile += "}" + "\n"
@@ -1300,17 +1296,12 @@ async function putBuildText(jsondata, index) {
 		}
 	} // for
 
-	//  console.log(strFile)
-
 	if (jsondata["Backup List"][index]["Message After"])
 		strFile += powershellMsgAfter(
 			jsondata["Backup List"][index]["Message After"]
 		)
-	//  console.log(strFile)
 
 	strFile += powershellEnd()
-
-	//  console.log("putBuildText End")
 
 	return strFile
 }
@@ -1320,7 +1311,6 @@ async function test(jsondata) {
 
 	try {
 		await fsp.access("E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\zicons.json")
-		// console.log("Check script file - after await")
 	} catch (error) {
 		// console.log(error)
 		console.log("error")
