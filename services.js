@@ -1223,14 +1223,7 @@ async function putBuildText(jsondata, index) {
 								".zip"
 						}
 
-						// (dir) ? dir = '\\' + dir : dir = '';
-						// console.log("origdir - " + origdir);
 						origdir ? (origdir = "\\" + origdir) : (origdir = "")
-						// console.log("origdir - " + origdir);
-						// console.log("dir - " + dir);
-						// console.log(rd + '\\' + dir)
-						// console.log("filename = " + filename)
-
 						strFile += `If (!(Test-Path "$BackupToFinal${origdir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal${origdir}"` + "\n"
@@ -1245,8 +1238,6 @@ async function putBuildText(jsondata, index) {
 						let filename = ""
 						let origdir = ""
 						dir = ""
-						// console.log("s.length - " + s.length)
-						// console.log(s[0] + "; " + s[1] + "; " + s[2])
 						if (s.length > 2) {
 							for (j = 1; j < s.length - 1; j++) {
 								if (j === s.length - 2 || j === s.length - 1) {
@@ -1259,8 +1250,6 @@ async function putBuildText(jsondata, index) {
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								}
 
-								// console.log("j - " + j + "; dir - " + dir)
-								// console.log("j - " + j + "; origdir - " + origdir)
 							}
 							filename =
 								td +
