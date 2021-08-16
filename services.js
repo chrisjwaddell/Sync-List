@@ -1166,10 +1166,6 @@ async function putBuildText(jsondata, index) {
 							}
 						}
 
-						// console.log("dir - " + dir)
-						// console.log("origdir - " + origdir)
-						// console.log(rd + '\\' + dir)
-
 						strFile += `$FileDirRoot = "$BackupToFinal\\${dir}"` + "\n\n"
 
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
@@ -1206,8 +1202,6 @@ async function putBuildText(jsondata, index) {
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								}
 
-								// console.log("j - " + j + "; dir - " + dir)
-								// console.log("j - " + j + "; origdir - " + origdir)
 							}
 							filename =
 								s[s.length - 2] +
