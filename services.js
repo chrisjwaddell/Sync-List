@@ -1102,10 +1102,6 @@ async function putBuildText(jsondata, index) {
 
 						dir ? (dir = "\\" + dir) : (dir = "")
 						origdir ? (origdir = "\\" + origdir) : (origdir = "")
-						// console.log("origdir - " + origdir)
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
-						// console.log("filename = " + filename)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
