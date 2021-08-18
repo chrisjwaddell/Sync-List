@@ -952,8 +952,6 @@ async function putBuildText(jsondata, index) {
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -976,9 +974,6 @@ async function putBuildText(jsondata, index) {
 								dir === "" ? (dir = s[j]) : (dir += "\\" + s[j])
 							}
 						}
-
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -1017,8 +1012,6 @@ async function putBuildText(jsondata, index) {
 							filename = td + "-" + s[s.length - 1] + ".zip"
 						}
 
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -1047,7 +1040,6 @@ async function putBuildText(jsondata, index) {
 								s[s.length - 1].replace("*.*", "").replace("*.", "-") +
 								".zip"
 						} else {
-							// console.log("2 - " + jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
 							filename =
 								jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
 									.replace(":\\*.*", "")
@@ -1055,8 +1047,6 @@ async function putBuildText(jsondata, index) {
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
-						// console.log(rd + '\\' + dir)
-						// console.log("filename = " + filename)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
