@@ -766,9 +766,6 @@ async function putBuildText(jsondata, index) {
 								".zip"
 						}
 
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
-
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + "\n"
@@ -780,9 +777,6 @@ async function putBuildText(jsondata, index) {
 					} else if (dateinfile && zip) {
 						console.log("Directory zip copy with date")
 						let filename = ""
-
-						// console.log("s.length - " + s.length)
-						// console.log(s[0] + "; " + s[1] + "; " + s[2])
 
 						dir = ""
 						if (s.length > 0) {
@@ -798,7 +792,6 @@ async function putBuildText(jsondata, index) {
 									} else {
 										dir === "" ? (dir = "\\" + s[j]) : (dir += "\\" + s[j])
 									}
-									// console.log("dir - " + dir)
 								}
 							}
 
@@ -810,8 +803,6 @@ async function putBuildText(jsondata, index) {
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -840,9 +831,6 @@ async function putBuildText(jsondata, index) {
 						} else {
 							filename = s[s.length - 1] + ".zip"
 						}
-
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile +=
 							`$FileDirRoot = Split-Path "$BackupToFinal\\${dir}"` + "\n\n"
@@ -878,9 +866,6 @@ async function putBuildText(jsondata, index) {
 							filename = td + "-" + s[s.length - 1] + ".zip"
 						}
 
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
-
 						strFile +=
 							`$FileDirRoot = Split-Path "$BackupToFinal\\${dir}"` + "\n\n"
 
@@ -914,14 +899,11 @@ async function putBuildText(jsondata, index) {
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal${dir}"` + "\n"
 						strFile += "}" + "\n"
-						// console.log(strFile)
 
 						// strFile += `Compress-Archive -Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}\\*.*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
 						strFile +=
