@@ -618,10 +618,6 @@ async function putBuildText(jsondata, index) {
 					}
 
 					dir ? (dir = "\\" + dir) : (dir = "")
-					// console.log("dir - " + dir)
-					// console.log(s.length)
-					// console.log(s[s.length - 1])
-					// console.log(rd + '\\' + td + '-' + s[s.length - 1])
 
 					strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 					strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -647,11 +643,6 @@ async function putBuildText(jsondata, index) {
 							dir === "" ? (dir += "\\" + s[j]) : (dir += "\\" + s[j])
 						}
 					}
-
-					// console.log("dir - " + dir)
-					// console.log(rd + '\\' + dir)
-					// console.log(s.length)
-					// console.log(s[s.length - 1])
 
 					let folder =
 						dir === ""
@@ -680,7 +671,6 @@ async function putBuildText(jsondata, index) {
 								// filename = '\\' + s[j].replace('.', '-')
 								dir += "\\" + s[j]
 							}
-							// console.log("dir - " + dir)
 						}
 						filename = "\\" + td + "-" + s[s.length - 1].replace(".", "-")
 					} else {
@@ -689,11 +679,6 @@ async function putBuildText(jsondata, index) {
 					}
 
 					dir ? (dir = "\\" + dir) : (dir = "")
-					// console.log("dir - " + dir)
-					// console.log(rd + dir)
-					// console.log(s.length)
-					// console.log(s[s.length - 1])
-					// console.log("filename - " + filename)
 
 					strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 					strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -716,8 +701,6 @@ async function putBuildText(jsondata, index) {
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -738,9 +721,6 @@ async function putBuildText(jsondata, index) {
 								}
 							}
 						}
-
-						// console.log("dir - " + dir)
-						// console.log(rd + '\\' + dir)
 
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
