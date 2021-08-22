@@ -4,7 +4,6 @@ const {settings} = require("cluster")
 const {resolve} = require("path")
 // const fsp = fs.promises;
 
-
 const templateSettings = (id, date, dateInt) =>
 	`{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) =>
@@ -1249,7 +1248,6 @@ async function test(jsondata) {
 }
 
 function dateDDMMYYYYToDate(string) {
-	// debugger
 	if (string.length !== 10) {
 		return null
 	}
