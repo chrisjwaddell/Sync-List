@@ -222,7 +222,6 @@ async function buildErrorChecker(jsonobj) {
 		} catch (error) {
 			console.error(error)
 			json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
-			// console.log(json)
 		}
 
 		//* Backup Root Directory
@@ -1246,7 +1245,6 @@ async function test(jsondata) {
 		// console.log(error)
 		console.log("error")
 		// json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
-		// console.log(json)
 	}
 }
 
