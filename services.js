@@ -401,7 +401,6 @@ function Exclude-Directories
 }
 
 async function powershellFileWrite(fileName, fileText) {
-
 	fs.writeFile(fileName, fileText, function (err) {
 		if (err) {
 			console.log(err)
@@ -431,7 +430,6 @@ async function putBuild(jsondata) {
 		jsondata["Backup List"].findIndex((i) => i.ID === id)
 
 	let index = backupListIDToIndex(backupID)
-
 	let json = jsondata
 
 	if (index !== -1) {
@@ -623,15 +621,7 @@ async function putBuildText(jsondata, index) {
 					strFile += "}" + "\n"
 
 					strFile +=
-						'Copy-Item -Path "' +
-						jsondata["Backup List"][index]["Files"][i]["File Or Folder"] +
-						'" -Destination "$BackupToFinal' +
-						dir +
-						"\\" +
-						td +
-						"-" +
-						s[s.length - 1] +
-						'"\n\n'
+						'Copy-Item -Path "' + jsondata["Backup List"][index]["Files"][i]["File Or Folder"] + '" -Destination "$BackupToFinal' + dir + "\\" + td + "-" + s[s.length - 1] + '"\n\n'
 				} else if (!dateinfile && zip) {
 					console.log("File zip copy")
 
