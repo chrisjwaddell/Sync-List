@@ -7,9 +7,7 @@ const {resolve} = require("path")
 const templateSettings = (id, date, dateInt) =>
 	`{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) =>
-	backuplistarray["Backup List"].filter((i) => i.Active === true)[0]
-		? backuplistarray["Backup List"].filter((i) => i.Active === true)[0]["ID"]
-		: backuplistarray["Backup List"][0]["ID"]
+	backuplistarray["Backup List"].filter((i) => i.Active === true)[0] ? backuplistarray["Backup List"].filter((i) => i.Active === true)[0]["ID"] : backuplistarray["Backup List"][0]["ID"]
 const backupListIDToIndex = (backuplistarray, id) =>
 	jsondata["Backup List"].findIndex((i) => i.ID === id)
 
@@ -123,8 +121,7 @@ function newSettings() {
 		parseJsonAsync(strNew)
 			.then((jsontemplate) => {
 				jsontemplate["BackupListID"] = 0
-				jsontemplate["Important Error Message"] =
-					"The settings.json wasn't able to be read so a new blank settings.json file was created."
+				jsontemplate["Important Error Message"] = "The settings.json wasn't able to be read so a new blank settings.json file was created."
 
 				let strjson = JSON.stringify(jsontemplate, null, 4)
 
@@ -180,9 +177,7 @@ function settingsBackup() {
 	let strDate = dateToYYYYMMDD(d, "")
 
 	return new Promise((resolve, reject) => {
-		fs.rename(
-			__dirname + "\\" + "settings.json",
-			__dirname + "\\" + "settings-" + strDate + ".json",
+		fs.rename(__dirname + "\\" + "settings.json", __dirname + "\\" + "settings-" + strDate + ".json",
 			(err) => {
 				if (err) reject(err)
 				resolve("Rename complete!")
@@ -536,15 +531,12 @@ async function putBuildText(jsondata, index) {
 			if (i >= jsondata["Backup List"][index]["Files"].length) break
 		}
 
-		let s =
-			jsondata["Backup List"][index]["Files"][i]["File Or Folder"].split("\\")
+		let s = jsondata["Backup List"][index]["Files"][i]["File Or Folder"].split("\\")
 		var dir = ""
 
 		var ft
 		try {
-			ft = await fileFolderType(
-				jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
-			)
+			ft = await fileFolderType(jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
 		} catch (err) {
 			ft = -1
 		}
