@@ -204,14 +204,7 @@ async function buildErrorChecker(jsonobj) {
 
 		//* Backup Name
 		try {
-			await fsp.access(
-				__dirname +
-					"\\" +
-					"Backup-scripts" +
-					"\\" +
-					json["Backup List"][i]["Backup Name"] +
-					".ps1"
-			)
+			await fsp.access(__dirname + "\\" + "Backup-scripts" + "\\" + json["Backup List"][i]["Backup Name"] + ".ps1")
 			// console.log("Check script file - after await")
 		} catch (error) {
 			console.error(error)
@@ -222,8 +215,7 @@ async function buildErrorChecker(jsonobj) {
 		try {
 			await fsp.access(json["Backup List"][i]["Backup Root Directory"])
 		} catch (error) {
-			json["Error List"][i]["Backup Root Directory"] =
-				"Backup Root Directory not found."
+			json["Error List"][i]["Backup Root Directory"] = "Backup Root Directory not found."
 		}
 
 		//* Backup script created less than Last edited
@@ -231,8 +223,7 @@ async function buildErrorChecker(jsonobj) {
 		let d2 = json["Backup List"][i]["Last Edited"]
 
 		if (d2 > d1) {
-			json["Error List"][i]["Last Edited"] =
-				"Changes have been made since the Backup Script was generated last."
+			json["Error List"][i]["Last Edited"] = "Changes have been made since the Backup Script was generated last."
 		}
 	} // for
 
