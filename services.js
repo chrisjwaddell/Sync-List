@@ -1,13 +1,19 @@
 const fsp = require("fs/promises")
 const fs = require("fs")
-const {settings} = require("cluster")
-const {resolve} = require("path")
+const {
+	settings
+} = require("cluster")
+const {
+	resolve
+} = require("path")
 // const fsp = fs.promises;
 
 const templateSettings = (id, date, dateInt) =>
 	`{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
 const backupListFindFirstID = (backuplistarray) =>
-	backuplistarray["Backup List"].filter((i) => i.Active === true)[0] ? backuplistarray["Backup List"].filter((i) => i.Active === true)[0]["ID"] : backuplistarray["Backup List"][0]["ID"]
+	backuplistarray["Backup List"].filter((i) => i.Active === true)[0] ?
+	backuplistarray["Backup List"].filter((i) => i.Active === true)[0]["ID"] :
+	backuplistarray["Backup List"][0]["ID"]
 const backupListIDToIndex = (backuplistarray, id) =>
 	jsondata["Backup List"].findIndex((i) => i.ID === id)
 
@@ -32,7 +38,9 @@ function IsJsonString(str) {
 	try {
 		return JSON.parse(str)
 	} catch (e) {
-		return {File: "File isn't in JSON format"}
+		return {
+			File: "File isn't in JSON format"
+		}
 	}
 }
 
@@ -77,9 +85,7 @@ function getSettings() {
 				let newFile = ""
 
 				if (err) {
-					console.error(
-						"Settings file DOESN'T exists...... Making settings.json"
-					)
+					console.error("Settings file DOESN'T exists...... Making settings.json")
 					reject("Couldn't read settings file.")
 				} else {
 					// settings.json file read successfully
@@ -125,7 +131,7 @@ function newSettings() {
 
 				let strjson = JSON.stringify(jsontemplate, null, 4)
 
-				fs.writeFile(settingsFile, strjson, function (err) {
+				fs.writeFile(settingsFile, strjson, function(err) {
 					if (err) {
 						console.log(err)
 						reject("Error writing to settings file")
@@ -157,7 +163,7 @@ async function putSettings(jsonobj) {
 			buildErrorChecker(jsonobj).then((json) => {
 				let strjson = JSON.stringify(json, null, 4)
 
-				fs.writeFile(settingsFile, strjson, function (err) {
+				fs.writeFile(settingsFile, strjson, function(err) {
 					if (err) {
 						console.log(err)
 						// throw new Error(err)
@@ -177,7 +183,9 @@ function settingsBackup() {
 	let strDate = dateToYYYYMMDD(d, "")
 
 	return new Promise((resolve, reject) => {
-		fs.rename(__dirname + "\\" + "settings.json", __dirname + "\\" + "settings-" + strDate + ".json",
+		fs.rename(
+			__dirname + "\\" + "settings.json",
+			__dirname + "\\" + "settings-" + strDate + ".json",
 			(err) => {
 				if (err) reject(err)
 				resolve("Rename complete!")
@@ -204,7 +212,14 @@ async function buildErrorChecker(jsonobj) {
 
 		//* Backup Name
 		try {
-			await fsp.access(__dirname + "\\" + "Backup-scripts" + "\\" + json["Backup List"][i]["Backup Name"] + ".ps1")
+			await fsp.access(
+				__dirname +
+				"\\" +
+				"Backup-scripts" +
+				"\\" +
+				json["Backup List"][i]["Backup Name"] +
+				".ps1"
+			)
 			// console.log("Check script file - after await")
 		} catch (error) {
 			console.error(error)
@@ -215,7 +230,8 @@ async function buildErrorChecker(jsonobj) {
 		try {
 			await fsp.access(json["Backup List"][i]["Backup Root Directory"])
 		} catch (error) {
-			json["Error List"][i]["Backup Root Directory"] = "Backup Root Directory not found."
+			json["Error List"][i]["Backup Root Directory"] =
+				"Backup Root Directory not found."
 		}
 
 		//* Backup script created less than Last edited
@@ -223,7 +239,8 @@ async function buildErrorChecker(jsonobj) {
 		let d2 = json["Backup List"][i]["Last Edited"]
 
 		if (d2 > d1) {
-			json["Error List"][i]["Last Edited"] = "Changes have been made since the Backup Script was generated last."
+			json["Error List"][i]["Last Edited"] =
+				"Changes have been made since the Backup Script was generated last."
 		}
 	} // for
 
@@ -387,7 +404,7 @@ function Exclude-Directories
 }
 
 async function powershellFileWrite(fileName, fileText) {
-	fs.writeFile(fileName, fileText, function (err) {
+	fs.writeFile(fileName, fileText, function(err) {
 		if (err) {
 			console.log(err)
 			// throw new Error(err)
@@ -426,7 +443,8 @@ async function putBuild(jsondata) {
 			"\\" +
 			"Backup-scripts" +
 			"\\" +
-			jsondata["Backup List"][index]["Backup Name"] + ".ps1"
+			jsondata["Backup List"][index]["Backup Name"] +
+			".ps1"
 		let result
 
 		var successfulWrite
@@ -470,8 +488,13 @@ async function putBuildText(jsondata, index) {
 	let json = jsondata
 
 	var strFile = ""
-	strFile = powershellStart(jsondata["Backup List"][index]["Files"], jsondata["Backup List"][index]["Last Edited"] )
-	strFile += powershellVars(jsondata["Backup List"][index]["Backup Root Directory"])
+	strFile = powershellStart(
+		jsondata["Backup List"][index]["Files"],
+		jsondata["Backup List"][index]["Last Edited"]
+	)
+	strFile += powershellVars(
+		jsondata["Backup List"][index]["Backup Root Directory"]
+	)
 
 	strFile += "Add-Type -As System.IO.Compression.FileSystem" + "\n\n"
 
@@ -514,12 +537,15 @@ async function putBuildText(jsondata, index) {
 			if (i >= jsondata["Backup List"][index]["Files"].length) break
 		}
 
-		let s = jsondata["Backup List"][index]["Files"][i]["File Or Folder"].split("\\")
+		let s =
+			jsondata["Backup List"][index]["Files"][i]["File Or Folder"].split("\\")
 		var dir = ""
 
 		var ft
 		try {
-			ft = await fileFolderType(jsondata["Backup List"][index]["Files"][i]["File Or Folder"])
+			ft = await fileFolderType(
+				jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
+			)
 		} catch (err) {
 			ft = -1
 		}
@@ -596,7 +622,15 @@ async function putBuildText(jsondata, index) {
 					strFile += "}" + "\n"
 
 					strFile +=
-						'Copy-Item -Path "' + jsondata["Backup List"][index]["Files"][i]["File Or Folder"] + '" -Destination "$BackupToFinal' + dir + "\\" + td + "-" + s[s.length - 1] + '"\n\n'
+						'Copy-Item -Path "' +
+						jsondata["Backup List"][index]["Files"][i]["File Or Folder"] +
+						'" -Destination "$BackupToFinal' +
+						dir +
+						"\\" +
+						td +
+						"-" +
+						s[s.length - 1] +
+						'"\n\n'
 				} else if (!dateinfile && zip) {
 					console.log("File zip copy")
 
@@ -607,10 +641,7 @@ async function putBuildText(jsondata, index) {
 						}
 					}
 
-					let folder =
-						dir === ""
-							? "\\" + s[s.length - 1].replace(".", "-")
-							: dir + "\\" + s[s.length - 1].replace(".", "-")
+					let folder = dir === "" ? "\\" + s[s.length - 1].replace(".", "-") : dir + "\\" + s[s.length - 1].replace(".", "-")
 
 					strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 					strFile += '\tWrite-Output "Directory does not exist"' + "\n"
@@ -729,9 +760,9 @@ async function putBuildText(jsondata, index) {
 								for (j = 1; j < s.length; j++) {
 									// console.log(dir)
 									if (j === s.length - 1 || j === s.length) {
-										dir === ""
-											? (dir = "\\" + td + "-" + s[j])
-											: (dir += "\\" + td + "-" + s[j])
+										dir === "" ?
+											(dir = "\\" + td + "-" + s[j]) :
+											(dir += "\\" + td + "-" + s[j])
 									} else {
 										dir === "" ? (dir = "\\" + s[j]) : (dir += "\\" + s[j])
 									}
@@ -937,7 +968,6 @@ async function putBuildText(jsondata, index) {
 							filename = td + "-" + s[s.length - 1] + ".zip"
 						}
 
-
 						strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + "\n"
@@ -967,8 +997,8 @@ async function putBuildText(jsondata, index) {
 						} else {
 							filename =
 								jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
-									.replace(":\\*.*", "")
-									.replace(":\\*.", "-") + ".zip"
+								.replace(":\\*.*", "")
+								.replace(":\\*.", "-") + ".zip"
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
@@ -990,9 +1020,9 @@ async function putBuildText(jsondata, index) {
 						if (s.length > 2) {
 							for (j = 1; j < s.length - 1; j++) {
 								if (j === s.length - 2 || j === s.length - 1) {
-									dir === ""
-										? (dir = td + "-" + s[j])
-										: (dir += "\\" + td + "-" + s[j])
+									dir === "" ?
+										(dir = td + "-" + s[j]) :
+										(dir += "\\" + td + "-" + s[j])
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								} else {
 									dir === "" ? (dir = s[j]) : (dir += "\\" + s[j])
@@ -1010,8 +1040,8 @@ async function putBuildText(jsondata, index) {
 								td +
 								"-" +
 								jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
-									.replace("*.*", "")
-									.replace(":\\*.", "-") +
+								.replace("*.*", "")
+								.replace(":\\*.", "-") +
 								".zip"
 						}
 
@@ -1104,15 +1134,14 @@ async function putBuildText(jsondata, index) {
 						if (s.length > 2) {
 							for (j = 1; j < s.length - 1; j++) {
 								if (j === s.length - 2 || j === s.length - 1) {
-									dir === ""
-										? (dir = td + "-" + s[j])
-										: (dir += "\\" + td + "-" + s[j])
+									dir === "" ?
+										(dir = td + "-" + s[j]) :
+										(dir += "\\" + td + "-" + s[j])
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								} else {
 									dir === "" ? (dir = s[j]) : (dir += "\\" + s[j])
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								}
-
 							}
 							filename =
 								s[s.length - 2] +
@@ -1123,8 +1152,8 @@ async function putBuildText(jsondata, index) {
 								td +
 								"-" +
 								jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
-									.replace("*.*", "")
-									.replace(":\\*.", "-") +
+								.replace("*.*", "")
+								.replace(":\\*.", "-") +
 								".zip"
 						}
 
@@ -1146,15 +1175,14 @@ async function putBuildText(jsondata, index) {
 						if (s.length > 2) {
 							for (j = 1; j < s.length - 1; j++) {
 								if (j === s.length - 2 || j === s.length - 1) {
-									dir === ""
-										? (dir = td + "-" + s[j])
-										: (dir += "\\" + td + "-" + s[j])
+									dir === "" ?
+										(dir = td + "-" + s[j]) :
+										(dir += "\\" + td + "-" + s[j])
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								} else {
 									dir === "" ? (dir = s[j]) : (dir += "\\" + s[j])
 									origdir === "" ? (origdir = s[j]) : (origdir += "\\" + s[j])
 								}
-
 							}
 							filename =
 								td +
@@ -1167,15 +1195,15 @@ async function putBuildText(jsondata, index) {
 								td +
 								"-" +
 								jsondata["Backup List"][index]["Files"][i]["File Or Folder"]
-									.replace(":\\*.*", "")
-									.replace(":\\*.", "-") +
+								.replace(":\\*.*", "")
+								.replace(":\\*.", "-") +
 								".zip"
 						}
 
 						dir ? (dir = "\\" + dir) : (dir = "")
 						origdir ? (origdir = "\\" + origdir) : (origdir = "")
 
-                        strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
+						strFile += `If (!(Test-Path "$BackupToFinal${dir}")) {` + "\n"
 						strFile += '\tWrite-Output "Directory does not exist"' + "\n"
 						strFile += `\tCreateDir -Path "$BackupToFinal${dir}"` + "\n"
 						strFile += "}" + "\n"
@@ -1251,9 +1279,9 @@ function dateToYYYYMMDD(dt, seperator) {
 
 	let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
 	let m =
-		da.getMonth() < 9
-			? "0" + Number(da.getMonth() + 1)
-			: Number(da.getMonth() + 1)
+		da.getMonth() < 9 ?
+		"0" + Number(da.getMonth() + 1) :
+		Number(da.getMonth() + 1)
 	let y = da.getFullYear()
 	return y + seperator + m + seperator + d
 }
@@ -1263,9 +1291,9 @@ function dateToDDMMYYYY(dt, seperator) {
 
 	let d = da.getDate() < 10 ? "0" + da.getDate() : da.getDate()
 	let m =
-		da.getMonth() < 9
-			? "0" + Number(da.getMonth() + 1)
-			: Number(da.getMonth() + 1)
+		da.getMonth() < 9 ?
+		"0" + Number(da.getMonth() + 1) :
+		Number(da.getMonth() + 1)
 	let y = da.getFullYear()
 	return d + "/" + m + seperator + y
 }
@@ -1293,9 +1321,9 @@ function dateToHHMM(dt, seperator) {
 
 	let h = da.getHours() < 10 ? "0" + da.getHours() : da.getHours()
 	let m =
-		da.getMinutes() < 9
-			? "0" + Number(da.getMinutes() + 1)
-			: Number(da.getMinutes() + 1)
+		da.getMinutes() < 9 ?
+		"0" + Number(da.getMinutes() + 1) :
+		Number(da.getMinutes() + 1)
 	return h + seperator + m
 }
 
