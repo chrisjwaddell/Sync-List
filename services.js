@@ -426,8 +426,7 @@ async function putBuild(jsondata) {
 			"\\" +
 			"Backup-scripts" +
 			"\\" +
-			jsondata["Backup List"][index]["Backup Name"] +
-			".ps1"
+			jsondata["Backup List"][index]["Backup Name"] + ".ps1"
 		let result
 
 		var successfulWrite
@@ -461,8 +460,6 @@ async function putBuild(jsondata) {
 	} else {
 		// Backup List Index not found
 		result = json
-		console.log("result")
-		console.log(result)
 		return new Promise((resolve, reject) => {
 			resolve(result)
 		})
@@ -473,13 +470,8 @@ async function putBuildText(jsondata, index) {
 	let json = jsondata
 
 	var strFile = ""
-	strFile = powershellStart(
-		jsondata["Backup List"][index]["Files"],
-		jsondata["Backup List"][index]["Last Edited"]
-	)
-	strFile += powershellVars(
-		jsondata["Backup List"][index]["Backup Root Directory"]
-	)
+	strFile = powershellStart(jsondata["Backup List"][index]["Files"], jsondata["Backup List"][index]["Last Edited"] )
+	strFile += powershellVars(jsondata["Backup List"][index]["Backup Root Directory"])
 
 	strFile += "Add-Type -As System.IO.Compression.FileSystem" + "\n\n"
 
