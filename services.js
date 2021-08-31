@@ -13,8 +13,8 @@ const backupListFindFirstID = (backuplistarray) =>
 	backuplistarray['Backup List'].filter((i) => i.Active === true)[0] ?
 	backuplistarray['Backup List'].filter((i) => i.Active === true)[0].ID :
 	backuplistarray['Backup List'][0].ID
-const backupListIDToIndex = (backuplistarray, id) =>
-	jsondata['Backup List'].findIndex((i) => i.ID === id)
+// const backupListIDToIndex = (backuplistarray, id) =>
+// 	jsondata['Backup List'].findIndex((i) => i.ID === id)
 
 const parseJsonAsync = (jsonString) => {
 	return new Promise((resolve, reject) => {
@@ -27,8 +27,7 @@ const parseJsonAsync = (jsonString) => {
 					'ERROR: Settings.json not in valid JSON format'
 				)
 				reject(
-					'Settings.json not in valid JSON format'
-				)
+					'Settings.json not in valid JSON format')
 			}
 		})
 	})
@@ -36,16 +35,6 @@ const parseJsonAsync = (jsonString) => {
 
 const settingsFile = path.join(__dirname, 'settings.json')
 
-// get rid of this, it's not used anymore
-function IsJsonString(str) {
-	try {
-		return JSON.parse(str)
-	} catch (e) {
-		return {
-			File: "File isn't in JSON format"
-		}
-	}
-}
 
 function getSettings() {
 	//* buildErrorChecker is run to get the updated information of the filesystem
@@ -329,6 +318,7 @@ function powershellDirData(rootdir) {
 }
 
 async function fileFolderType(fileLine) {
+	let filetype
 	if (fileLine.indexOf('*') === -1) {
 		const stats = await fsp.stat(fileLine)
 		stats.isFile() ? (filetype = 0) : (filetype = 1)
