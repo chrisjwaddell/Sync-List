@@ -24,8 +24,8 @@ const backupListIDToIndex = (id) =>
 	jsondata["Backup List"].findIndex((i) => i.ID === id)
 const backupListFindFirstID = () =>
 	jsondata["Backup List"].filter((i) => i.Active === true)[0]
-		? jsondata["Backup List"].filter((i) => i.Active === true)[0]["ID"]
-		: jsondata["Backup List"][0]["ID"]
+	? jsondata["Backup List"].filter((i) => i.Active === true)[0]["ID"]
+	: jsondata["Backup List"][0]["ID"]
 
 //* date in root dir, it needs to be checked in various places
 var scriptRootDirDate
@@ -35,17 +35,7 @@ const warningvisible = (fieldname, visible) => {
 		? document.querySelector("p." + fieldname).classList.add("isvisible")
 		: document.querySelector("p." + fieldname).classList.remove("isvisible")
 }
-const fields = [
-	elName,
-	elBackupTo,
-	elDate,
-	elMsgBefore,
-	elMsgAfter,
-	elSendEmail,
-	elEmail,
-	elLastEdited,
-	elActive,
-]
+const fields = [elName, elBackupTo, elDate, elMsgBefore, elMsgAfter, elSendEmail, elEmail, elLastEdited, elActive]
 
 const elBackupNameListTB = document.querySelector(".backupnamelist tbody")
 
@@ -60,7 +50,7 @@ window.addEventListener("load", () => {
 	debugToolRunOnceBefore()
 	fetch("http://localhost:21311")
 		.then((r) => r.json())
-		.then(function (str) {
+		.then(function(str) {
 			jsondata = str
 			var bIndex
 			let bID
@@ -98,14 +88,14 @@ window.addEventListener("load", () => {
 		})
 })
 
-elName.addEventListener("change", function () {
+elName.addEventListener("change", function() {
 	dataSet(bIndex, "Backup Name", this.value.trim())
 })
 
 elName.addEventListener("focus", () => elName.classList.add("focused"), true)
 elName.addEventListener("blur", () => elName.classList.remove("focused"), true)
 
-elName.addEventListener("keypress", function (e) {
+elName.addEventListener("keypress", function(e) {
 	if (!windowsFilenameIllegalCharacters(e.key)) {
 		e.preventDefault()
 	} else {
@@ -115,48 +105,42 @@ elName.addEventListener("keypress", function (e) {
 	}
 })
 
-elBackupTo.addEventListener("change", function () {
+elBackupTo.addEventListener("change", function() {
 	dataSet(bIndex, "Backup Root Directory", this.value.trim())
 })
 
-elDate.addEventListener("change", function () {
+elDate.addEventListener("change", function() {
 	scriptRootDirDate = this.checked
 	dataSet(bIndex, "Include Date", Boolean(this.checked))
 	for (
-		let i = 0;
-		i < document.querySelectorAll(".filelist__date input").length;
-		i++
+		let i = 0; i < document.querySelectorAll(".filelist__date input").length; i++
 	) {
 		if (elDate.checked) {
-			document
-				.querySelectorAll(".filelist__date input")
-				[i].setAttribute("disabled", "")
+			document.querySelectorAll(".filelist__date input")[i].setAttribute("disabled", "")
 		} else {
 			//* enable if the line is active
 			if (document.querySelectorAll(".filelist__active input")[i].checked) {
-				document
-					.querySelectorAll(".filelist__date input")
-					[i].removeAttribute("disabled")
+				document.querySelectorAll(".filelist__date input")[i].removeAttribute("disabled")
 			}
 		}
 	}
 })
 
-elMsgBefore.addEventListener("change", function () {
+elMsgBefore.addEventListener("change", function() {
 	dataSet(bIndex, "Message Before", this.value)
 })
 
-elMsgBefore.addEventListener("keypress", function (e) {
+elMsgBefore.addEventListener("keypress", function(e) {
 	if (elMsgBefore.value.length > 150) {
 		e.preventDefault()
 	}
 })
 
-elMsgAfter.addEventListener("change", function () {
+elMsgAfter.addEventListener("change", function() {
 	dataSet(bIndex, "Message After", this.value)
 })
 
-elMsgAfter.addEventListener("keypress", function (e) {
+elMsgAfter.addEventListener("keypress", function(e) {
 	// alert(e.key)
 	// alert(elMsgAfter.value.length)
 	if (elMsgAfter.value.length > 150) {
@@ -164,7 +148,7 @@ elMsgAfter.addEventListener("keypress", function (e) {
 	}
 })
 
-elActive.addEventListener("click", function (e) {
+elActive.addEventListener("click", function(e) {
 	let txt
 	// alert(elActive.checked)
 	if (!elActive.checked) {
@@ -209,11 +193,11 @@ function windowsFilenameIllegalCharacters(char) {
 	}
 }
 
-elSendEmail.addEventListener("change", function () {
+elSendEmail.addEventListener("change", function() {
 	dataSet(bIndex, "Send Email After", Boolean(this.checked))
 })
 
-elEmail.addEventListener("change", function () {
+elEmail.addEventListener("change", function() {
 	dataSet(bIndex, "Email Address", this.value.trim())
 })
 
@@ -240,8 +224,7 @@ async function dataSave(build, id) {
 	today = Date.now()
 
 	// If no BackupListID in jsondata, add it in
-	if (jsondata["Backup List"].hasOwnProperty("BackupListID")) {
-	} else {
+	if (jsondata["Backup List"].hasOwnProperty("BackupListID")) {} else {
 		jsondata["BackupListID"] = id
 	}
 	var bLIndex
@@ -269,7 +252,7 @@ async function dataSave(build, id) {
 
 	fetch(url, options)
 		.then((j) => j.json())
-		.then(function (str) {
+		.then(function(str) {
 			// console.log(str)
 			jsondata = str
 
@@ -360,11 +343,7 @@ function warnings(json) {
 		if (Boolean(json["Error List"][bIndex])) {
 			if (elActive.checked) {
 				// console.log(json["Error List"][bIndex])
-				for (
-					let i = 0;
-					i < Object.keys(json["Error List"][bIndex]).length;
-					i++
-				) {
+				for (let i = 0; i < Object.keys(json["Error List"][bIndex]).length; i++) {
 					switch (Object.keys(json["Error List"][bIndex])[i]) {
 						case "Backup Name":
 							warningvisible("backupname", true)
@@ -403,7 +382,6 @@ function warnings(json) {
 
 	if (!json["Backup List"][bIndex].Files.length || !elActive.checked) {
 		// If there are no files in the backup list, don't tell them to click the "Create Backup Script" button
-
 		elCreateScriptBtn.classList.remove("isvisible")
 		elCreateScriptP.classList.remove("isvisible")
 	}
@@ -474,16 +452,12 @@ function dataLoad(backupID) {
 	elSendEmail.checked = jsondata["Backup List"][bIndex]["Send Email After"]
 	elEmail.value = jsondata["Backup List"][bIndex]["Email Address"]
 	// elLastEdited.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
-	elLastEdited.innerText = dateDisplay(
-		dateToYYYYMMDD(jsondata["Backup List"][bIndex]["Last Edited"], "-")
-	)
+	elLastEdited.innerText = dateDisplay(dateToYYYYMMDD(jsondata["Backup List"][bIndex]["Last Edited"], "-"))
 	elActive.checked = jsondata["Backup List"][bIndex]["Active"]
 	// elCreateScript.innerText = dateDisplay(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last edited"]))
 	//* This may change from Create to Regenerate - on name change or edit or create
 
-	var d1 = new Date(
-		dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last Edited"])
-	)
+	var d1 = new Date(dateDDMMYYYYToDate(jsondata["Backup List"][bIndex]["Last Edited"]))
 	var today = new Date()
 	elLastEdited.classList.remove("txt-today")
 	elLastEdited.classList.remove("txt-soon")
@@ -499,39 +473,28 @@ function dataLoad(backupID) {
 
 		fileLineAdd(dataindex)
 		dataindex++
-		document.querySelectorAll(".filelist__file input")[i].value =
-			jsondata["Backup List"][bIndex]["Files"][i]["File Or Folder"]
+		document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Or Folder"]
 
 		// document.querySelectorAll(".filelist__file input")[i].value = jsondata["Backup List"][bIndex]["Files"][i]["File Type"]
 		// debugger
 		if (jsondata["Backup List"][bIndex]["Files"][i]["Zip It"]) {
-			document
-				.querySelectorAll(".filelist__zip input")
-				[i].setAttribute("checked", "checked")
+			document.querySelectorAll(".filelist__zip input")[i].setAttribute("checked", "checked")
 		} else {
-			document
-				.querySelectorAll(".filelist__zip input")
-				[i].removeAttribute("checked")
+			document.querySelectorAll(".filelist__zip input")[i].removeAttribute("checked")
 		}
 		// document.querySelectorAll(".filelist__zip")[i].checked = Boolean(jsondata["Backup List"][bIndex]["Files"][i]["Zip It"])
-		document.querySelectorAll(".filelist__subdir input")[i].checked =
-			jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]
+		document.querySelectorAll(".filelist__subdir input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]
 
 		if (jsondata["Backup List"][bIndex]["Files"][i]["Sub-Directories"]) {
 			document
-				.querySelectorAll(".filelist__exludedirs input")
-				[i].removeAttribute("disabled")
+				.querySelectorAll(".filelist__exludedirs input")[i].removeAttribute("disabled")
 		} else {
-			document
-				.querySelectorAll(".filelist__exludedirs input")
-				[i].setAttribute("disabled", "true")
+			document.querySelectorAll(".filelist__exludedirs input")[i].setAttribute("disabled", "true")
 		}
 
-		document.querySelectorAll(".filelist__date input")[i].checked =
-			jsondata["Backup List"][bIndex]["Files"][i]["Date In File"]
+		document.querySelectorAll(".filelist__date input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Date In File"]
 
-		document.querySelectorAll(".filelist__active input")[i].checked =
-			jsondata["Backup List"][bIndex]["Files"][i]["Active"]
+		document.querySelectorAll(".filelist__active input")[i].checked = jsondata["Backup List"][bIndex]["Files"][i]["Active"]
 		let active = document.querySelectorAll(".filelist__active input")[i].checked
 		fileLineActive(i, active)
 	}
@@ -549,139 +512,103 @@ function dataLoad(backupID) {
 		// debugLog(debugGetFuncName(), "5",  { bIndex })
 
 		let elTR
-		if (
-			Number(jsondata["Backup List"][i]["ID"]) ===
-			Number(jsondata["Backup List"][bIndex]["ID"])
-		) {
-			elTR = createElementAtt(
-				document.querySelector(".backupnamelist tbody"),
-				"tr",
-				["selected"],
-				[["data-id", jsondata["Backup List"][i]["ID"]]],
-				" "
-			)
-		} else {
-			elTR = createElementAtt(
-				document.querySelector(".backupnamelist tbody"),
-				"tr",
-				[],
-				[["data-id", jsondata["Backup List"][i]["ID"]]],
-				" "
-			)
-		}
-
-		// debugger
-		if (jsondata["Backup List"][i]["Active"]) {
-			if (
-				Number(jsondata["Backup List"][i]["ID"]) ===
-				Number(jsondata["Backup List"][bIndex]["ID"])
-			) {
-				createElementAtt(
-					elTR,
-					"td",
-					["backupname", "selected"],
-					[],
-					jsondata["Backup List"][i]["Backup Name"]
-				)
-				createElementAtt(
-					elTR,
-					"td",
-					["active", "selected"],
-					[],
-					jsondata["Backup List"][i]["Active"]
-				)
-				createElementAtt(elTR, "td", ["lastrun", "selected"], [], "")
-			} else {
-				createElementAtt(
-					elTR,
-					"td",
-					["backupname"],
-					[],
-					jsondata["Backup List"][i]["Backup Name"]
-				)
-				createElementAtt(
-					elTR,
-					"td",
-					["active"],
-					[],
-					jsondata["Backup List"][i]["Active"]
-				)
-				createElementAtt(elTR, "td", ["lastrun"], [], "")
-			}
-		} else {
-			createElementAtt(
-				elTR,
-				"td",
-				["backupname", "u-text-line-through"],
-				[],
-				jsondata["Backup List"][i]["Backup Name"]
-			)
-			createElementAtt(
-				elTR,
-				"td",
-				["active", "u-text-line-through"],
-				[],
-				String(jsondata["Backup List"][i]["Active"])
-			)
-			createElementAtt(elTR, "td", ["lastrun", "u-text-line-through"], [], "")
-		}
-		// debugger
-
-		elTR.addEventListener("click", function () {
-			// debugger
-			// console.log(this.getAttribute('data-id'))
-			let id = Number(this.getAttribute("data-id"))
-
-			if (id != 200) {
-				if (bIndex !== -1) {
-					// alert(bIndex)
-
-					fileListClear()
-
-					// sleep(5000)
-					// debugger
-					if (jsondata.hasOwnProperty("BackupListID")) {
-						delete jsondata["BackupListID"]
-					}
-					jsondata["BackupListID"] = id
-					dataLoad(id)
-				}
-			}
-		})
-	}
-
-	delete jsondata["Script message"]
-
-	if (
-		!jsondata["Backup List"][bIndex].Files.length &&
-		elName.value &&
-		elBackupTo.value
-	) {
-		// Backup List name entered and Backup root dir entered but no Files entered
-		if (jsondata.hasOwnProperty("Script message")) {
-			if (
-				jsondata["Script message"] !==
-				"Add some files to backup by clicking the + button."
-			) {
-				jsondata["Script message"] +=
-					" Add some files to backup by clicking the + button."
-			}
-		} else {
-			jsondata["Script message"] =
-				"Add some files to backup by clicking the + button."
-		}
-	}
-
-	if (jsondata.hasOwnProperty("Important Error Message")) {
-		alert(jsondata["Important Error Message"])
-		delete jsondata["Important Error Message"]
-		warnings(jsondata)
-	} else if (jsondata.hasOwnProperty("Script message")) {
-		alert(jsondata["Script message"])
-		warnings(jsondata)
+		if (Number(jsondata["Backup List"][i]["ID"]) === Number(jsondata["Backup List"][bIndex]["ID"])) {
+			elTR = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", ["selected"],
+				["data-id", jsondata["Backup List"][i]["ID"]]], " "
+		)
 	} else {
-		warnings(jsondata)
+		elTR = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [],
+			[
+				["data-id", jsondata["Backup List"][i]["ID"]]
+			], " "
+		)
 	}
+
+	// debugger
+	if (jsondata["Backup List"][i]["Active"]) {
+		if (Number(jsondata["Backup List"][i]["ID"]) === Number(jsondata["Backup List"][bIndex]["ID"])) {
+			createElementAtt(elTR, "td", ["backupname", "selected"], [], jsondata["Backup List"][i]["Backup Name"])
+			createElementAtt(elTR, "td", ["active", "selected"], [], jsondata["Backup List"][i]["Active"])
+			createElementAtt(elTR, "td", ["lastrun", "selected"], [], "")
+		} else {
+			createElementAtt(elTR, "td", ["backupname"], [], jsondata["Backup List"][i]["Backup Name"])
+			createElementAtt(elTR, "td", ["active"], [], jsondata["Backup List"][i]["Active"])
+			createElementAtt(elTR, "td", ["lastrun"], [], "")
+		}
+	} else {
+		createElementAtt(
+			elTR,
+			"td",
+			["backupname", "u-text-line-through"],
+			[],
+			jsondata["Backup List"][i]["Backup Name"]
+		)
+		createElementAtt(
+			elTR,
+			"td",
+			["active", "u-text-line-through"],
+			[],
+			String(jsondata["Backup List"][i]["Active"])
+		)
+		createElementAtt(elTR, "td", ["lastrun", "u-text-line-through"], [], "")
+	}
+	// debugger
+
+	elTR.addEventListener("click", function() {
+		// debugger
+		// console.log(this.getAttribute('data-id'))
+		let id = Number(this.getAttribute("data-id"))
+
+		if (id != 200) {
+			if (bIndex !== -1) {
+				// alert(bIndex)
+
+				fileListClear()
+
+				// sleep(5000)
+				// debugger
+				if (jsondata.hasOwnProperty("BackupListID")) {
+					delete jsondata["BackupListID"]
+				}
+				jsondata["BackupListID"] = id
+				dataLoad(id)
+			}
+		}
+	})
+}
+
+delete jsondata["Script message"]
+
+if (
+	!jsondata["Backup List"][bIndex].Files.length
+	&& elName.value
+	&& elBackupTo.value
+) {
+	// Backup List name entered and Backup root dir entered but no Files entered
+	if (jsondata.hasOwnProperty("Script message")) {
+		if (
+			jsondata["Script message"]
+			!== "Add some files to backup by clicking the + button."
+		) {
+			jsondata["Script message"] +=
+				" Add some files to backup by clicking the + button."
+		}
+	} else {
+		jsondata["Script message"] =
+			"Add some files to backup by clicking the + button."
+	}
+}
+
+if (jsondata.hasOwnProperty("Important Error Message")) {
+	alert(jsondata["Important Error Message"])
+	delete jsondata["Important Error Message"]
+	warnings(jsondata)
+} else if (jsondata.hasOwnProperty("Script message")) {
+	alert(jsondata["Script message"])
+	warnings(jsondata)
+} else {
+	warnings(jsondata)
+}
 }
 
 function dateDisplay(fieldDate) {
@@ -803,7 +730,9 @@ function fileLineAdd(index) {
 		elFileList,
 		"div",
 		["filelist__line"],
-		[["data-index", index]],
+		[
+			["data-index", index]
+		],
 		""
 	)
 
@@ -844,7 +773,9 @@ function fileLineAdd(index) {
 		elSubDirDiv,
 		"input",
 		[],
-		[["type", "checkbox"]],
+		[
+			["type", "checkbox"]
+		],
 		""
 	)
 
@@ -944,15 +875,17 @@ function fileLineAdd(index) {
 		elBinDiv,
 		"button",
 		["c-btn", "c-btn--secondary", "createscript", "u-text-center"],
-		[["data-index", index]],
+		[
+			["data-index", index]
+		],
 		""
 	)
 
-	elFileTxt.addEventListener("change", function () {
+	elFileTxt.addEventListener("change", function() {
 		dataSet(bIndex, "Files", this.value.trim(), index, "File Or Folder")
 	})
 
-	elSDChk.addEventListener("change", function () {
+	elSDChk.addEventListener("change", function() {
 		if (this.checked) {
 			document
 				.querySelector(
@@ -969,15 +902,15 @@ function fileLineAdd(index) {
 		dataSet(bIndex, "Files", this.checked, index, "Sub-Directories")
 	})
 
-	elDateChk.addEventListener("change", function () {
+	elDateChk.addEventListener("change", function() {
 		dataSet(bIndex, "Files", this.checked, index, "Date In File")
 	})
 
-	elZipChk.addEventListener("change", function () {
+	elZipChk.addEventListener("change", function() {
 		dataSet(bIndex, "Files", this.checked, index, "Zip It")
 	})
 
-	elActiveChk.addEventListener("change", function () {
+	elActiveChk.addEventListener("change", function() {
 		// let index = Number(this.getAttribute('data-index'))
 		// let lineNumber = fileLineIndexToLineNumber(index)
 
@@ -986,7 +919,7 @@ function fileLineAdd(index) {
 		dataSet(bIndex, "Files", this.checked, index, "Active")
 	})
 
-	elDeleteBtn.addEventListener("click", function () {
+	elDeleteBtn.addEventListener("click", function() {
 		// dataSet(bIndex, "Files", this.value, index, "File Or Folder")
 		var r = confirm("Are you sure you want to remove this line?")
 		if (r == true) {
@@ -996,16 +929,13 @@ function fileLineAdd(index) {
 			let strLine = `.filelist__line[data-index="${lineNumber}"]`
 			let index
 			for (
-				let i = 0;
-				i < document.querySelectorAll(".filelist__bin button").length;
-				i++
+				let i = 0; i < document.querySelectorAll(".filelist__bin button").length; i++
 			) {
 				if (
-					lineNumber ===
-					Number(
+					lineNumber
+					=== Number(
 						document
-							.querySelectorAll(".filelist__bin button")
-							[i].getAttribute("data-index")
+						.querySelectorAll(".filelist__bin button")[i].getAttribute("data-index")
 					)
 				) {
 					jsondata["Backup List"][bIndex]["Files"].splice(i, 1)
@@ -1018,7 +948,7 @@ function fileLineAdd(index) {
 	})
 }
 
-elFileAdd.addEventListener("click", function () {
+elFileAdd.addEventListener("click", function() {
 	let dataindex = fileLineIndexNew()
 	console.log("elFileAdd.addEventListener - " + dataindex)
 	fileLineAdd(dataindex)
@@ -1058,7 +988,7 @@ function backupListClear() {
 	}
 }
 
-elAdd.addEventListener("click", function () {
+elAdd.addEventListener("click", function() {
 	// debugger
 	elModal.classList.add("db")
 	// document.querySelector('#backupname--modal').focus()
@@ -1066,7 +996,7 @@ elAdd.addEventListener("click", function () {
 	document.querySelector("#backupname--modal").focus()
 })
 
-elModalSave.addEventListener("click", function () {
+elModalSave.addEventListener("click", function() {
 	const elName = document.querySelector("#backupname--modal")
 	const elBackupTo = document.querySelector("#backupto--modal")
 
@@ -1118,7 +1048,9 @@ elModalSave.addEventListener("click", function () {
 				document.querySelector(".backupnamelist tbody"),
 				"tr",
 				["selected"],
-				[["data-id", bID]],
+				[
+					["data-id", bID]
+				],
 				" "
 			)
 			createElementAtt(
@@ -1154,16 +1086,16 @@ elModalSave.addEventListener("click", function () {
 	}
 })
 
-elModalCancel.addEventListener("click", function () {
+elModalCancel.addEventListener("click", function() {
 	elModal.classList.remove("db")
 	document.querySelector("#backupname--modal").value = ""
 })
 
-elRemove.addEventListener("click", function () {
+elRemove.addEventListener("click", function() {
 	let removebID = Number(
 		document
-			.querySelector(".backupnamelist tr.selected")
-			.getAttribute("data-id")
+		.querySelector(".backupnamelist tr.selected")
+		.getAttribute("data-id")
 	)
 	let removebIndex = backupListIDToIndex(removebID)
 	let bIndex
@@ -1267,7 +1199,7 @@ function fileLineActive(index, value) {
 	}
 }
 
-elCreateScriptBtn.addEventListener("click", function () {
+elCreateScriptBtn.addEventListener("click", function() {
 	buildBackupScript()
 })
 
