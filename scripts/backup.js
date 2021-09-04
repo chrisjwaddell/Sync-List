@@ -514,14 +514,12 @@ function dataLoad(backupID) {
 		let elTR
 		if (Number(jsondata["Backup List"][i]["ID"]) === Number(jsondata["Backup List"][bIndex]["ID"])) {
 			elTR = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", ["selected"],
-				["data-id", jsondata["Backup List"][i]["ID"]]], " "
-		)
+				["data-id", jsondata["Backup List"][i]["ID"]]], " ")
 	} else {
 		elTR = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", [],
 			[
 				["data-id", jsondata["Backup List"][i]["ID"]]
-			], " "
-		)
+			], " ")
 	}
 
 	// debugger
