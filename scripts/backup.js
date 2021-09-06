@@ -534,20 +534,8 @@ function dataLoad(backupID) {
 			createElementAtt(elTR, "td", ["lastrun"], [], "")
 		}
 	} else {
-		createElementAtt(
-			elTR,
-			"td",
-			["backupname", "u-text-line-through"],
-			[],
-			jsondata["Backup List"][i]["Backup Name"]
-		)
-		createElementAtt(
-			elTR,
-			"td",
-			["active", "u-text-line-through"],
-			[],
-			String(jsondata["Backup List"][i]["Active"])
-		)
+		createElementAtt(elTR, "td", ["backupname", "u-text-line-through"], [], jsondata["Backup List"][i]["Backup Name"])
+		createElementAtt(elTR, "td", ["active", "u-text-line-through"], [], String(jsondata["Backup List"][i]["Active"]))
 		createElementAtt(elTR, "td", ["lastrun", "u-text-line-through"], [], "")
 	}
 	// debugger
@@ -578,22 +566,15 @@ function dataLoad(backupID) {
 delete jsondata["Script message"]
 
 if (
-	!jsondata["Backup List"][bIndex].Files.length
-	&& elName.value
-	&& elBackupTo.value
+	!jsondata["Backup List"][bIndex].Files.length && elName.value && elBackupTo.value
 ) {
 	// Backup List name entered and Backup root dir entered but no Files entered
 	if (jsondata.hasOwnProperty("Script message")) {
-		if (
-			jsondata["Script message"]
-			!== "Add some files to backup by clicking the + button."
-		) {
-			jsondata["Script message"] +=
-				" Add some files to backup by clicking the + button."
+		if (jsondata["Script message"] !== "Add some files to backup by clicking the + button.") {
+			jsondata["Script message"] += "Add some files to backup by clicking the + button."
 		}
 	} else {
-		jsondata["Script message"] =
-			"Add some files to backup by clicking the + button."
+		jsondata["Script message"] = "Add some files to backup by clicking the + button."
 	}
 }
 
@@ -724,119 +705,54 @@ function fileLineAdd(index) {
 
 	// console.log( { bIndex })
 
-	let elFL = createElementAtt(
-		elFileList,
-		"div",
-		["filelist__line"],
-		[
-			["data-index", index]
-		],
-		""
-	)
+	let elFL = createElementAtt(elFileList, "div", ["filelist__line"], [
+		["data-index", index]
+	], "")
 
-	let elFileDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__file", "col"],
-		[],
-		""
-	)
+	let elFileDiv = createElementAtt(elFL, "div", ["filelist__file", "col"], [], "")
 
-	let elFileTxt = createElementAtt(
-		elFileDiv,
-		"input",
-		["e-input--primary"],
-		[
-			["type", "text"],
-			[
-				"placeholder",
-				"File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt",
-			],
-		],
-		""
-	)
+	let elFileTxt = createElementAtt(elFileDiv, "input", ["e-input--primary"], [
+		["type", "text"],
+		["placeholder", "File, Directory or Filetype eg C:\\My Documents or C:\\My Documents\\*.txt"]
+	], "")
 	//* this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
 	// createElementAtt(elFL, 'span', [], [], ' ')
 	elFL.appendChild(document.createTextNode(" "))
 
-	let elSubDirDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__subdir", "col"],
-		[],
-		""
-	)
+	let elSubDirDiv = createElementAtt(elFL, "div", ["filelist__subdir", "col"], [], "")
 
-	let elSDChk = createElementAtt(
-		elSubDirDiv,
-		"input",
-		[],
-		[
-			["type", "checkbox"]
-		],
-		""
-	)
+	let elSDChk = createElementAtt(elSubDirDiv, "input", [], [
+		["type", "checkbox"]
+	], "")
 
 	elFL.appendChild(document.createTextNode(" "))
 
-	let elExclDirsDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__exludedirs", "col"],
-		[],
-		""
-	)
-	let elExclDirs = createElementAtt(
-		elExclDirsDiv,
-		"input",
-		["e-input--primary"],
+	let elExclDirsDiv = createElementAtt(elFL, "div", ["filelist__exludedirs", "col"], [], "")
+	let elExclDirs = createElementAtt(elExclDirsDiv, "input", ["e-input--primary"],
 		[
 			["type", "text"],
 			["placeholder", 'Format - "dir1", "dir2"'],
 			["disabled", "true"],
-		],
-		""
-	)
+		], "")
 	//* this fixes the problem of no new line created when using createElement, appendChild - <span> </span>
 	// createElementAtt(elFL, 'span', [], [], ' ')
 	elFL.appendChild(document.createTextNode(" "))
 
-	let elModifiedDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__modified", "col"],
-		[],
-		""
-	)
+	let elModifiedDiv = createElementAtt(elFL, "div", ["filelist__modified", "col"], [], "")
 	elFL.appendChild(document.createTextNode(" "))
 
-	let elDateDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__date", "col"],
-		[],
-		""
-	)
-	let elDateChk = createElementAtt(
-		elDateDiv,
-		"input",
-		["field"],
+	let elDateDiv = createElementAtt(elFL, "div", ["filelist__date", "col"], [], "")
+	let elDateChk = createElementAtt(elDateDiv, "input", ["field"],
 		[
 			["type", "checkbox"],
-			[
-				"data-description",
-				"This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype.",
-			],
-		],
-		""
-	)
+			["data-description",
+				"This feature is really handy for Weekly and Monthly backups. It stops files being overwritten. It puts the date at the end of the filename in YYYYMMDD format. If it is a zip file, it will be the date on the zip file filename otherwise it will put the date on each file in this line if it is *.txt, it will put the date on each text file matching this filetype."
+			]
+		], "")
 	elFL.appendChild(document.createTextNode(" "))
 
 	let elZipDiv = createElementAtt(elFL, "div", ["filelist__zip", "col"], [], "")
-	let elZipChk = createElementAtt(
-		elZipDiv,
-		"input",
-		["field"],
+	let elZipChk = createElementAtt(elZipDiv, "input", ["field"],
 		[
 			["type", "checkbox"],
 			[
@@ -848,36 +764,18 @@ function fileLineAdd(index) {
 	)
 	elFL.appendChild(document.createTextNode(" "))
 
-	let elActiveDiv = createElementAtt(
-		elFL,
-		"div",
-		["filelist__active", "col"],
-		[],
-		""
-	)
-	let elActiveChk = createElementAtt(
-		elActiveDiv,
-		"input",
-		[],
-		[
-			["type", "checkbox"],
-			["data-index", index],
-		],
-		""
-	)
+	let elActiveDiv = createElementAtt(elFL, "div", ["filelist__active", "col"], [], "")
+	let elActiveChk = createElementAtt(elActiveDiv, "input", [], [
+		["type", "checkbox"],
+		["data-index", index]
+	], "")
 	elFL.appendChild(document.createTextNode(" "))
 	elActiveChk.checked = true
 
 	let elBinDiv = createElementAtt(elFL, "div", ["filelist__bin", "col"], [], "")
-	let elDeleteBtn = createElementAtt(
-		elBinDiv,
-		"button",
-		["c-btn", "c-btn--secondary", "createscript", "u-text-center"],
-		[
-			["data-index", index]
-		],
-		""
-	)
+	let elDeleteBtn = createElementAtt(elBinDiv, "button", ["c-btn", "c-btn--secondary", "createscript", "u-text-center"], [
+		["data-index", index]
+	], "")
 
 	elFileTxt.addEventListener("change", function() {
 		dataSet(bIndex, "Files", this.value.trim(), index, "File Or Folder")
@@ -885,17 +783,10 @@ function fileLineAdd(index) {
 
 	elSDChk.addEventListener("change", function() {
 		if (this.checked) {
-			document
-				.querySelector(
-					`.filelist__line[data-index="${index}"] .filelist__exludedirs input`
-				)
-				.removeAttribute("disabled")
+			document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).removeAttribute("disabled")
 		} else {
-			document
-				.querySelector(
-					`.filelist__line[data-index="${index}"] .filelist__exludedirs input`
-				)
-				.setAttribute("disabled", "true")
+			document.querySelector(`.filelist__line[data-index="${index}"] .filelist__exludedirs input`).setAttribute("disabled",
+				"true")
 		}
 		dataSet(bIndex, "Files", this.checked, index, "Sub-Directories")
 	})
@@ -926,16 +817,8 @@ function fileLineAdd(index) {
 			document.querySelectorAll("hr")[line - 1].remove()
 			let strLine = `.filelist__line[data-index="${lineNumber}"]`
 			let index
-			for (
-				let i = 0; i < document.querySelectorAll(".filelist__bin button").length; i++
-			) {
-				if (
-					lineNumber
-					=== Number(
-						document
-						.querySelectorAll(".filelist__bin button")[i].getAttribute("data-index")
-					)
-				) {
+			for (let i = 0; i < document.querySelectorAll(".filelist__bin button").length; i++) {
+				if (lineNumber === Number(document.querySelectorAll(".filelist__bin button")[i].getAttribute("data-index"))) {
 					jsondata["Backup List"][bIndex]["Files"].splice(i, 1)
 					document.querySelector(strLine).remove()
 				}
@@ -1042,29 +925,11 @@ elModalSave.addEventListener("click", function() {
 			// PUT HTTP request ie new backup list needs "BackupListID" to tell Node which backup list ID to create a new file for
 			jsondata["BackupListID"] = bID
 
-			let elTR = createElementAtt(
-				document.querySelector(".backupnamelist tbody"),
-				"tr",
-				["selected"],
-				[
-					["data-id", bID]
-				],
-				" "
-			)
-			createElementAtt(
-				elTR,
-				"td",
-				["backupname", "u-text-line-through"],
-				[],
-				elName.value
-			)
-			createElementAtt(
-				elTR,
-				"td",
-				["active", "u-text-line-through"],
-				[],
-				"true"
-			)
+			let elTR = createElementAtt(document.querySelector(".backupnamelist tbody"), "tr", ["selected"], [
+				["data-id", bID]
+			], " ")
+			createElementAtt(elTR, "td", ["backupname", "u-text-line-through"], [], elName.value)
+			createElementAtt(elTR, "td", ["active", "u-text-line-through"], [], "true")
 			createElementAtt(elTR, "td", ["lastrun", "u-text-line-through"], [], "")
 
 			// The user can only create a script when the name is in, the backup root dir and some file lines are in, otherwise it just saves the data
@@ -1131,68 +996,25 @@ elRemove.addEventListener("click", function() {
 
 function fileLineActive(index, value) {
 	if (value) {
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__file input`).removeAttribute("disabled")
 		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__file input`
-			)
-			.removeAttribute("disabled")
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__subdir input`
-			)
-			.removeAttribute("disabled")
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__zip input`
-			)
-			.removeAttribute("disabled")
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__bin button`
-			)
-			.removeAttribute("disabled")
+			.querySelector(`.filelist__line[data-index="${index}"] .filelist__subdir input`).removeAttribute("disabled")
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__zip input`).removeAttribute("disabled")
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__bin button`).removeAttribute("disabled")
 	} else {
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__file input`
-			)
-			.setAttribute("disabled", true)
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__subdir input`
-			)
-			.setAttribute("disabled", true)
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__zip input`
-			)
-			.setAttribute("disabled", true)
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__bin button`
-			)
-			.setAttribute("disabled", true)
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__file input`).setAttribute("disabled", true)
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__subdir input`).setAttribute("disabled", true)
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__zip input`).setAttribute("disabled", true)
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__bin button`).setAttribute("disabled", true)
 	}
 
 	if (scriptRootDirDate) {
-		document
-			.querySelector(
-				`.filelist__line[data-index="${index}"] .filelist__date input`
-			)
-			.setAttribute("disabled", true)
+		document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).setAttribute("disabled", true)
 	} else {
 		if (value) {
-			document
-				.querySelector(
-					`.filelist__line[data-index="${index}"] .filelist__date input`
-				)
-				.removeAttribute("disabled")
+			document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).removeAttribute("disabled")
 		} else {
-			document
-				.querySelector(
-					`.filelist__line[data-index="${index}"] .filelist__date input`
-				)
-				.setAttribute("disabled", true)
+			document.querySelector(`.filelist__line[data-index="${index}"] .filelist__date input`).setAttribute("disabled", true)
 		}
 	}
 }
@@ -1206,7 +1028,7 @@ async function buildBackupScript() {
 	const options = {
 		method: "PUT",
 		headers: {
-			"Content-Type": "application/json",
+			"Content-Type": "application/json"
 		},
 		body: JSON.stringify(jsondata),
 	}
