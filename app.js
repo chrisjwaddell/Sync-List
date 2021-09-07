@@ -22,16 +22,13 @@ app.use(express.json())
 
 app.use(cors())
 
-app.get("/", function (req, res) {
+app.get("/", function(req, res) {
 	//* A get request is submitted from the frontened GUI at the start to get the settings
 	//* We send back settings.json to it since the frontend can't read files on the computer, but Node can
 
-	console.log(
-		"====================================================================="
-	)
+	console.log("=====================================================================")
 
-	services
-		.getSettings()
+	services.getSettings()
 		.then((i) => {
 			// settings file read successfully, return the data
 			res.send(i)
@@ -46,19 +43,27 @@ app.get("/", function (req, res) {
 				})
 
 			} else {
-				let sr = services
-					.settingsBackup()
+				let sr = services.settingsBackup()
 					.then((r) => {
-						services.newSettings()
-							.then((v) => { res.send(v)})
+						services.newSettings().then((v) => {
+								res.send(v)
+							})
 							.catch((err) => {
 								console.log(err)
-								res.send({ "Backup List": [], "Script message": err, "Important Error Message": err })
+								res.send({
+									"Backup List": [],
+									"Script message": err,
+									"Important Error Message": err
+								})
 							})
 					})
 					.catch((err) => {
 						console.log(err)
-						res.send({"Backup List": [], "Script message": err, "Important Error Message": err})
+						res.send({
+							"Backup List": [],
+							"Script message": err,
+							"Important Error Message": err
+						})
 					})
 				// Scripts directory doesn't exist and couldn't be created.
 				// Couldn't read settings file.
@@ -67,7 +72,7 @@ app.get("/", function (req, res) {
 		})
 })
 
-app.put("/", async function (req, res) {
+app.put("/", async function(req, res) {
 	//* Put requests update json from the frontend and writes to the settings.json file
 	//* It gets the json data from the body of the request
 	console.log("=====================================================================")
@@ -86,7 +91,7 @@ app.put("/", async function (req, res) {
 })
 
 
-app.put("/build", async function (req, res) {
+app.put("/build", async function(req, res) {
 	// build === true tells express to build a new script
 	// build === false just saves the changes to settings.json, putSettings() in Node.js
 	console.log("=====================================================================")
@@ -121,6 +126,6 @@ app.use((error, req, res, next) => {
 })
 
 app.listen(port, () => {
-	console.log("====================================================================="	)
+	console.log("=====================================================================")
 	console.log("Backup app listening on port ", port)
 })
