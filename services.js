@@ -33,10 +33,7 @@ function dateToDDMMYYYY(dt, seperator) {
 	const da = new Date(dt)
 
 	const d = da.getDate() < 10 ? '0' + da.getDate() : da.getDate()
-	const m =
-		da.getMonth() < 9
-		? '0' + Number(da.getMonth() + 1)
-		: Number(da.getMonth() + 1)
+	const m = da.getMonth() < 9 ? '0' + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
 	const y = da.getFullYear()
 	return d + '/' + m + seperator + y
 }
@@ -45,10 +42,7 @@ function dateToYYYYMMDD(dt, seperator) {
 	const da = new Date(dt)
 
 	const d = da.getDate() < 10 ? '0' + da.getDate() : da.getDate()
-	const m =
-		da.getMonth() < 9
-		? '0' + Number(da.getMonth() + 1)
-		: Number(da.getMonth() + 1)
+	const m = da.getMonth() < 9 ? '0' + Number(da.getMonth() + 1) : Number(da.getMonth() + 1)
 	const y = da.getFullYear()
 	return y + seperator + m + seperator + d
 }
@@ -81,9 +75,7 @@ function getSettings() {
 			} catch (err) {
 				dirExists = false
 				// return "No directory"
-				reject(
-					"Scripts directory doesn't exist and couldn't be created."
-				)
+				reject("Scripts directory doesn't exist and couldn't be created.")
 			}
 		}
 
@@ -100,17 +92,14 @@ function getSettings() {
 				const newFile = ''
 
 				if (err) {
-					console.error(
-						"Settings file DOESN'T exists...... Making settings.json"
-					)
+					console.error("Settings file DOESN'T exists...... Making settings.json")
 					reject("Couldn't read settings file.")
 				} else {
 					// settings.json file read successfully
 					const strFileContent = data
 					parseJsonAsync(strFileContent)
 						.then((objJSON) => {
-							if (objJSON['Backup List']
-								.length !== 0) {
+							if (objJSON['Backup List'].length !== 0) {
 								const backupListID = backupListFindFirstID(objJSON)
 								delete objJSON.BackupListID
 								objJSON.BackupListID = Number(backupListID)
@@ -136,27 +125,19 @@ function getSettings() {
 function newSettings() {
 	return new Promise((resolve, reject) => {
 		const today = new Date()
-		const strNew = templateSettings(
-			1,
-			dateToDDMMYYYY(today, '/'),
-			today.valueOf()
-		)
+		const strNew = templateSettings(1, dateToDDMMYYYY(today, '/'), today.valueOf())
 		parseJsonAsync(strNew)
 			.then((jsontemplate) => {
 				jsontemplate.BackupListID = 0
 				jsontemplate['Important Error Message'] =
 					"The settings.json wasn't able to be read so a new blank settings.json file was created."
 
-				const strjson = JSON.stringify(jsontemplate,
-					null,
-					4)
+				const strjson = JSON.stringify(jsontemplate, null, 4)
 
 				fs.writeFile(settingsFile, strjson, function(err) {
 					if (err) {
 						console.log(err)
-						reject(
-							'Error writing to settings file'
-						)
+						reject('Error writing to settings file')
 					} else {
 						resolve(strjson)
 					}
@@ -251,8 +232,7 @@ async function buildErrorChecker(jsonobj) {
 		const d2 = json['Backup List'][i]['Last Edited']
 
 		if (d2 > d1) {
-			json['Error List'][i]['Last Edited'] =
-				'Changes have been made since the Backup Script was generated last.'
+			json['Error List'][i]['Last Edited'] = 'Changes have been made since the Backup Script was generated last.'
 		}
 	} // for
 
@@ -1163,9 +1143,7 @@ async function putBuildText(jsondata, index) {
 	/* eslint-disable operator-linebreak, no-useless-concat, prefer-template  */
 
 	if (jsondata['Backup List'][index]['Message After']) {
-		strFile += powershellMsgAfter(
-			jsondata['Backup List'][index]['Message After']
-		)
+		strFile += powershellMsgAfter(jsondata['Backup List'][index]['Message After'])
 	}
 
 	strFile += powershellEnd()
@@ -1177,9 +1155,7 @@ async function test(jsondata) {
 	const json = jsondata
 
 	try {
-		await fsp.access(
-			'E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\zicons.json'
-		)
+		await fsp.access('E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\zicons.json')
 	} catch (error) {
 		// console.log(error)
 		console.log('error')
@@ -1244,10 +1220,7 @@ function dateToHHMM(dt, seperator) {
 	const da = new Date(dt)
 
 	const h = da.getHours() < 10 ? '0' + da.getHours() : da.getHours()
-	const m =
-		da.getMinutes() < 9
-		? '0' + Number(da.getMinutes() + 1)
-		: Number(da.getMinutes() + 1)
+	const m = da.getMinutes() < 9 ? '0' + Number(da.getMinutes() + 1) : Number(da.getMinutes() + 1)
 	return h + seperator + m
 }
 
