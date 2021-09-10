@@ -7,7 +7,12 @@
 		"start": "node app.js",
 		"start-dev": "nodemon -e js,css,htm app.js",
 		"watch-css": "onchange 'style/scss/*.scss' -- npm run build-css",
-		"build-css": "sass --watch style/scss/style.scss:style/style.css"
+		"build-css": "sass --watch style/scss/style.scss:style/style.css",
+		"lint-frontend": "eslint --env browser scripts",
+		"lint-node": " .\\node_modules\\.bin\\eslint --env node services.js",
+		"lint-node2": "eslint --env node *.js",
+		"prettier": "npx prettier scripts --check",
+		"test": "echo test-src"
 	},
 	"keywords": [
 		"sync",
@@ -26,6 +31,13 @@
 		"express": "^4.17.1"
 	},
 	"devDependencies": {
-		"onchange": "^7.1.0"
+		"eslint-config-airbnb": "^18.2.1",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-import": "^2.24.2",
+		"eslint-plugin-prettier": "^3.4.1",
+		"install-peerdeps": "^3.0.3",
+		"onchange": "^7.1.0",
+		"prettier": "^2.3.2",
+		"standard": "^16.0.3"
 	}
 }
