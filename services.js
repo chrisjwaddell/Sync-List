@@ -103,10 +103,9 @@ function getSettings() {
 								const backupListID = backupListFindFirstID(objJSON)
 								delete objJSON.BackupListID
 								objJSON.BackupListID = Number(backupListID)
-								const fileContentPlusErrors = buildErrorChecker(objJSON)
-									.then((f) => {
-										resolve(f)
-									})
+								const fileContentPlusErrors = buildErrorChecker(objJSON).then((f) => {
+									resolve(f)
+								})
 							} else {
 								backupListID = -1
 								objJSON.BackupListID = Number(backupListID)
@@ -402,9 +401,7 @@ async function powershellFileWrite(fileName, fileText) {
 		if (err) {
 			console.log(err)
 			// throw new Error(err)
-			reject(
-				'Error writing to Powershell backup script file'
-			)
+			reject('Error writing to Powershell backup script file')
 		} else {
 			console.log(`Backup Powershell script${fileName} written to`)
 			resolve(fileText)
@@ -434,8 +431,7 @@ async function putBuild(jsondata) {
 	if (index !== -1) {
 		const strFile = await putBuildText(json, index)
 
-		const batchFileName = path.join(__dirname, 'Backup-scripts',
-			jsondata['Backup List'][index]['Backup Name'], '.ps1')
+		const batchFileName = path.join(__dirname, 'Backup-scripts', jsondata['Backup List'][index]['Backup Name'], '.ps1')
 		let result
 
 		let successfulWrite
@@ -501,9 +497,7 @@ async function putBuildText(jsondata, index) {
 	const todayDir = new Date()
 
 	if (jsondata['Backup List'][index]['Include Date']) {
-		strFile += powershellDirData(
-			jsondata['Backup List'][index]['Backup Root Directory']
-		)
+		strFile += powershellDirData(jsondata['Backup List'][index]['Backup Root Directory'])
 		if (rd.endsWith("'")) {
 			rd = rd.substring(0, rd.length - 1)
 			if (rd.endsWith("'")) {
@@ -529,8 +523,7 @@ async function putBuildText(jsondata, index) {
 			if (i >= jsondata['Backup List'][index].Files.length) break
 		}
 
-		const s =
-			jsondata['Backup List'][index].Files[i]['File Or Folder'].split('\\')
+		const s = jsondata['Backup List'][index].Files[i]['File Or Folder'].split('\\')
 		let dir = ''
 
 		let ft
