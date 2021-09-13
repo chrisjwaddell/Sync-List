@@ -207,10 +207,10 @@ function dataSet(backupIndex, property, value, fileIndex, fileField) {
 	if (fileIndex === undefined) {
 		jsondata["Backup List"][backupIndex][property] = value
 	} else {
-		console.log(backupIndex)
-		console.log(fileIndex)
-		console.log(fileField)
-		console.log(value)
+		// console.log(backupIndex)
+		// console.log(fileIndex)
+		// console.log(fileField)
+		// console.log(value)
 		jsondata["Backup List"][backupIndex]["Files"][fileIndex][fileField] = value
 	}
 
@@ -655,20 +655,7 @@ function dateDisplay(fieldDate) {
 	// return String(day + " " + (mnth == "" ? "" : " "))
 
 	function monthabbrev(i) {
-		const mnths = [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
-		]
+		const mnths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		return mnths[i]
 	}
 
