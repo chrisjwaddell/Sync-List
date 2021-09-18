@@ -95,7 +95,7 @@ function getSettings() {
 					console.error("Settings file DOESN'T exists...... Making settings.json")
 					reject("Couldn't read settings file.")
 				} else {
-					// settings.json file read successfully
+					//* settings.json file read successfully
 					const strFileContent = data
 					parseJsonAsync(strFileContent)
 						.then((objJSON) => {
@@ -115,7 +115,7 @@ function getSettings() {
 						.catch((err) => {
 							reject(err)
 						})
-				} // else
+				} //* else
 			})
 		}
 	})
@@ -147,7 +147,7 @@ function newSettings() {
 }
 
 async function putSettings(jsonobj) {
-	// putSettings writes updates to the settings.json file
+	//* putSettings writes updates to the settings.json file
 
 	return new Promise((resolve, reject) => {
 		let fileExists = false
@@ -177,8 +177,8 @@ async function putSettings(jsonobj) {
 						}
 					})
 			})
-		} // else
-	}) // return new Promise
+		} //* else
+	}) //* return new Promise
 }
 
 function settingsBackup() {
@@ -233,12 +233,12 @@ async function buildErrorChecker(jsonobj) {
 		if (d2 > d1) {
 			json['Error List'][i]['Last Edited'] = 'Changes have been made since the Backup Script was generated last.'
 		}
-	} // for
+	} //* for
 
 	return new Promise((resolve, reject) => {
 		resolve(json)
 	})
-} // buildErrorChecker
+} //* buildErrorChecker
 
 function powershellStart(filesArray, edited) {
 	let strFileList = '<#'
@@ -411,8 +411,8 @@ async function powershellFileWrite(fileName, fileText) {
 }
 
 async function putBuild(jsondata) {
-	// Updates the powershell batch script
-	// Put needs a "BackupListID"
+	//* Updates the powershell batch script
+	//* Put needs a "BackupListID"
 
 	//* Backup Name
 	let backupID
@@ -463,7 +463,7 @@ async function putBuild(jsondata) {
 			})
 		}
 	} else {
-		// Backup List Index not found
+		//* Backup List Index not found
 		result = json
 		return new Promise((resolve, reject) => {
 			resolve(result)
@@ -475,21 +475,15 @@ async function putBuildText(jsondata, index) {
 	const json = jsondata
 
 	let strFile = ''
-	strFile = powershellStart(jsondata['Backup List'][index].Files, jsondata['Backup List'][
-		index
-	]['Last Edited'])
-	strFile += powershellVars(
-		jsondata['Backup List'][index]['Backup Root Directory']
-	)
+	strFile = powershellStart(jsondata['Backup List'][index].Files, jsondata['Backup List'][index]['Last Edited'])
+	strFile += powershellVars(jsondata['Backup List'][index]['Backup Root Directory'])
 
 	strFile += 'Add-Type -As System.IO.Compression.FileSystem' + '\n\n'
 
 	strFile += powershellFunctions() + '\n\n'
 
 	if (jsondata['Backup List'][index]['Message Before']) {
-		strFile += powershellMsgBefore(
-			jsondata['Backup List'][index]['Message Before']
-		)
+		strFile += powershellMsgBefore(jsondata['Backup List'][index]['Message Before'])
 	}
 	strFile += powershellDestination()
 
@@ -535,10 +529,10 @@ async function putBuildText(jsondata, index) {
 
 		strFile += `$FileName = "${jsondata['Backup List'][index].Files[i]['File Or Folder']}"` + '\n'
 		if (ft === 0) {
-			// File
+			//* File
 			strFile += `$FileDir = Split-Path "${jsondata['Backup List'][index].Files[i]['File Or Folder']}"` + '\n\n'
 		} else if (ft === 1) {
-			// Folder
+			//* Folder
 			strFile += `$FileDir = "${jsondata['Backup List'][index].Files[i]['File Or Folder']}"` + '\n\n'
 			strFile += `$ExcludeDirectories = (${jsondata['Backup List'][index].Files[i]['Exclude-Directories']})\n\n`
 		} else {
