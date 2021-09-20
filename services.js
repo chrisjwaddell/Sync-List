@@ -549,7 +549,7 @@ async function putBuildText(jsondata, index) {
 
 		if (ft !== -1) {
 			if (ft === 0) {
-				// sub-dir doesn't matter for file
+				//* sub-dir doesn't matter for file
 				if (!dateinfile && !zip) {
 					console.log('File copy')
 					if (s.length > 1) {
@@ -558,7 +558,7 @@ async function putBuildText(jsondata, index) {
 						}
 					}
 
-					/* eslint-disable operator-linebreak, no-useless-concat, prefer-template  */
+					//* eslint-disable operator-linebreak, no-useless-concat, prefer-template  */
 					strFile += `If (!(Test-Path "$BackupToFinal\\${dir}")) {` + '\n'
 					strFile += '\tWrite-Output "Directory does not exist"\n'
 					strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n}\n'
@@ -798,7 +798,7 @@ async function putBuildText(jsondata, index) {
 						strFile += '\tCreateDir -Path $FileDirRoot' + '\n'
 						strFile += '}' + '\n'
 
-						/* strFile += 'Copy-Item -Path "' + jsondata["Backup List"][index]
+						/** strFile += 'Copy-Item -Path "' + jsondata["Backup List"][index]
 						 * ["Files"][i]["File Or Folder"] + '\\*" -Destination "$BackupToFinal'
 						 * + '\\' + td + '-' + dir + '"\n\n'
 						 */
@@ -814,7 +814,7 @@ async function putBuildText(jsondata, index) {
 						/* strFile += `Copy-Item -Path "${jsondata["Backup List"][index]
 						 * ["Files"][i]["File Or Folder"]}" -Destination $FileDirRoot
 						 * -Recurse` + '\n\n'
-						 */
+						 **/
 						strFile +=
 							`Copy-Item -Path "${jsondata['Backup List'][index].Files[i]['File Or Folder']}" -Destination "$BackupToFinal\\${dir}" -recurse -Force`
 							+ '\n\n'
@@ -1127,7 +1127,7 @@ async function putBuildText(jsondata, index) {
 		}
 	} // for
 
-	/* eslint-disable operator-linebreak, no-useless-concat, prefer-template  */
+	/** eslint-disable operator-linebreak, no-useless-concat, prefer-template  */
 
 	if (jsondata['Backup List'][index]['Message After']) {
 		strFile += powershellMsgAfter(jsondata['Backup List'][index]['Message After'])
