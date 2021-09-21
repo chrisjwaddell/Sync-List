@@ -1,0 +1,34 @@
+./node_modules
+# Exclude packaged modules
+*.zip
+
+# Notes files
+0*.txt
+*.$
+-old*
+
+
+### Sass ###
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+scss/
+
+
+# Dependency directories
+node_modules/
+
+
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+
+# Optional eslint cache
+.eslintcache
+
+
+.vscode/
