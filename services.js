@@ -4,7 +4,6 @@ const path = require('path')
 const {
 	resolve
 } = require('path')
-// const fsp = fs.promises;
 
 const templateSettings = (id, date, dateInt) =>
 	`{"Backup List":[{ "ID": ${id}, "Backup Name": "Main", "Backup Root Directory": "", "Include Date": true, "Message Before": "", "Message After": "Backup Complete", "Send Email After": false, "Email Address": "", "Last Edited": ${dateInt}, "Last Saved": ${dateInt}, "Script Created": "${date}", "Active": true, "Files": [] } ] }`
@@ -12,8 +11,6 @@ const backupListFindFirstID = (backuplistarray) =>
 	backuplistarray['Backup List'].filter((i) => i.Active === true)[0]
 	? backuplistarray['Backup List'].filter((i) => i.Active === true)[0].ID
 	: backuplistarray['Backup List'][0].ID
-// const backupListIDToIndex = (backuplistarray, id) =>
-// 	jsondata['Backup List'].findIndex((i) => i.ID === id)
 
 const parseJsonAsync = (jsonString) => {
 	return new Promise((resolve, reject) => {
@@ -74,7 +71,6 @@ function getSettings() {
 				console.log('Creating scripts directory')
 			} catch (err) {
 				dirExists = false
-				// return "No directory"
 				reject("Scripts directory doesn't exist and couldn't be created.")
 			}
 		}
@@ -287,7 +283,6 @@ async function fileFolderType(fileLine) {
 	let filetype
 	if (fileLine.indexOf('*') === -1) {
 		const stats = await fsp.stat(fileLine)
-		// stats.isFile() ? (filetype = 0) : (filetype = 1)
 	} else {
 		filetype = 2
 	}
@@ -395,7 +390,6 @@ async function powershellFileWrite(fileName, fileText) {
 	fs.writeFile(fileName, fileText, function(err) {
 		if (err) {
 			console.log(err)
-			// throw new Error(err)
 			reject('Error writing to Powershell backup script file')
 		} else {
 			console.log(`Backup Powershell script${fileName} written to`)
@@ -441,8 +435,6 @@ async function putBuild(jsondata) {
 
 			let fileContentPlusErrors = ''
 			fileContentPlusErrors = await buildErrorChecker(json)
-			// let b = buildErrorChecker(json).then(fileContentPlusErrors => {
-			// buildErrorChecker removes ["Script message"], add it after
 			fileContentPlusErrors['Script message'] =
 				`Backup script file created in ${batchFileName}. Put this file in a cron job
                 or scheduler to automatically do your backups regularly.`
@@ -985,14 +977,6 @@ async function putBuildText(jsondata, index) {
 						strFile += `\tCreateDir -Path "$BackupToFinal\\${dir}"` + '\n'
 						strFile += '}' + '\n'
 
-						// strFile += 'Copy-Item -Path "' + jsondata["Backup List"][index]["Files"][i]["File Or Folder"] + '" -Destination "$BackupToFinal' + '\\' + dir + '"\n\n'
-
-						// strFile += `Get-ChildItem -Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}" | ForEach-Object {` + '\n'
-						// strFile += `\tCopy-Item $_.FullName -Destination $_.DirectoryName.Replace("$FileDir", "${rd}\\${dir}")` + '\n'
-						// strFile += '}' + '\n\n'
-
-						// strFile += `Copy-Item -Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}" -Destination "$BackupToFinal\\${dir}" -recurse -Force`
-						// strFile += `Get-ChildItem "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}" -file | Copy-Item -Destination "$BackupToFinal\\${dir}" -Force\n\n`
 						strFile += `robocopy "${s[0]}\\${origdir}" "$FileDirRoot" ${ s[s.length - 1]} /e` + '\n\n'
 					} else if (!dateinfile && zip) {
 						console.log('Filetype zip copy with sub-directories')
@@ -1055,7 +1039,6 @@ async function putBuildText(jsondata, index) {
 						strFile += `\tCreateDir -Path "$BackupToFinal${dir}"` + '\n'
 						strFile += '}' + '\n'
 
-						// strFile += `Compress-Archive -Path "${jsondata["Backup List"][index]["Files"][i]["File Or Folder"]}\\*" -Update -DestinationPath "$BackupToFinal\\${dir}"` + '\n\n'
 						strFile +=
 							`compressFiles -zipFile "$BackupToFinal${dir}\\${filename}" -RootDir "${s[0]}${origdir}\\" -FilesToZip "${jsondata['Backup List'][index].Files[i]['File Or Folder']}" -Recursive $true`
 							+ '\n\n'
@@ -1082,9 +1065,7 @@ async function test(jsondata) {
 	try {
 		await fsp.access('E:\\wamp64\\www\\Websites-I-Did\\Sync-List\\zicons.json')
 	} catch (error) {
-		// console.log(error)
 		console.log('error')
-		// json["Error List"][i]["Backup Name"] = "Script file doesn't exist."
 	}
 }
 
@@ -1135,7 +1116,8 @@ function numberOfNightsBetweenDates(startDate, endDate) {
 	start.setMilliseconds('0')
 	end.setMilliseconds('0')
 
-	const oneDay = 24 * 60 * 60 * 1000 // hours*minutes*seconds*milliseconds
+	const oneDay = 24 * 60 * 60 * 1000
+	// hours*minutes*seconds*milliseconds
 	const diffDays = Math.floor((end - start) / oneDay)
 
 	return diffDays
