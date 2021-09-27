@@ -2,14 +2,10 @@ const express = require('express')
 
 const app = express()
 
-// const fs = require('fs');
-// const fsp = require('fs/promises');
-
 const cors = require('cors')
 
 const services = require('./services')
 
-// const hostname = 'localhost'
 const port = 21311
 
 let settings = ''
@@ -35,7 +31,6 @@ app.get('/', function(req, res) {
 			res.send(i)
 		})
 		.catch((err) => {
-			// console.log('app.js - catch - err - ')
 			console.error(`ERROR:  ${err}`)
 			if (err === 'Settings file not found') {
 				console.log('Settings not found')
