@@ -904,17 +904,17 @@ async function putBuildText(jsondata, index) {
 					} else if (dateinfile && zip) {
 						console.log('Filetype zip copy with date')
 
-						let filename = ''
-						let origdir = ''
-						dir = ''
+						let filename = '';
+						let origdir = '';
+						dir = '';
 						if (s.length > 2) {
 							for (let j = 1; j < s.length - 1; j++) {
-								if (j === s.length - 2 || j === s.length - 1) {
-									dir === '' ? (dir = td + '-' + s[j]) : (dir += '\\' + td + '-' + s[j])
-									origdir === '' ? (origdir = s[j]) : (origdir += '\\' + s[j])
+								if ((j === s.length - 2) || (j === s.length - 1)) {
+									dir === '' ? (dir = td + '-' + s[j]) : (dir += '\\' + td + '-' + s[j]);
+									origdir === '' ? (origdir = s[j]) : (origdir += '\\' + s[j]);
 								} else {
-									dir === '' ? (dir = s[j]) : (dir += '\\' + s[j]) origdir === '' ? (origdir = s[j]) : (origdir +=
-										'\\' + s[j])
+									dir === '' ? (dir = s[j]) : (dir += '\\' + s[j]);
+									origdir === '' ? (origdir = s[j]) : (origdir += '\\' + s[j]);
 								}
 							}
 							filename = s[s.length - 2] + s[s.length - 1].replace('*.*', '').replace('*.', '-') + '.zip'
