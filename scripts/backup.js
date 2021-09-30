@@ -141,8 +141,6 @@ elMsgAfter.addEventListener("change", function() {
 })
 
 elMsgAfter.addEventListener("keypress", function(e) {
-	// alert(e.key)
-	// alert(elMsgAfter.value.length)
 	if (elMsgAfter.value.length > 150) {
 		e.preventDefault()
 	}
@@ -150,7 +148,6 @@ elMsgAfter.addEventListener("keypress", function(e) {
 
 elActive.addEventListener("click", function(e) {
 	let txt
-	// alert(elActive.checked)
 	if (!elActive.checked) {
 		var r = confirm("Are you sure you want to make it inactive?")
 		if (r == true) {
@@ -162,7 +159,6 @@ elActive.addEventListener("click", function(e) {
 			elActive.checked = true
 		}
 	} else {
-		// debugger
 		dataSet(bIndex, "Active", this.checked)
 		active(true)
 	}
@@ -207,10 +203,6 @@ function dataSet(backupIndex, property, value, fileIndex, fileField) {
 	if (fileIndex === undefined) {
 		jsondata["Backup List"][backupIndex][property] = value
 	} else {
-		// console.log(backupIndex)
-		// console.log(fileIndex)
-		// console.log(fileField)
-		// console.log(value)
 		jsondata["Backup List"][backupIndex]["Files"][fileIndex][fileField] = value
 	}
 
@@ -230,16 +222,11 @@ async function dataSave(build, id) {
 	var bLIndex
 	bLIndex = backupListIDToIndex(Number(jsondata["BackupListID"]))
 
-	// jsondata["Backup List"][bIndex]["Last edited"] = dateToDDMMYYYY(today, '/')
-
 	if (jsondata["Backup List"][bLIndex])
 		jsondata["Backup List"][bLIndex]["Last Edited"] = today
 
 	elLastEdited.innerText = "Today"
 	elLastEdited.classList.add("txt-today")
-
-	// fetch()
-	// console.log(JSON.stringify(jsondata))
 
 	const url = build ? "http://localhost:21311/build" : "http://localhost:21311/"
 	const options = {
@@ -253,7 +240,6 @@ async function dataSave(build, id) {
 	fetch(url, options)
 		.then((j) => j.json())
 		.then(function(str) {
-			// console.log(str)
 			jsondata = str
 
 			if (jsondata.hasOwnProperty("Important Error Message")) {
@@ -266,10 +252,8 @@ async function dataSave(build, id) {
 			} else {
 				warnings(jsondata)
 			}
-			// console.log("Finished fetch")
 		})
 		.catch((err) => {
-			// console.error("catch");
 			console.error(err)
 			// debugger
 			if (err instanceof TypeError) {
